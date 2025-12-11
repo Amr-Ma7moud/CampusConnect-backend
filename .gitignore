@@ -19,6 +19,12 @@ lerna-debug.log*
 .env.test
 .env.production
 
+# Editors and IDEs
+.vscode/
+.idea/
+*.suo
+.history/
+
 # temp directory
 .temp
 .tmp

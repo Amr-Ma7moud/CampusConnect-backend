@@ -5,14 +5,15 @@
   "main": "/src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "dev": "bun --watch --env-file=.env src/server.js" 
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Amr-Ma7moud/CampusConnect-backend.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Amr Mahmoud , Mostafa Essa",
   "license": "ISC",
   "type": "module",
   "bugs": {
