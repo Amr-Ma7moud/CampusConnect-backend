@@ -227,7 +227,12 @@ const createStudent = async () => {
                 PRIMARY KEY (post_id, event_id),
                 FOREIGN KEY (post_id) REFERENCES posts(post_id),
                 FOREIGN KEY (event_id) REFERENCES events(event_id)
-            )`
+            )`,
+            `CREATE TABLE IF NOT EXISTS user_type (
+                email VARCHAR(100) PRIMARY KEY,
+                type ENUM('student', 'admin') NOT NULL
+            )
+            `
         ];
 
         for (const query of createTablesQueries) {
