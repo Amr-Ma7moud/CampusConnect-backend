@@ -3,19 +3,21 @@
 Node.js + Express.js backend for CampusConnect: a campus engagement platform with authentication, events, rooms, facilities, clubs, posts, and reporting workflows.
 
 ## Tech Stack
+
 - Node.js, Express.js
 - MariaDB/MySQL (via `mariadb` driver)
 - JWT authentication middleware
 - Docker-friendly environment variables (see below)
 
 ## Prerequisites
+
 - Node.js 18+ recommended
 - MariaDB/MySQL instance
 - `.env` file with DB credentials (copied from `.env.example` if you have one)
 
 Required environment variables:
 
-```
+```environment variables namess
 DB_HOST=
 DB_PORT=
 DB_USER=
@@ -54,6 +56,7 @@ bun run dev
 By default the server listens on the port defined in your environment or port 3000 if no port defined the .env (check `src/server.js`).
 
 ## Project Structure
+
 ```
 src/
 	server.js             # Express app bootstrap

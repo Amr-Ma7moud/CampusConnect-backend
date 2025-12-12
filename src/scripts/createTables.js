@@ -6,21 +6,27 @@ const createStudent = async () => {
     try {
         conn = await getConnection();
         const createTablesQueries = [
-            `CREATE TABLE IF NOT EXISTS students (
-                student_id INT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(100) NOT NULL UNIQUE,
+            `CREATE TABLE IF NOT EXISTS users (
+                user_id INT AUTO_INCREMENT PRIMARY KEY,
                 first_name VARCHAR(100) NOT NULL,
                 last_name VARCHAR(100) NOT NULL,
                 user_name VARCHAR(100) NOT NULL UNIQUE,
+                phone VARCHAR(15),
+                email VARCHAR(100) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                role ENUM('student', 'admin') DEFAULT 'student',
+                is_active BOOLEAN DEFAULT TRUE
+            )`,
+            `CREATE TABLE IF NOT EXISTS students (
+                student_id INT,
                 type ENUM('student', 'club_manager') DEFAULT 'student',
                 faculty ENUM('CSIT', 'FOE', 'PharmaD', 'FIBH', 'BAS', 'ARCH', 'Art') DEFAULT 'CSIT',
                 major VARCHAR(100) NOT NULL,
                 level INT NOT NULL,
                 picture VARCHAR(255),
-                phone VARCHAR(15),
-                is_active BOOLEAN DEFAULT TRUE,
                 in_dorms BOOLEAN DEFAULT FALSE,
-                password VARCHAR(255) NOT NULL
+                PRIMARY KEY (student_id),
+                FOREIGN KEY (student_id) REFERENCES users(user_id)
             )`,
             `CREATE TABLE IF NOT EXISTS facilities (
                 facility_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,14 +43,10 @@ const createStudent = async () => {
                 name VARCHAR(100) NOT NULL UNIQUE
             )`,
             `CREATE TABLE IF NOT EXISTS admins (
-                admin_id INT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(100) NOT NULL UNIQUE,
-                first_name VARCHAR(100) NOT NULL,
-                last_name VARCHAR(100) NOT NULL,
-                user_name VARCHAR(100) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
-                is_active BOOLEAN DEFAULT TRUE,
-                role ENUM('system_admin', 'sports_admin', 'events_and_rooms_admin') DEFAULT 'system_admin'
+                admin_id INT,
+                role ENUM('system_admin', 'sports_admin', 'events_and_rooms_admin') DEFAULT 'system_admin',
+                PRIMARY KEY (admin_id),
+                FOREIGN KEY (admin_id) REFERENCES users(user_id)
             )`,
             `CREATE TABLE IF NOT EXISTS rooms (
                 room_id INT PRIMARY KEY AUTO_INCREMENT,
