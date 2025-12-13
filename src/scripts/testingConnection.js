@@ -1,8 +1,9 @@
-// import { connection } from "mongoose";
 import { getConnection } from "../config/db.js";
+import bcrypt from 'bcryptjs';
 
 export const createTestAdminUser = async() => {
     let connection;
+    let pass = await bcrypt.hash('admin123', 10);
     try {
         connection = await getConnection();
         const query = ([
@@ -10,8 +11,8 @@ export const createTestAdminUser = async() => {
             INSERT INTO users 
                 (first_name, last_name, user_name, email, password, role) 
             VALUES 
-                ('Test', 'Admin', 'testAdmin1', 'test1@ejust.edu.eg', 'admin123', 'admin');
-                `,
+                ('Test', 'Admin', 'testAdmin1', 'test1@ejust.edu.eg', '${pass}', 'admin');
+            `,
             `
             INSERT INTO user_type
                 (email, type)
@@ -24,6 +25,7 @@ export const createTestAdminUser = async() => {
             console.log('a query was successfully done .');
         }
     }catch (err) {
+        console.error('Error creating test admin user:', err);
         throw err;
     }
     finally {

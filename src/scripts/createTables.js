@@ -40,7 +40,6 @@ const createDB = async () => {
             `CREATE TABLE IF NOT EXISTS facilities (
                 facility_id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
-                description TEXT,
                 location_description VARCHAR(250),
                 min_capacity INT,
                 max_capacity INT,
