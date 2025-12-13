@@ -1,11 +1,20 @@
 import { getConnection } from "../config/db.js";
 
 
-const createStudent = async () => {
+const createDB = async () => {
     let conn;
     try {
         conn = await getConnection();
         const createTablesQueries = [
+            `
+            DROP database IF EXISTS defaultdb ;
+            `,
+            `
+            CREATE DATABASE IF NOT EXISTS defaultdb ;
+            `,
+            `
+            USE defaultdb ;
+            `,
             `CREATE TABLE IF NOT EXISTS users (
                 user_id INT AUTO_INCREMENT PRIMARY KEY,
                 first_name VARCHAR(100) NOT NULL,
@@ -55,7 +64,7 @@ const createStudent = async () => {
                 capacity INT NOT NULL,
                 start_time INT NOT NULL,
                 end_time INT NOT NULL,
-                is_available BOOLEAN,
+                is_available BOOLEAN DEFAULT TRUE,
                 type ENUM('public study room', 'private study room', 'meeting room', 'theatre')
             )`,
             `CREATE TABLE IF NOT EXISTS resources (
@@ -250,4 +259,4 @@ const createStudent = async () => {
     }
 }
 
-createStudent();
+createDB();
