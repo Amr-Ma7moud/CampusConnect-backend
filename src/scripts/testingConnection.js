@@ -34,4 +34,23 @@ export const createTestAdminUser = async() => {
     }
 };
 
-createTestAdminUser();
+// fetch the user using the email to check if already exists
+export const checkIfUserExists = async (email) => {
+    let connection;
+    try {
+        connection = await getConnection();
+        const [rows] = await connection.query(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        );
+        return rows.length > 0;
+    } catch (error) {
+        console.error('Error checking user existence:', error);
+        throw error;
+    } finally {
+        if (connection) connection.end();
+    }
+};
+
+await createTestAdminUser();
+// console.log(await checkIfUserExists('test1@ejust.edu.eg'));
