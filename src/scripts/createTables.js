@@ -99,6 +99,7 @@ const createDB = async () => {
                 room_id INT,
                 admin_id INT,
                 club_id INT,
+                max_capacity INT,
                 FOREIGN KEY (admin_id) REFERENCES admins(admin_id),
                 FOREIGN KEY (room_id) REFERENCES rooms(room_id),
                 FOREIGN KEY (club_id) REFERENCES clubs(club_id)
