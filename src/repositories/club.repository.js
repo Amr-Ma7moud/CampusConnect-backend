@@ -137,6 +137,63 @@ class ClubRepo {
         }
     }
 
+    async addFollower(clubId, userId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            await conn.query(
+                `
+                INSERT INTO std_follow_club (club_id, student_id)
+                VALUES (?, ?)
+                `,
+                [clubId, userId]
+            );
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async deleteFollower(clubId, userId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            await conn.query(
+                `
+                DELETE FROM std_follow_club
+                WHERE club_id = ? AND student_id = ?
+                `,
+                [clubId, userId]
+            );
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async getClubFollowers(clubId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `
+                SELECT student_id
+                FROM std_follow_club
+                WHERE club_id = ?
+                `,
+                [clubId]
+            );
+
+            return rows;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
 };
 
 export default new ClubRepo();

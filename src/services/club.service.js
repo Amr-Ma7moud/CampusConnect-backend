@@ -29,6 +29,18 @@ class ClubService {
         await ClubRepo.updateClubDetails(clubId, { name, description, logo, cover });
     }
 
+    async followClub(clubId, userId) {
+        await ClubRepo.addFollower(clubId, userId);
+    }
+
+    async unfollowClub(clubId, userId) {
+        await ClubRepo.deleteFollower(clubId, userId);
+    }
+
+    async isUserFollowingClub(clubId, userId) {
+        const followers = await ClubRepo.getClubFollowers(clubId);
+        return followers.some(follower => follower.student_id === userId);
+    }
 }
 
 export default new ClubService();
