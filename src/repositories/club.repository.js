@@ -194,6 +194,7 @@ class ClubRepo {
         }
     }
 
+    
 };
 
 export default new ClubRepo();

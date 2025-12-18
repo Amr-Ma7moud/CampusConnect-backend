@@ -115,3 +115,23 @@ export const unfollowClub = async (req, res) => {
         res.status(500).json({ error: 'Failed to unfollow club' });
     }
 };
+
+export const getClubDetails = async (req, res) => {
+    const id = req.params.id;
+    const userId = req.user.id;
+
+    const club = await ClubService.findClubById(id);
+    if(!club) {
+        return res.status(404).json({ 
+            message: 'Club not found',
+            details: `No club found with id ${id}`
+        });
+    }
+
+    try {
+        const clubDetails = await ClubService.getClubDetails(id, userId);
+        res.status(200).json(clubDetails);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to get club details' });
+    }
+};
