@@ -24,3 +24,26 @@ export const createRoom = async (req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 }
+
+
+export const reserveRoom = async (req, res) => {
+    const userId = req.user.id;
+    const { start_time, end_time, purpose, std_ids } = req.body;
+
+    try {
+        if (!start_time || !end_time || !purpose || !std_ids || !Array.isArray(std_ids) || std_ids.length === 0) {
+            return res.status(400).json({ message: 'Missing or invalid required fields' });
+        }
+
+        const reservedRoom = await RoomService.resreveRoom(start_time, end_time, purpose, std_ids);
+
+        if (reservedRoom) {
+            return res.status(200).json(reservedRoom);
+        } else {
+            return res.status(404).json({ message: 'No available room found for the given time slot' });
+        }
+
+    } catch (err) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};

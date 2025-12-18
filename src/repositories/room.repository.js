@@ -37,6 +37,55 @@ class RoomRepo {
             if (conn) conn.end();
         }
     }
+
+    async getAllRooms() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`SELECT room_id FROM rooms`);
+            return rows;
+        } catch (error) {
+            return null;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async getAllRoomsReservations() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`SELECT * FROM std_reserve_room`);
+            return rows;
+        } catch (error) {
+            return null;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async reserveRoom(studentId, roomId, start_time, end_time, purpose) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO std_reserve_room ( student_id, room_id, start_time, end_time, purpose, status)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `, [
+                studentId,
+                roomId,
+                start_time,
+                end_time,
+                purpose,
+                'confirmed'
+            ]);
+            return result;
+        } catch (error) {
+            throw new Error('Error reserving room: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new RoomRepo();
