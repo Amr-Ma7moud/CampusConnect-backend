@@ -135,3 +135,13 @@ export const getClubDetails = async (req, res) => {
         res.status(500).json({ error: 'Failed to get club details' });
     }
 };
+
+export const listClubs = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const clubs = await ClubService.listAllClubs(userId);
+        res.status(200).json(clubs);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to list clubs' });
+    }
+}

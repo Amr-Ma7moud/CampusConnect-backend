@@ -63,6 +63,18 @@ class ClubService {
         }
 
     }
+
+    async listAllClubs(userId) {
+        const clubs = await ClubRepo.getAllClubs();
+
+        let clubList = [];
+
+        for(const club of clubs) {
+            clubList.push(await this.getClubDetails(club.club_id, userId));
+        }
+
+        return clubList;
+    }
 }
 
 export default new ClubService();

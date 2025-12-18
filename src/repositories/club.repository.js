@@ -194,7 +194,22 @@ class ClubRepo {
         }
     }
 
-    
+    async getAllClubs() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT * FROM clubs`
+            );
+
+            return rows;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
 };
 
 export default new ClubRepo();
