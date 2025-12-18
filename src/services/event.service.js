@@ -15,6 +15,18 @@ class EventService {
         const students = await EventRepo.getRegisteredStudentsForEvent(id);
         return students;
     }
+
+    async getAttendeeListForEvent(id) {
+        if (! await EventRepo.isEventExists(id)) {
+            throw new Error('Event not found');
+        }
+        const attendees = await EventRepo.getAttendeeListForEvent(id);
+        return attendees;
+    };
+
+    async getEventTime(id){
+        // TODO
+    };
 }
 
 export default new EventService();

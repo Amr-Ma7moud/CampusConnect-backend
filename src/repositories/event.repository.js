@@ -86,6 +86,31 @@ class EventRepo {
             if(conn) conn.end();
         }
     }
+
+    async getAttendeeListForEvent(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(`
+                SELECT 
+                    s.student_id,
+                    CONCAT(u.first_name, ' ', u.last_name) AS name,
+                    u.email,
+                    s.major
+                FROM std_attend_event sae
+                INNER JOIN students s ON sae.student_id = s.student_id
+                INNER JOIN users u ON s.student_id = u.user_id
+                WHERE sae.event_id = ?
+                    AND u.role = 'student' 
+                    AND u.is_active = TRUE;
+                `,[eventId]);
+            return rows;
+        }catch(err){
+            throw err; 
+        }finally{
+            if(conn) conn.end();
+        }
+    };
 }
 
 export default new EventRepo();
