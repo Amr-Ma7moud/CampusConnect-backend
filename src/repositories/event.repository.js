@@ -1,10 +1,14 @@
 import { getConnection } from "../config/db";
 class EventRepo {
-    async getEventById(eventId) {
-        /* 
-        * document this method
 
-        */
+    /** 
+    * takes eventId as parameter
+    * returns event details from the database
+    * throws error if any database issue occurs
+    * @param {number} eventId
+    * @return {object} event details 
+    */
+    async getEventById(eventId) {
         let conn;
         try{
             conn = await getConnection();
@@ -34,6 +38,48 @@ class EventRepo {
                 [eventId]
             );
             return row;
+        }catch(err){
+            throw err; 
+        }finally{
+            if(conn) conn.end();
+        }
+    }
+
+    async getRegisteredStudentsForEvent(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(`
+                SELECT 
+                    s.student_id,
+                    CONCAT(u.first_name, ' ', u.last_name) AS name,
+                    u.email,
+                    s.major
+                FROM std_register_event sre
+                INNER JOIN students s ON sre.student_id = s.student_id
+                INNER JOIN users u ON s.student_id = u.user_id
+                WHERE sre.event_id = ?
+                    AND u.role = 'student' 
+                    AND u.is_active = TRUE;
+            `, [eventId]);
+            return rows;
+        }catch(err){
+            throw err; 
+        }finally{
+            if(conn) conn.end();
+        }
+    }
+
+    async isEventExists(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(`
+                SELECT 1 
+                FROM events 
+                WHERE event_id = ?;
+            `, [eventId]);
+            return rows.length > 0;
         }catch(err){
             throw err; 
         }finally{
