@@ -47,3 +47,26 @@ export const reserveRoom = async (req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const cancelReservation = async (req, res) => {
+    const roomId = req.params.id;
+    const userId = req.user.id;
+    const start_time = req.body.start_time;
+
+    if(!start_time) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    try { 
+
+        const result = await RoomService.cancelReservation(userId, roomId, start_time);
+        if(result.success) {
+            return res.status(200).json({ message: 'Reservation cancelled successfully' });
+        } else {
+            return res.status(404).json({ message: result.message });
+        }
+        
+    } catch(err) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};

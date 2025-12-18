@@ -75,6 +75,14 @@ class RoomService {
         return null; // No available room found
 
     }
+
+    async cancelReservation(studentId, roomId, start_time) {
+        if(!await RoomRepo.getReservation(studentId, roomId, start_time)) {
+            throw new Error('Reservation not found');
+        }
+
+        await RoomRepo.cancelReservation(studentId, roomId, start_time);
+    }
 }
 
 export default new RoomService();

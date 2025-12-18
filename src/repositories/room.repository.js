@@ -86,6 +86,47 @@ class RoomRepo {
             if (conn) conn.end();
         }
     }
+
+    async cancelReservation(studentId, roomId, start_time) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                UPDATE std_reserve_room
+                SET status = 'cancelled'
+                WHERE student_id = ? AND room_id = ? AND start_time = ?
+            `, [
+                studentId,
+                roomId,
+                start_time
+            ]);
+            return result;
+        } catch (error) {
+            throw new Error('Error cancelling reservation: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async getReservation(studentId, roomId, start_time) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`
+                SELECT * FROM std_reserve_room
+                WHERE student_id = ? AND room_id = ? AND start_time = ?
+            `, [
+                studentId,
+                roomId,
+                start_time
+            ]);
+            return rows[0];
+        } catch (error) {
+            return null;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new RoomRepo();

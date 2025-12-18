@@ -1,7 +1,9 @@
 import express from 'express';
-import { reserveRoom } from '../controllers/room.controller.js';
+import { cancelReservation, reserveRoom } from '../controllers/room.controller.js';
 
 const router = express.Router();
 
-
 router.post('/reserve', reserveRoom);
+router.patch('/:id/cancel', cancelReservation);
+
+export default router;
