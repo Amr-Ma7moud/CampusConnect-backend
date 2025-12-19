@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db";
+import { getConnection } from "../config/db.js";
 
 class RoomRepo {
     async createRoom(roomData) {

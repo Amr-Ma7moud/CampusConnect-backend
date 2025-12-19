@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db";
+import { getConnection } from "../config/db.js";
 
 class UserRepo {
     async createStudent([student_id, faculty, major, level, picture, in_dorms]) {
