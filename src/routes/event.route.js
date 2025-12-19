@@ -8,6 +8,7 @@ import {
     scheduleEvent,
     deleteEvent,
     registerStudentAtEvent,
+    getEventPosts,
 } from "../controllers/event.controller.js";
 import { verifyRole } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -35,5 +36,5 @@ router.get(
 router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
 router.get("/:event_id/attendance_list", getAttendeeListForEvent);
 router.get("/", getApprovedEvents);
-router.get('/:id/posts', );
+router.get('/:id/posts', getEventPosts);
 export default router;

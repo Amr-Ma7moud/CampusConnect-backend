@@ -85,6 +85,29 @@ class PostService {
 
         return newsFeed;
     }
+
+    async getPostsByEventId(eventId, userId) {
+        const posts = await postRepo.getPostsByEventId(eventId);
+
+        let eventPosts = [];
+        
+        for(let post of posts) {
+            const comments = await this.getCommentsForPost(post.post_id);
+            const likes = await postRepo.getWhoLikedPost(post.post_id);
+            eventPosts.push({
+                post_id: post.post_id,
+                club_id: post.club_id,
+                content: post.content,
+                image_url: post.image_url,
+                created_at: post.created_at,
+                like_count: likes.length,
+                comment_count: comments.length,
+                is_liked: likes.some(like => like.student_id === userId),
+            });
+        }
+
+        return eventPosts;
+    }
 }
 
 export default new PostService();

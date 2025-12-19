@@ -171,7 +171,6 @@ class PostRepo {
         }
     }
 
-    // return event_id linked to post
     async getEventIdByPostId(postId) {
         let conn;
         try {
@@ -191,6 +190,27 @@ class PostRepo {
             if (conn) conn.end();
         }   
     }
+
+    async getPostsByEventId(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT p.post_id, p.content, p.image_url, p.created_at, p.club_id
+                FROM posts p
+                JOIN posts_for_event pe ON p.post_id = pe.post_id
+                WHERE pe.event_id = ?
+                ORDER BY p.created_at DESC
+            `, [eventId]);
+
+            return result;
+        } catch (error) {
+            throw new Error('Error fetching posts for event: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
 }
 
 export default new PostRepo();

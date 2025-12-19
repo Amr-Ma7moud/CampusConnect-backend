@@ -1,4 +1,5 @@
 import EventService from "../services/event.service.js";
+import postService from "../services/post.service.js";
 export const getEventById = async (req, res) => {
     const id = req.params.event_id;
     try {
@@ -206,6 +207,21 @@ export const deleteEvent = async (req, res) => {
     }
 };
 
+export const getEventPosts = async (req, res) => {
+    const eventId = req.params.id;
+    const userId = req.user.id;
+    try {
+        if(!await EventService.getEventById(eventId)) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+        const posts = await postService.getPostsByEventId(eventId, userId);
+        return res.status(200).json(posts);
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
+}
 const checkId = (id) => {
     if (!id || isNaN(id) || id <= 0) throw new Error("Invalid ID");
 };
