@@ -39,13 +39,20 @@ class EventService {
     }
 
     async scheduleEvent(club_manager_id, eventData) {
-        const clubId = await EventRepo.getClubIdByManagerId(club_manager_id);
+        const clubId = await clubService.getClubIdByManagerId(club_manager_id);
         if (!clubId) {
             throw new Error("Club not found");
         }
         eventData.club_id = clubId;
         const newEvent = await EventRepo.scheduleEvent(eventData);
         return newEvent;
+    }
+
+    async deleteEvent(id) {
+        if (!(await EventRepo.isEventExists(id))) {
+            throw new Error("Event not found");
+        }
+        await EventRepo.deleteEvent(id);
     }
 
     async getEventTime(id) {

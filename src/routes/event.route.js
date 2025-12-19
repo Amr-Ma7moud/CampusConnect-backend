@@ -10,10 +10,11 @@ import {
 import { verifyRole } from "../middlewares/auth.middleware.js";
 const router = Router();
 
-router.get("/", getApprovedEvents);
 router.post("/", verifyRole(["club_manager", "admin"]), scheduleEvent);
+router.delete("/:event_id", verifyRole(["club_manager", "admin"]), deleteEvent);
 router.get("/requested", verifyRole(["club_manager"]), getAllClubEvents);
 router.get("/:event_id", getEventById);
-router.get("/:id/registered_students", getRegisteredStudentsForEvent);
-router.get("/:id/attendance_list", getAttendeeListForEvent);
+router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
+router.get("/:event_id/attendance_list", getAttendeeListForEvent);
+router.get("/", getApprovedEvents);
 export default router;

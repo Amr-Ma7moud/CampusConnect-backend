@@ -72,6 +72,13 @@ class EventRepo {
         }
     }
 
+    /**
+     * takes eventId as parameter
+     * returns true if event exists, false otherwise
+     * throws error if any database issue occurs
+     * @param {number} eventId
+     * @return {boolean} event existence
+     */
     async isEventExists(eventId) {
         let conn;
         try {
@@ -184,6 +191,24 @@ class EventRepo {
                 [clubId, type]
             );
             return rows;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async deleteEvent(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            await conn.query(
+                `
+                DELETE FROM events
+                WHERE event_id = ?;
+                `,
+                [eventId]
+            );
         } catch (err) {
             throw err;
         } finally {

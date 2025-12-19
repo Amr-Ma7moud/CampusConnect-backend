@@ -9,7 +9,7 @@ export const getEventById = async (req, res) => {
         if (err.message === "Event not found") {
             return res.status(404).json({ message: "Event not found" });
         }
-        if (err.message === "Invalid event ID") {
+        if (err.message === "Invalid ID") {
             return res.status(400).json({ message: "Invalid event ID" });
         }
         return res
@@ -19,7 +19,7 @@ export const getEventById = async (req, res) => {
 };
 
 export const getRegisteredStudentsForEvent = async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.event_id;
     checkId(id);
     try {
         const students = await EventService.getRegisteredStudentsForEvent(id);
@@ -28,7 +28,7 @@ export const getRegisteredStudentsForEvent = async (req, res) => {
         if (err.message === "Event not found") {
             return res.status(404).json({ message: "Event not found" });
         }
-        if (err.message === "Invalid event ID") {
+        if (err.message === "Invalid ID") {
             return res.status(400).json({ message: "Invalid event ID" });
         }
         return res
@@ -80,7 +80,7 @@ export const getAttendeeListForEvent = async (req, res) => {
         if (err.message === "Event not found") {
             return res.status(404).json({ message: "Event not found" });
         }
-        if (err.message === "Invalid event ID") {
+        if (err.message === "Invalid ID") {
             return res.status(400).json({ message: "Invalid event ID" });
         }
         return res
@@ -126,7 +126,33 @@ export const scheduleEvent = async (req, res) => {
             eventData
         );
         return res.status(201).json({ event_id: newEventId });
-    } catch (err) {}
+    } catch (err) {
+        if (err.message === "Club not found") {
+            return res.status(404).json({ message: "Club not found" });
+        }
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
+};
+
+export const deleteEvent = async (req, res) => {
+    const id = req.params.event_id;
+    try {
+        checkId(id);
+        await EventService.deleteEvent(id);
+        return res.status(200).json({ message: "Event deleted successfully" });
+    } catch (err) {
+        if (err.message === "Event not found") {
+            return res.status(404).json({ message: "Event not found" });
+        }
+        if (err.message === "Invalid ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
+        }
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
 };
 
 const checkId = (id) => {
