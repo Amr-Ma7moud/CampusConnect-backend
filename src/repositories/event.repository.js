@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db";
+import { getConnection } from "../config/db.js";
 class EventRepo {
     /**
      * takes eventId as parameter
@@ -228,7 +228,8 @@ class EventRepo {
                     description, 
                     event_start_date, 
                     event_end_date, 
-                    club_id, 
+                    club_id,
+                    room_id, 
                     max_capacity
                 ) VALUES (?, ?, ?, ?, ?, ?, ?);
                 `,
@@ -239,8 +240,123 @@ class EventRepo {
                     eventData.startTime,
                     eventData.endTime,
                     eventData.club_id,
+                    eventData.roomId,
                     eventData.max_regestrations,
                 ]
+            );
+            return result.insertId;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    /**
+     * Check if a student is already registered for an event
+     * @param {number} eventId - The event ID to check
+     * @param {number} studentId - The student ID to check
+     * @returns {boolean} True if student is already registered, false otherwise
+     * @throws {Error} Database connection or query error
+     */
+    async isStudentRegisteredForEvent(eventId, studentId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT 1 FROM std_register_event WHERE event_id = ? AND student_id = ?`,
+                [eventId, studentId]
+            );
+            return rows.length > 0;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    /**
+     * Get current registration count for an event
+     * @param {number} eventId - The event ID to check
+     * @returns {number} Current number of registered students
+     * @throws {Error} Database connection or query error
+     */
+    async getEventRegistrationCount(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT COUNT(*) as count FROM std_register_event WHERE event_id = ?`,
+                [eventId]
+            );
+            return rows[0].count;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    /**
+     * Get event status and timing information
+     * @param {number} eventId - The event ID to check
+     * @returns {object} Object containing status, start_date, end_date
+     * @throws {Error} Database connection or query error
+     */
+    async getEventStatusAndTiming(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT status, event_start_date, event_end_date 
+                 FROM events WHERE event_id = ?`,
+                [eventId]
+            );
+            return rows[0] || null;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    /**
+     * Get event capacity information
+     * @param {number} eventId - The event ID to check
+     * @returns {object} Object containing max_capacity
+     * @throws {Error} Database connection or query error
+     */
+    async getEventCapacity(eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT max_capacity FROM events WHERE event_id = ?`,
+                [eventId]
+            );
+            return rows[0] || null;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    /**
+     * Register a student for an event
+     * @param {number} eventId - The event ID to register for
+     * @param {number} studentId - The student ID to register
+     * @returns {number} The insertion ID from the database
+     * @throws {Error} Database connection or query error
+     */
+    async registerStudentForEvent(eventId, studentId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [result] = await conn.query(
+                `INSERT INTO std_register_event (event_id, student_id, registration_date) 
+                 VALUES (?, ?, NOW())`,
+                [eventId, studentId]
             );
             return result.insertId;
         } catch (err) {

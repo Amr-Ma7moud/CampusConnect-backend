@@ -18,6 +18,57 @@ export const getEventById = async (req, res) => {
     }
 };
 
+/**
+ * Register a student for an event
+ * @param {Request} req - Express request object containing event_id in params
+ * @param {Response} res - Express response object
+ * @returns {Response} HTTP response with appropriate status code
+ */
+export const registerStudentAtEvent = async (req, res) => {
+    const event_id = req.params.event_id;
+    const student_id = req.user.id;
+
+    try {
+        checkId(event_id);
+        await EventService.registerStudentAtEvent(event_id, student_id);
+
+        return res.status(200).send();
+    } catch (err) {
+        if (err.message === "Event not found") {
+            return res.status(404).json({ message: "Event not found" });
+        }
+        if (err.message === "Student not found") {
+            return res
+                .status(404)
+                .json({ message: "Student not found or inactive" });
+        }
+        if (err.message === "Invalid ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
+        }
+        if (err.message === "Event is full") {
+            return res.status(400).json({ message: "Event is full" });
+        }
+        if (err.message === "Registration closed") {
+            return res
+                .status(400)
+                .json({ message: "Registration is closed for this event" });
+        }
+        if (err.message === "Registration deadline passed") {
+            return res
+                .status(400)
+                .json({ message: "Registration deadline has passed" });
+        }
+        if (err.message === "Already registered") {
+            return res
+                .status(409)
+                .json({ message: "Student already registered for this event" });
+        }
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
+};
+
 export const getRegisteredStudentsForEvent = async (req, res) => {
     const id = req.params.event_id;
     checkId(id);
@@ -71,7 +122,7 @@ export const getApprovedEvents = async (req, res) => {
 };
 
 export const getAttendeeListForEvent = async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.event_id;
     checkId(id);
     try {
         const attendees = await EventService.getAttendeeListForEvent(id);
@@ -117,7 +168,7 @@ export const scheduleEvent = async (req, res) => {
             description: req.body.description,
             startTime: req.body.start_time,
             endTime: req.body.end_time,
-            // roomId: req.body.room_id,
+            roomId: req.body.room_id,
             club_id: null, // to be set in service
             max_regestrations: req.body.max_registrations,
         };
