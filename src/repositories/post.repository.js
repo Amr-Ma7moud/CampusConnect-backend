@@ -38,6 +38,38 @@ class PostRepo {
             if (conn) conn.end();
         }
     }
+
+    async getPostById(postId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT * FROM posts WHERE post_id = ?
+            `, [postId]);
+
+            return result[0];
+        } catch (error) {
+            throw new Error('Error fetching post: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async updatePost(postId, content) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                UPDATE posts SET content = ? WHERE post_id = ?
+            `, [content, postId]);
+
+            return result;
+        } catch (error) {
+            throw new Error('Error updating post: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new PostRepo();

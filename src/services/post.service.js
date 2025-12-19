@@ -13,6 +13,15 @@ class PostService {
 
         return postId;
     }
+
+    async checkIfPostBelongsToClub(postId, clubId) {
+        const post = await postRepo.getPostById(postId);
+        return post && post.club_id === clubId;
+    }
+
+    async updatePost(postId, content) {
+        await postRepo.updatePost(postId, content);
+    }
 }
 
 export default new PostService();
