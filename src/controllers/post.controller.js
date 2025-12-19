@@ -109,3 +109,35 @@ export const getPostComments = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
 };
+
+export const likePost = async (req, res) => {
+    const userId = req.user.id;
+    const postId = req.params.id;
+
+    try {
+        await postService.likePost(postId, userId);
+        return res.status(200).json({ message: 'Post liked successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+};
+
+export const unlikePost = async (req, res) => {
+    const userId = req.user.id;
+    const postId = req.params.id;
+
+    try {
+        await postService.unlikePost(postId, userId);
+        return res.status(200).json({ message: 'Post unliked successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+
+}
+export const getNewsFeed = async (req, res) => {
+    try {
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+};

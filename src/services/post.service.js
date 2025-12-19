@@ -51,6 +51,14 @@ class PostService {
 
         return postComments;
     }
+
+    async likePost(postId, userId) {
+        await postRepo.likePost(postId, userId);
+    }
+
+    async unlikePost(postId, userId) {
+        await postRepo.unlikePost(postId, userId);
+    }
 }
 
 export default new PostService();

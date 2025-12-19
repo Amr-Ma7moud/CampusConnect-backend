@@ -88,7 +88,6 @@ class PostRepo {
         }
     }
 
-    // get all post comments by post_id
     async getCommentsByPostId(postId) {
         let conn;
         try {
@@ -105,7 +104,55 @@ class PostRepo {
         }
     }
 
-    
+    async likePost(postId, userId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO std_like_post (student_id, post_id)
+                VALUES (?, ?)
+            `, [userId, postId]);
+
+            return result.insertId;
+        } catch (error) {
+            throw new Error('Error liking post: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async unlikePost(postId, userId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                DELETE FROM std_like_post WHERE student_id = ? AND post_id = ?
+            `, [userId, postId]);
+
+            return result;
+        } catch (error) {
+            throw new Error('Error unliking post: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async getAllPosts(limit) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT * FROM posts LIMIT ?
+            `, [limit]
+            );
+
+            return result;
+        } catch (error) {
+            throw new Error('Error fetching posts: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new PostRepo();
