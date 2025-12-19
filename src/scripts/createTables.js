@@ -1,6 +1,5 @@
 import { getConnection } from "../config/db.js";
 
-
 const createDB = async () => {
     let conn;
     try {
@@ -94,8 +93,8 @@ const createDB = async () => {
                 description TEXT,
                 event_start_date DATETIME NOT NULL,
                 event_end_date DATETIME NOT NULL,
-                status ENUM('scheduled', 'ongoing', 'completed', 'cancelled') DEFAULT 'scheduled',
-                type VARCHAR(100) NOT NULL,
+                status ENUM('pending', 'scheduled', 'ongoing', 'completed', 'cancelled') DEFAULT 'pending',
+                type ENUM('event', 'session') NOT NULL,
                 room_id INT,
                 admin_id INT,
                 club_id INT,
@@ -243,7 +242,7 @@ const createDB = async () => {
                 email VARCHAR(100) PRIMARY KEY,
                 type ENUM('student', 'admin') NOT NULL
             )
-            `
+            `,
         ];
 
         for (const query of createTablesQueries) {
@@ -257,6 +256,6 @@ const createDB = async () => {
         if (conn) conn.end();
         process.exit();
     }
-}
+};
 
 createDB();

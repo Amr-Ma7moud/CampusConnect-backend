@@ -1,14 +1,13 @@
-
+import { getConnection } from "../config/db.js";
 
 class ClubRepo {
-
     async createClub({ name, description, email }) {
         let conn;
         try {
             conn = await getConnection();
             const result = await conn.query(
                 `INSERT INTO clubs (name, description, email, status) VALUES (?, ?, ?)`,
-                [name, description, email, 'active']
+                [name, description, email, "active"]
             );
 
             return result.insertId;
@@ -23,7 +22,7 @@ class ClubRepo {
         let conn;
         try {
             conn = await getConnection();
-            
+
             for (const stdId of stdIds) {
                 const student_id = stdId.id;
                 const role_title = stdId.role_title;
@@ -34,9 +33,8 @@ class ClubRepo {
                     VALUES (?, ?, ?)
                     `,
                     [student_id, clubId, role_title]
-                )
+                );
             }
-
         } catch (err) {
             throw err;
         } finally {
@@ -108,19 +106,19 @@ class ClubRepo {
             const values = [];
 
             if (name) {
-                fields.push('name = ?');
+                fields.push("name = ?");
                 values.push(name);
             }
             if (description) {
-                fields.push('description = ?');
+                fields.push("description = ?");
                 values.push(description);
             }
             if (logo) {
-                fields.push('logo = ?');
+                fields.push("logo = ?");
                 values.push(logo);
             }
             if (cover) {
-                fields.push('cover = ?');
+                fields.push("cover = ?");
                 values.push(cover);
             }
 
@@ -130,7 +128,9 @@ class ClubRepo {
 
             values.push(clubId);
 
-            const sql = `UPDATE clubs SET ${fields.join(', ')} WHERE club_id = ?`;
+            const sql = `UPDATE clubs SET ${fields.join(
+                ", "
+            )} WHERE club_id = ?`;
             await conn.query(sql, values);
         } finally {
             if (conn) conn.end();
@@ -198,9 +198,7 @@ class ClubRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
-                `SELECT * FROM clubs`
-            );
+            const [rows] = await conn.query(`SELECT * FROM clubs`);
 
             return rows;
         } catch (err) {
@@ -210,6 +208,26 @@ class ClubRepo {
         }
     }
 
-};
+    async getClubIdByManagerId(managerId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT club_id FROM club_manager WHERE student_id = ?`,
+                [managerId]
+            );
+
+            if (rows.length === 0) {
+                return null;
+            }
+
+            return rows[0].club_id;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+}
 
 export default new ClubRepo();

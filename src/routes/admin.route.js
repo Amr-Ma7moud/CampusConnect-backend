@@ -8,5 +8,5 @@ const adminRouter = Router();
 
 adminRouter.post('/rooms', verifyRole(['admin']), createRoom);
 adminRouter.post('/facilities', verifyRole(['admin']), createFacility );
-adminRouter.post('/users', verifyRole['admin'], createUser);
+adminRouter.post('/users', verifyRole(['admin']), createUser);
 export default adminRouter;
