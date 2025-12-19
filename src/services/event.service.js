@@ -1,4 +1,5 @@
 import EventRepo from '../repositories/event.repository.js';
+import clubService from './club.service.js';
 class EventService {
     async getEventById(id) {
         const event = await EventRepo.getEventById(id);
@@ -29,6 +30,14 @@ class EventService {
         return events;
     };
     
+    async getApprovedEvents(type, clubId){
+        if ( ! await clubService.findClubById(clubId)){
+            throw new Error('Club not found');
+        };
+        const events = await EventRepo.getApprovedEvents(type, clubId);
+        return events;
+    };
+
     async getEventTime(id){
         // TODO
     };

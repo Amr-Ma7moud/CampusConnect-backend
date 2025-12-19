@@ -33,6 +33,29 @@ export const getRegisteredStudentsForEvent = async (req, res) => {
     }
 };
 
+export const getApprovedEvents = async (req, res) => {
+    try {
+        const type = req.query.type;
+        const clubId = req.query.clubId;
+        if ( !type || (type !== 'event' && type !== 'session') ) {
+            return res.status(400).json({ message: 'Invalid query parameters type should be "event" or "session"' });
+        }
+        if ( !clubId || isNaN(clubId) || clubId <=0 ) {
+            return res.status(400).json({ message: 'Invalid query parameters clubId should be a valid Club ID' });
+        }
+        const events = await EventService.getApprovedEvents(type, clubId);
+        if (!events || events.length === 0) {
+            return res.status(204).json({ message: 'No approved events found' });
+        }
+        return res.status(200).json(events);
+    } catch (err) {
+        if (err.message === 'Club not found') {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+        return res.status(500).json({ message: 'Internal server error', error: err.message });
+    }
+};
+
 export const getAttendeeListForEvent = async (req, res) => {
     const id  = req.params.id;
     checkId(id);
