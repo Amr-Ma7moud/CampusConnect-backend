@@ -1,4 +1,5 @@
 import ClubRepo from "../repositories/club.repository.js";
+import eventService from "./event.service.js";
 
 class ClubService {
     async createClub({ name, description, email, std_ids }) {
@@ -51,6 +52,7 @@ class ClubService {
         const followers = await ClubRepo.getClubFollowers(clubId);
         const members = await this.findClubMembers(clubId);
         const isJoined = await this.isUserFollowingClub(clubId, userId);
+        const events = await eventService.getAllClubEvents(userId);
 
         return {
             id: club.club_id,
@@ -60,7 +62,7 @@ class ClubService {
             logo: club.logo,
             cover: club.cover,
             followers_count: followers.length,
-            event_number: 0, // Will be edited when the event feature is implemented
+            event_number: events.length,
             is_joined: isJoined,
             club_admin_name: members[0].first_name + " " + members[0].last_name,
         };

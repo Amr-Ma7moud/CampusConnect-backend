@@ -17,4 +17,5 @@ router.get("/:event_id", getEventById);
 router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
 router.get("/:event_id/attendance_list", getAttendeeListForEvent);
 router.get("/", getApprovedEvents);
+router.get('/:id/posts', );
 export default router;

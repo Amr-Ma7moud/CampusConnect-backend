@@ -1,0 +1,43 @@
+import { getConnection } from "../config/db";
+
+
+class PostRepo {
+    async createPost(postData) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO posts (content, image_url, club_id)
+                VALUES (?, ?, ?)
+            `, [
+                postData.content,
+                postData.image_url,
+                postData.club_id
+            ]);
+
+            return result.insertId;
+        } catch (error) {
+            throw new Error('Error creating post: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async linkPostToEvent(postId, eventId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO posts_for_event (post_id, event_id)
+                VALUES (?, ?)
+            `, [postId, eventId]);
+            return result;
+        } catch (error) {
+            throw new Error('Error linking post to event: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+}
+
+export default new PostRepo();
