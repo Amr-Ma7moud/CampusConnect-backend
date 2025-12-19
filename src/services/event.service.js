@@ -55,6 +55,58 @@ class EventService {
         await EventRepo.deleteEvent(id);
     }
 
+    /**
+     * Register a student for an event with all necessary validations
+     * @param {number} eventId - The event ID to register for
+     * @param {number} studentId - The student ID to register
+     * @throws {Error} "Event not found" if event doesn't exist
+     * @throws {Error} "Student not found" if student doesn't exist or is inactive
+     * @throws {Error} "Already registered" if student is already registered
+     * @throws {Error} "Event is full" if event has reached maximum capacity
+     * @throws {Error} "Registration closed" if event is not in scheduled status
+     * @throws {Error} "Registration deadline passed" if current time is past event start time
+     * @returns {number} The registration ID
+     */
+    async registerStudentAtEvent(eventId, studentId) {
+        if (!(await EventRepo.isEventExists(eventId))) {
+            throw new Error("Event not found");
+        }
+
+        const eventInfo = await EventRepo.getEventStatusAndTiming(eventId);
+        if (!eventInfo) {
+            throw new Error("Event not found");
+        }
+
+        if (eventInfo.status !== "scheduled") {
+            throw new Error("Registration closed");
+        }
+
+        const currentTime = new Date();
+        const eventStartTime = new Date(eventInfo.event_start_date);
+        if (currentTime >= eventStartTime) {
+            throw new Error("Registration deadline passed");
+        }
+
+        if (await EventRepo.isStudentRegisteredForEvent(eventId, studentId)) {
+            throw new Error("Already registered");
+        }
+
+        const eventCapacity = await EventRepo.getEventCapacity(eventId);
+        if (eventCapacity && eventCapacity.max_capacity) {
+            const currentRegistrations =
+                await EventRepo.getEventRegistrationCount(eventId);
+            if (currentRegistrations >= eventCapacity.max_capacity) {
+                throw new Error("Event is full");
+            }
+        }
+
+        const registrationId = await EventRepo.registerStudentForEvent(
+            eventId,
+            studentId
+        );
+        return registrationId;
+    }
+
     async getEventTime(id) {
         // TODO
     }
