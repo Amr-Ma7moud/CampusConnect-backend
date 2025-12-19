@@ -111,6 +111,34 @@ class EventRepo {
             if(conn) conn.end();
         }
     };
+
+    async getAllClubEvents(club_manager_id){
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(`
+                SELECT 
+                    e.event_id,
+                    e.type,
+                    e.title,
+                    e.description,
+                    e.event_start_date AS start_time,
+                    e.event_end_date AS end_time,
+                    e.status,
+                    e.max_capacity AS max_regestrations
+                FROM events e
+                INNER JOIN clubs c ON e.club_id = c.club_id
+                INNER JOIN club_manager cm ON c.club_id = cm.club_id
+                WHERE cm.student_id = ?
+                ORDER BY e.event_start_date DESC;
+                `,[club_manager_id]);
+                return rows;
+        }catch(err){
+            throw err; 
+        }finally{
+            if(conn) conn.end();
+        }
+    };
 }
 
 export default new EventRepo();

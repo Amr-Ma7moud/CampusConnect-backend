@@ -50,6 +50,16 @@ export const getAttendeeListForEvent = async (req, res) => {
     }
 };
 
+export const getAllClubEvents = async (req, res) => {
+    const club_manager_id = req.user.id;
+    try {
+        const events = await EventService.getAllClubEvents(club_manager_id);
+        return res.status(200).json(events);
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message });
+    }
+};
+
 const checkId = (id) => {
     if (!id || isNaN(id) || id <= 0)
         throw new Error('Invalid event ID');

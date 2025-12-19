@@ -24,6 +24,11 @@ class EventService {
         return attendees;
     };
 
+    async getAllClubEvents(club_manager_id){
+        const events = await EventRepo.getAllClubEvents(club_manager_id);
+        return events;
+    };
+    
     async getEventTime(id){
         // TODO
     };
