@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db";
+import { getConnection } from "../config/db.js";
 
 
 class PostRepo {
@@ -70,6 +70,42 @@ class PostRepo {
             if (conn) conn.end();
         }
     }
+
+    async insertComment(postId, userId, comment) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO std_comment_post (student_id, post_id, comment)
+                VALUES (?, ?, ?)
+            `, [userId, postId, comment]);
+
+            return result.insertId;
+        } catch (error) {
+            throw new Error('Error inserting comment: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    // get all post comments by post_id
+    async getCommentsByPostId(postId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT * FROM std_comment_post WHERE post_id = ?
+            `, [postId]);
+
+            return result;
+        } catch (error) {
+            throw new Error('Error fetching comments: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    
 }
 
 export default new PostRepo();

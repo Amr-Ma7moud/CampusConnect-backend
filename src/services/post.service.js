@@ -1,5 +1,6 @@
 import e from "express";
 import postRepo from "../repositories/post.repository.js";
+import userService from "./user.service.js";
 
 
 class PostService {
@@ -14,6 +15,11 @@ class PostService {
         return postId;
     }
 
+    async getPostById(postId) {
+        const post = await postRepo.getPostById(postId);
+        return post;
+    }
+
     async checkIfPostBelongsToClub(postId, clubId) {
         const post = await postRepo.getPostById(postId);
         return post && post.club_id === clubId;
@@ -21,6 +27,29 @@ class PostService {
 
     async updatePost(postId, content) {
         await postRepo.updatePost(postId, content);
+    }
+
+    async addCommentToPost(postId, userId, comment) {
+        await postRepo.insertComment(postId, userId, comment);
+    }
+
+    async getCommentsForPost(postId) {
+        const comments = await postRepo.getCommentsByPostId(postId);
+
+        let postComments = [];
+
+        for (let comment of comments) {
+            const student = await userService.getStudentById(comment.student_id);
+
+            postComments.push({
+                student_name: `${student.first_name} ${student.last_name}`,
+                student_image_url: student.picture,
+                content: comment.content,
+                created_at: comment.created_at
+            });
+        }
+
+        return postComments;
     }
 }
 
