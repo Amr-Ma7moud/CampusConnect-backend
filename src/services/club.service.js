@@ -1,5 +1,4 @@
-import ClubRepo from '../repositories/club.repository.js';
-
+import ClubRepo from "../repositories/club.repository.js";
 
 class ClubService {
     async createClub({ name, description, email, std_ids }) {
@@ -22,11 +21,16 @@ class ClubService {
 
     async checkUserIsClubManager(clubId, userId) {
         const members = await this.findClubMembers(clubId);
-        return members.some(member => member.student_id === userId);
+        return members.some((member) => member.student_id === userId);
     }
 
     async editClub(clubId, { name, description, logo, cover }) {
-        await ClubRepo.updateClubDetails(clubId, { name, description, logo, cover });
+        await ClubRepo.updateClubDetails(clubId, {
+            name,
+            description,
+            logo,
+            cover,
+        });
     }
 
     async followClub(clubId, userId) {
@@ -39,7 +43,7 @@ class ClubService {
 
     async isUserFollowingClub(clubId, userId) {
         const followers = await ClubRepo.getClubFollowers(clubId);
-        return followers.some(follower => follower.student_id === userId);
+        return followers.some((follower) => follower.student_id === userId);
     }
 
     async getClubDetails(clubId, userId) {
@@ -47,7 +51,6 @@ class ClubService {
         const followers = await ClubRepo.getClubFollowers(clubId);
         const members = await this.findClubMembers(clubId);
         const isJoined = await this.isUserFollowingClub(clubId, userId);
-
 
         return {
             id: club.club_id,
@@ -59,9 +62,8 @@ class ClubService {
             followers_count: followers.length,
             event_number: 0, // Will be edited when the event feature is implemented
             is_joined: isJoined,
-            club_admin_name: members[0].first_name + ' ' + members[0].last_name
-        }
-
+            club_admin_name: members[0].first_name + " " + members[0].last_name,
+        };
     }
 
     async listAllClubs(userId) {
@@ -69,11 +71,15 @@ class ClubService {
 
         let clubList = [];
 
-        for(const club of clubs) {
+        for (const club of clubs) {
             clubList.push(await this.getClubDetails(club.club_id, userId));
         }
 
         return clubList;
+    }
+
+    async getClubIdByManagerId(managerId) {
+        return await ClubRepo.getClubIdByManagerId(managerId);
     }
 }
 

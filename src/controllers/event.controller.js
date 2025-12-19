@@ -1,75 +1,91 @@
-import EventService from '../services/event.service.js';
+import EventService from "../services/event.service.js";
 export const getEventById = async (req, res) => {
-    const id  = req.params.event_id;
+    const id = req.params.event_id;
     try {
         checkId(id);
         const event = await EventService.getEventById(id);
         return res.status(200).json(event);
-    }catch (err) {
-        if (err.message === 'Event not found') {
-            return res.status(404).json({ message: 'Event not found' });
+    } catch (err) {
+        if (err.message === "Event not found") {
+            return res.status(404).json({ message: "Event not found" });
         }
-        if (err.message === 'Invalid event ID') {
-            return res.status(400).json({ message: 'Invalid event ID' });
+        if (err.message === "Invalid event ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
         }
-        return res.status(500).json({ message: 'Internal server error', error: err.message });
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
     }
 };
 
 export const getRegisteredStudentsForEvent = async (req, res) => {
-    const id  = req.params.id;
+    const id = req.params.id;
     checkId(id);
     try {
         const students = await EventService.getRegisteredStudentsForEvent(id);
         return res.status(200).json(students);
     } catch (err) {
-        if (err.message === 'Event not found') {
-            return res.status(404).json({ message: 'Event not found' });
+        if (err.message === "Event not found") {
+            return res.status(404).json({ message: "Event not found" });
         }
-        if (err.message === 'Invalid event ID') {
-            return res.status(400).json({ message: 'Invalid event ID' });
+        if (err.message === "Invalid event ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
         }
-        return res.status(500).json({ message: 'Internal server error', error: err.message });
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
     }
 };
 
 export const getApprovedEvents = async (req, res) => {
     try {
         const type = req.query.type;
-        const clubId = req.query.clubId;
-        if ( !type || (type !== 'event' && type !== 'session') ) {
-            return res.status(400).json({ message: 'Invalid query parameters type should be "event" or "session"' });
+        const clubId = req.query.club_id;
+        if (!type || (type !== "event" && type !== "session")) {
+            return res.status(400).json({
+                message:
+                    'Invalid query parameters type should be "event" or "session"',
+            });
         }
-        if ( !clubId || isNaN(clubId) || clubId <=0 ) {
-            return res.status(400).json({ message: 'Invalid query parameters clubId should be a valid Club ID' });
+        if (!clubId || isNaN(clubId) || clubId <= 0) {
+            return res.status(400).json({
+                message:
+                    "Invalid query parameters clubId should be a valid Club ID",
+            });
         }
         const events = await EventService.getApprovedEvents(type, clubId);
         if (!events || events.length === 0) {
-            return res.status(204).json({ message: 'No approved events found' });
+            return res
+                .status(204)
+                .json({ message: "No approved events found" });
         }
         return res.status(200).json(events);
     } catch (err) {
-        if (err.message === 'Club not found') {
-            return res.status(404).json({ message: 'Club not found' });
+        if (err.message === "Club not found") {
+            return res.status(404).json({ message: "Club not found" });
         }
-        return res.status(500).json({ message: 'Internal server error', error: err.message });
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
     }
 };
 
 export const getAttendeeListForEvent = async (req, res) => {
-    const id  = req.params.id;
+    const id = req.params.id;
     checkId(id);
     try {
         const attendees = await EventService.getAttendeeListForEvent(id);
         return res.status(200).json(attendees);
     } catch (err) {
-        if (err.message === 'Event not found') {
-            return res.status(404).json({ message: 'Event not found' });
+        if (err.message === "Event not found") {
+            return res.status(404).json({ message: "Event not found" });
         }
-        if (err.message === 'Invalid event ID') {
-            return res.status(400).json({ message: 'Invalid event ID' });
+        if (err.message === "Invalid event ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
         }
-        return res.status(500).json({ message: 'Internal server error', error: err.message });
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
     }
 };
 
@@ -79,11 +95,40 @@ export const getAllClubEvents = async (req, res) => {
         const events = await EventService.getAllClubEvents(club_manager_id);
         return res.status(200).json(events);
     } catch (err) {
-        return res.status(500).json({ message: 'Internal server error', error: err.message });
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
     }
 };
 
+export const scheduleEvent = async (req, res) => {
+    try {
+        const type = req.body.type;
+        if (type !== "event" && type !== "session") {
+            return res.status(400).json({
+                message:
+                    'Invalid event type. Type should be "event" or "session"',
+            });
+        }
+        const club_manager_id = req.user.id;
+        const eventData = {
+            type: req.body.type,
+            title: req.body.title,
+            description: req.body.description,
+            startTime: req.body.start_time,
+            endTime: req.body.end_time,
+            // roomId: req.body.room_id,
+            club_id: null, // to be set in service
+            max_regestrations: req.body.max_registrations,
+        };
+        const newEventId = await EventService.scheduleEvent(
+            club_manager_id,
+            eventData
+        );
+        return res.status(201).json({ event_id: newEventId });
+    } catch (err) {}
+};
+
 const checkId = (id) => {
-    if (!id || isNaN(id) || id <= 0)
-        throw new Error('Invalid event ID');
-}
+    if (!id || isNaN(id) || id <= 0) throw new Error("Invalid ID");
+};

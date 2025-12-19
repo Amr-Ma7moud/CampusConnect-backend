@@ -1,16 +1,15 @@
 import { getConnection } from "../config/db";
 class EventRepo {
-
-    /** 
-    * takes eventId as parameter
-    * returns event details from the database
-    * throws error if any database issue occurs
-    * @param {number} eventId
-    * @return {object} event details 
-    */
+    /**
+     * takes eventId as parameter
+     * returns event details from the database
+     * throws error if any database issue occurs
+     * @param {number} eventId
+     * @return {object} event details
+     */
     async getEventById(eventId) {
         let conn;
-        try{
+        try {
             conn = await getConnection();
             const [row] = await conn.query(
                 `
@@ -38,10 +37,10 @@ class EventRepo {
                 [eventId]
             );
             return row;
-        }catch(err){
-            throw err; 
-        }finally{
-            if(conn) conn.end();
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
         }
     }
 
@@ -49,7 +48,8 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`
+            const [rows] = await conn.query(
+                `
                 SELECT 
                     s.student_id,
                     CONCAT(u.first_name, ' ', u.last_name) AS name,
@@ -61,12 +61,14 @@ class EventRepo {
                 WHERE sre.event_id = ?
                     AND u.role = 'student' 
                     AND u.is_active = TRUE;
-            `, [eventId]);
+            `,
+                [eventId]
+            );
             return rows;
-        }catch(err){
-            throw err; 
-        }finally{
-            if(conn) conn.end();
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
         }
     }
 
@@ -74,16 +76,19 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`
+            const [rows] = await conn.query(
+                `
                 SELECT 1 
                 FROM events 
                 WHERE event_id = ?;
-            `, [eventId]);
+            `,
+                [eventId]
+            );
             return rows.length > 0;
-        }catch(err){
-            throw err; 
-        }finally{
-            if(conn) conn.end();
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
         }
     }
 
@@ -91,7 +96,8 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`
+            const [rows] = await conn.query(
+                `
                 SELECT 
                     s.student_id,
                     CONCAT(u.first_name, ' ', u.last_name) AS name,
@@ -103,20 +109,23 @@ class EventRepo {
                 WHERE sae.event_id = ?
                     AND u.role = 'student' 
                     AND u.is_active = TRUE;
-                `,[eventId]);
+                `,
+                [eventId]
+            );
             return rows;
-        }catch(err){
-            throw err; 
-        }finally{
-            if(conn) conn.end();
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
         }
-    };
+    }
 
-    async getAllClubEvents(club_manager_id){
+    async getAllClubEvents(club_manager_id) {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`
+            const [rows] = await conn.query(
+                `
                 SELECT 
                     e.event_id,
                     e.type,
@@ -131,20 +140,23 @@ class EventRepo {
                 INNER JOIN club_manager cm ON c.club_id = cm.club_id
                 WHERE cm.student_id = ?
                 ORDER BY e.event_start_date DESC;
-                `,[club_manager_id]);
-                return rows;
-        }catch(err){
-            throw err; 
-        }finally{
-            if(conn) conn.end();
+                `,
+                [club_manager_id]
+            );
+            return rows;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
         }
-    };
+    }
 
-    async getApprovedEvents(type, clubId){
+    async getApprovedEvents(type, clubId) {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`
+            const [rows] = await conn.query(
+                `
                 SELECT 
                     e.event_id,
                     c.name AS club_name,
@@ -168,14 +180,50 @@ class EventRepo {
                 GROUP BY e.event_id, c.name, c.logo, c.cover, e.title, e.description, 
                         e.event_start_date, e.event_end_date, r.building_name, r.room_number, e.max_capacity
                 ORDER BY e.event_start_date ASC;
-                `,[clubId, type]);
+                `,
+                [clubId, type]
+            );
             return rows;
-        }catch(err){
-            throw err; 
-        }finally{
-            if(conn) conn.end();
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
         }
-    };
+    }
+
+    async scheduleEvent(eventData) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [result] = await conn.query(
+                `
+                INSERT INTO events (
+                    type, 
+                    title, 
+                    description, 
+                    event_start_date, 
+                    event_end_date, 
+                    club_id, 
+                    max_capacity
+                ) VALUES (?, ?, ?, ?, ?, ?, ?);
+                `,
+                [
+                    eventData.type,
+                    eventData.title,
+                    eventData.description,
+                    eventData.startTime,
+                    eventData.endTime,
+                    eventData.club_id,
+                    eventData.max_regestrations,
+                ]
+            );
+            return result.insertId;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new EventRepo();
