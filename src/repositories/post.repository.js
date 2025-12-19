@@ -137,12 +137,29 @@ class PostRepo {
         }
     }
 
+    async getWhoLikedPost(postId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT student_id FROM std_like_post WHERE post_id = ?
+            `, [postId]);
+
+            return result;
+        } catch (error) {
+            throw new Error('Error fetching likes: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
     async getAllPosts(limit) {
         let conn;
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                SELECT * FROM posts LIMIT ?
+                SELECT * FROM posts ORDER BY created_at DESC LIMIT ?
+
             `, [limit]
             );
 
@@ -152,6 +169,27 @@ class PostRepo {
         } finally {
             if (conn) conn.end();
         }
+    }
+
+    // return event_id linked to post
+    async getEventIdByPostId(postId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT event_id FROM posts_for_event WHERE post_id = ?
+            `, [postId]);
+
+            if (result.length > 0) {
+                return result[0].event_id;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            throw new Error('Error fetching event ID: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }   
     }
 }
 

@@ -133,10 +133,14 @@ export const unlikePost = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
 
-}
-export const getNewsFeed = async (req, res) => {
-    try {
+};
 
+
+export const getNewsFeed = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const newsFeed = await postService.getNewsFeed(userId);
+        return res.status(200).json({ newsFeed });
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
