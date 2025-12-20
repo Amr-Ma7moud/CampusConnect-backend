@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/me', getStudentProfile);
 router.patch('/:id/ban', verifyRole(['admin']), banUser);
+router.get('/', verifyRole['admin'], );
 
 export default router;

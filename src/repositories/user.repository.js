@@ -63,7 +63,7 @@ class UserRepo {
             conn = await getConnection();
             
             const result = await conn.query(
-                `SELECT u.id, u.first_name, u.last_name, u.email, u.user_name, s.faculty, s.major, s.level, s.picture, s.in_dorms, s.type
+                `SELECT u.user_id, u.first_name, u.last_name, u.email, u.user_name, s.faculty, s.major, s.level, s.picture, s.in_dorms, s.type
                  FROM users u
                  JOIN students s ON u.user_id = s.student_id
                  WHERE u.id = ?`,
@@ -85,7 +85,7 @@ class UserRepo {
         try {
             conn = await getConnection();   
             const result = await conn.query(
-                `SELECT u.id, u.first_name, u.last_name, u.email, u.user_name, a.role
+                `SELECT u.user_id, u.first_name, u.last_name, u.email, u.user_name, a.role
                  FROM users u
                  JOIN admins a ON u.user_id = a.admin_id
                  WHERE u.id = ?`,
@@ -129,6 +129,28 @@ class UserRepo {
                 [status, userId]
             );
 
+        } catch (err) {
+            throw err;
+        } finally {
+            if(conn) conn.end();
+        }
+    }
+
+    async searchForUsers(query) {
+
+        const pattern = `%${query}%`
+        let conn;
+        try {
+            conn = await getConnection();
+            const results = await conn.query(
+                `SELECT u.user_id, u.first_name, u.last_name, u.email, s.faculty, s.major, u.is_active
+                 FROM users u
+                 JOIN students s ON u.user_id = s.student_id
+                 WHERE u.first_name LIKE ? OR u.last_name LIKE ?`,
+                [pattern, pattern]
+            );
+
+            return results;
         } catch (err) {
             throw err;
         } finally {

@@ -58,6 +58,25 @@ class UserService {
         await userRepository.updateUserStatus(userId, 0);
     }
 
+    async searchForStudent(query) {
+        const results = await userRepository.searchForUsers(query);
+
+        let students = [];
+
+        for(let student of results) {
+            students.push({
+                student_id: student.user_id,
+                student_name: `${student.first_name} ${student.last_name}`,
+                faculty: student.faculty,
+                major: student.major,
+                student_email: student.email,
+                status: student.is_active === 0 ? "banned" : "active"
+            });
+        }
+
+        return students;
+    }
+
 }
 
 export default new UserService();

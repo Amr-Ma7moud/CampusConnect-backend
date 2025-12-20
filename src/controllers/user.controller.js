@@ -84,3 +84,15 @@ export const banUser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
+
+
+export const searchForStudent = async (req, res) => {
+    try {
+        const { query } = req.body;
+        const students = await userService.searchForStudent(query);
+
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
