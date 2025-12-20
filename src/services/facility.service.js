@@ -26,6 +26,16 @@ class FacilityService {
             throw new Error('Error in FacilityService: ' + error.message);
         }
     }
+
+    async reportFacilityIssue(student_id, facility_id, reason, details) {
+        try {
+            const reportData = [student_id, facility_id, reason, details];
+            const result = await FacilityRepo.reportFacilityIssue(reportData);
+            return result;
+        } catch (error) {
+            throw new Error('Error in FacilityService: ' + error.message);
+        }
+    }
 }
 
 export default new FacilityService();

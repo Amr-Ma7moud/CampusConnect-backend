@@ -14,3 +14,23 @@ export const createFacility = async (req, res) => {
     }
 
 };
+
+export const reportFacilityIssue = async (req, res) => {
+    try {
+        const {facility_id, reason, details} = req.body;
+        const userId = req.user.id;
+
+        if(!facility_id || !reason || !details) {
+            return res.status(400).json({ 
+                    message: 'Missing required fields',
+                    details: 'facility_id, reason, and details are required.'
+                 });
+        }
+
+        const result = await FacilityService.reportFacilityIssue(userId, facility_id, reason, details);
+        return res.status(200).json({ message: 'Facility issue reported successfully'});
+        
+    } catch (err) { 
+        res.status(500).json({ message: 'Error reporting facility issue: ' + err.message });
+    }
+}
