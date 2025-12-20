@@ -70,3 +70,12 @@ export const cancelReservation = async (req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const getAllRooms = async (req, res) => {
+    try {
+        const rooms = await RoomService.getAllRooms();
+        return res.status(200).json(rooms);
+    } catch (err) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};

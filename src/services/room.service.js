@@ -83,6 +83,22 @@ class RoomService {
 
         await RoomRepo.cancelReservation(studentId, roomId, start_time);
     }
+
+    async getAllRooms() {
+        const rooms = await RoomRepo.getAllRooms();
+
+        let formattedRooms = [];
+
+        for(let room of rooms) {
+            formattedRooms.push({
+                room_id: room.room_id,
+                room_number: room.room_number,
+                building_name: room.building_name,
+            });
+        }
+
+        return formattedRooms;
+    }
 }
 
 export default new RoomService();

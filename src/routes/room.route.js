@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/reserve', reserveRoom);
 router.patch('/:id/cancel', cancelReservation);
+router.get('/', );
 
 export default router;
