@@ -103,6 +103,46 @@ export const cancelEventRegistration = async (req, res) => {
     }
 };
 
+export const checkInStudent = async (req, res) => {
+    const eventId = req.params.event_id;
+    const studentId = req.user.id;
+
+    try {
+        checkId(eventId);
+
+        await EventService.checkInStudent(eventId, studentId);
+        return res.status(200).send();
+    } catch (err) {
+        if (err.message === "Event not found") {
+            return res.status(404).json({
+                code: 404,
+                message: "Not Found",
+                details: `Event with ID ${eventId} does not exist`,
+            });
+        }
+        if (err.message === "Student not registered") {
+            return res.status(404).json({
+                code: 404,
+                message: "Not Found",
+                details: "Student is not registered for this event",
+            });
+        }
+        if (err.message === "Already checked in") {
+            return res.status(400).json({
+                code: 400,
+                message: "Bad Request",
+                details: "Student is already checked in for this event",
+            });
+        }
+        if (err.message === "Invalid ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
+        }
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
+};
+
 export const getRegisteredStudentsForEvent = async (req, res) => {
     const id = req.params.event_id;
     checkId(id);

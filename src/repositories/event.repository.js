@@ -390,6 +390,39 @@ class EventRepo {
             if (conn) conn.end();
         }
     }
+
+    async isStudentCheckedIn(eventId, studentId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [rows] = await conn.query(
+                `SELECT 1 FROM std_attend_event WHERE event_id = ? AND student_id = ?`,
+                [eventId, studentId]
+            );
+            return rows.length > 0;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async checkInStudent(eventId, studentId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [result] = await conn.query(
+                `INSERT INTO std_attend_event (event_id, student_id, attend_date) 
+                VALUES (?, ?, NOW())`,
+                [eventId, studentId]
+            );
+            return result.insertId;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new EventRepo();

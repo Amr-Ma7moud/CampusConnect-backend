@@ -133,6 +133,25 @@ class EventService {
         return cancelled;
     }
 
+    async checkInStudent(eventId, studentId) {
+        if (!(await EventRepo.isEventExists(eventId))) {
+            throw new Error("Event not found");
+        }
+
+        if (
+            !(await EventRepo.isStudentRegisteredForEvent(eventId, studentId))
+        ) {
+            throw new Error("Student not registered");
+        }
+
+        if (await EventRepo.isStudentCheckedIn(eventId, studentId)) {
+            throw new Error("Already checked in");
+        }
+
+        const checkInId = await EventRepo.checkInStudent(eventId, studentId);
+        return checkInId;
+    }
+
     async getEventTime(id) {
         // TODO
     }
