@@ -6,8 +6,7 @@ class AuthRepository {
         try {
             conn = await getConnection();
             const rows = await conn.query(
-                `SELECT user_id, email, password, 'user' as role_group
-                 FROM users WHERE email = ?`,
+                `SELECT * FROM users WHERE email = ?`,
                 [email]
             );
             return rows[0];
