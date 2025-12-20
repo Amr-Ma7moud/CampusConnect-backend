@@ -3,10 +3,14 @@ import { createRoom } from "../controllers/room.controller.js";
 import { createFacility } from "../controllers/facility.controller.js";
 import { verifyRole } from "../middlewares/auth.middleware.js";
 import { createUser } from "../controllers/user.controller.js";
+import { getReports } from "../controllers/admin.controller.js";
 
-const adminRouter = Router();
+const router = Router();
 
-adminRouter.post('/rooms', verifyRole(['admin']), createRoom);
-adminRouter.post('/facilities', verifyRole(['admin']), createFacility );
-adminRouter.post('/users', verifyRole(['admin']), createUser);
-export default adminRouter;
+router.use(verifyRole(['admin']));
+
+router.post('/rooms', createRoom);
+router.post('/facilities', createFacility );
+router.post('/users', createUser);
+router.get('/report', getReports);
+export default router;

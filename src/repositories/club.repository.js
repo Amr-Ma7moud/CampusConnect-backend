@@ -245,6 +245,22 @@ class ClubRepo {
             if (conn) conn.end();
         }
     }
+
+    async getAllReports() {
+        let conn;
+        try {
+            const rows = await conn.query(`
+                SELECT * FROM std_report_club
+            `);
+            
+            return rows;
+        }catch (error) {
+            console.log(error);
+            throw new Error('Error getting reports: ' + error.message);
+        }finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new ClubRepo();

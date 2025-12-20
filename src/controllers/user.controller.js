@@ -63,7 +63,7 @@ export const createUser = async (req, res) => {
         } else if(userData.role === 'admin') {
             await userService.createAdmin({
                 admin_id: userId,
-                role: userData.admin_role || 'system admin'
+                role: 'admin' // we have to add all types of admins (system, sports, rooms & events) --> userData.admin_role
             });
         }
 

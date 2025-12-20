@@ -42,6 +42,22 @@ export class FacilityRepo{
         }
     }
 
+    async getAllReports() {
+        let conn;
+        try {
+            const rows = await conn.query(`
+                SELECT * FROM std_report_facility
+            `);
+            
+            return rows;
+        }catch (error) {
+            console.log(error);
+            throw new Error('Error getting reports: ' + error.message);
+        }finally {
+            if (conn) conn.end();
+        }
+    }
+
 }
 
 export default new FacilityRepo();
