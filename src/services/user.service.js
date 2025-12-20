@@ -54,6 +54,9 @@ class UserService {
         return user;
     }
 
+    async banUser(userId) {
+        await userRepository.updateUserStatus(userId, 0);
+    }
 
 }
 

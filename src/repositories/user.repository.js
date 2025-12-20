@@ -116,6 +116,25 @@ class UserRepo {
             if (conn) conn.end();
         }
     };
+
+    async updateUserStatus(userId, status) {
+        let conn;
+        try {
+            conn = await getConnection();
+            await conn.query(`
+                UPDATE users
+                SET is_active = ?
+                WHERE user_id = ?
+                `, 
+                [status, userId]
+            );
+
+        } catch (err) {
+            throw err;
+        } finally {
+            if(conn) conn.end();
+        }
+    }
 }
 
 

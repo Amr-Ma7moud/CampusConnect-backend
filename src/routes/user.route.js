@@ -1,8 +1,10 @@
 import express from 'express';
-import { getStudentProfile } from '../controllers/user.controller.js';
+import { banUser, getStudentProfile } from '../controllers/user.controller.js';
+import { verifyRole } from '../middlewares/auth.middleware.js';
 
-const userRouter = express.Router();
+const router = express.Router();
 
-userRouter.get('/me', getStudentProfile);
+router.get('/me', getStudentProfile);
+router.patch('/:id/ban', verifyRole(['admin']), banUser);
 
-export default userRouter;
+export default router;
