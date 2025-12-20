@@ -106,7 +106,7 @@ class RoomService {
                 const result = await RoomRepo.reportRoomIssue(reportData);
                 return result;
             } catch (error) {
-                throw new Error('Error in FacilityService: ' + error.message);
+                throw new Error('Error in RoomService: ' + error.message);
             }
         }
 }

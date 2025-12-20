@@ -145,3 +145,23 @@ export const listClubs = async (req, res) => {
         res.status(500).json({ error: 'Failed to list clubs' });
     }
 }
+
+export const reportClubIssue = async (req, res) => {
+    const { club_id, reason, details } = req.body;
+    const userId = req.user.id;
+
+    try {
+        if(!club_id || !reason || !details) {
+            return res.status(400).json({ 
+                message: 'Missing required fields',
+                details: 'club_id, reason, and details are required.'
+            });
+        }
+        
+        await ClubService.reportClubIssue(userId, club_id, reason, details);
+        
+        return res.status(200).json({ message: 'Club issue reported successfully'});
+    } catch(err) {
+        res.status(500).json({ message: 'Error reporting club issue: ' + err.message });
+    }
+};

@@ -1,6 +1,13 @@
 import express from 'express';
 import { verifyRole } from '../middlewares/auth.middleware.js';
-import { createClub, editClub, followClub, getClubDetails, listClubs, unfollowClub } from '../controllers/club.controller.js';
+import { 
+    createClub,
+    editClub,
+    followClub, 
+    getClubDetails, 
+    listClubs, 
+    reportClubIssue, 
+    unfollowClub } from '../controllers/club.controller.js';
 
 const router = express.Router();
 
@@ -11,5 +18,6 @@ router.get('/:id', getClubDetails);
 router.put('/:id', editClub);
 router.post('/:id/follow', followClub);
 router.delete('/:id/follow', unfollowClub);
+router.post('/report', reportClubIssue);
 
 export default router;

@@ -162,7 +162,7 @@ class EventService {
             const result = await EventRepo.reportEventIssue(reportData);
             return result;
         } catch (error) {
-            throw new Error('Error in FacilityService: ' + error.message);
+            throw new Error('Error in EventService: ' + error.message);
         }
     }
 }

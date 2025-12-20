@@ -83,6 +83,16 @@ class ClubService {
     async getClubIdByManagerId(managerId) {
         return await ClubRepo.getClubIdByManagerId(managerId);
     }
+
+    async reportClubIssue(student_id, club_id, reason, details) {
+        try {
+            const reportData = [student_id, club_id, reason, details];
+            const result = await ClubRepo.reportClubIssue(reportData);
+            return result;
+        } catch (error) {
+            throw new Error('Error in ClubService: ' + error.message);
+        }
+    }
 }
 
 export default new ClubService();
