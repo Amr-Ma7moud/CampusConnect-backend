@@ -365,6 +365,31 @@ class EventRepo {
             if (conn) conn.end();
         }
     }
+
+    /**
+     * Cancel a student's registration for an event
+     * @param {number} eventId - The event ID to cancel registration for
+     * @param {number} studentId - The student ID to cancel registration for
+     * @returns {boolean} True if registration was successfully cancelled, false if not found
+     * @throws {Error} Database connection or query error
+     */
+    async cancelStudentRegistration(eventId, studentId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const [result] = await conn.query(
+                `
+                DELETE FROM std_register_event 
+                WHERE event_id = ? AND student_id = ?`,
+                [eventId, studentId]
+            );
+            return result.affectedRows > 0;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new EventRepo();

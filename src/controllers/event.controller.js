@@ -70,6 +70,39 @@ export const registerStudentAtEvent = async (req, res) => {
     }
 };
 
+export const cancelEventRegistration = async (req, res) => {
+    const eventId = req.params.event_id;
+    const studentId = req.user.id;
+
+    try {
+        checkId(eventId);
+        await EventService.cancelEventRegistration(eventId, studentId);
+
+        return res.status(200).json({ message: "Registration cancelled" });
+    } catch (err) {
+        if (err.message === "Event not found") {
+            return res.status(404).json({
+                code: 404,
+                message: "Not Found",
+                details: `Event with ID ${eventId} does not exist`,
+            });
+        }
+        if (err.message === "Invalid ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
+        }
+        if (err.message === "Registration not found") {
+            return res.status(404).json({
+                code: 404,
+                message: "Not Found",
+                details: "Student is not registered for this event",
+            });
+        }
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
+};
+
 export const getRegisteredStudentsForEvent = async (req, res) => {
     const id = req.params.event_id;
     checkId(id);
@@ -211,7 +244,7 @@ export const getEventPosts = async (req, res) => {
     const eventId = req.params.id;
     const userId = req.user.id;
     try {
-        if(!await EventService.getEventById(eventId)) {
+        if (!(await EventService.getEventById(eventId))) {
             return res.status(404).json({ message: "Event not found" });
         }
         const posts = await postService.getPostsByEventId(eventId, userId);
@@ -221,7 +254,7 @@ export const getEventPosts = async (req, res) => {
             .status(500)
             .json({ message: "Internal server error", error: err.message });
     }
-}
+};
 const checkId = (id) => {
     if (!id || isNaN(id) || id <= 0) throw new Error("Invalid ID");
 };

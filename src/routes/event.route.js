@@ -8,6 +8,7 @@ import {
     scheduleEvent,
     deleteEvent,
     registerStudentAtEvent,
+    cancelEventRegistration,
     getEventPosts,
 } from "../controllers/event.controller.js";
 import { verifyRole } from "../middlewares/auth.middleware.js";
@@ -18,6 +19,11 @@ router.post(
     "/:event_id/register",
     verifyRole(["student", "club_manager"]),
     registerStudentAtEvent
+);
+router.delete(
+    "/:event_id/register",
+    verifyRole(["student", "club_manager"]),
+    cancelEventRegistration
 );
 router.delete("/:event_id", verifyRole(["club_manager", "admin"]), deleteEvent);
 router.get("/", getApprovedEvents);
@@ -36,5 +42,5 @@ router.get(
 router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
 router.get("/:event_id/attendance_list", getAttendeeListForEvent);
 router.get("/", getApprovedEvents);
-router.get('/:id/posts', getEventPosts);
+router.get("/:id/posts", getEventPosts);
 export default router;

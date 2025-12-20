@@ -107,6 +107,32 @@ class EventService {
         return registrationId;
     }
 
+    /**
+     * Cancel a student's registration for an event with all necessary validations
+     * @param {number} eventId - The event ID to cancel registration for
+     * @param {number} studentId - The student ID to cancel registration for
+     * @throws {Error} "Event not found" if event doesn't exist
+     * @throws {Error} "Registration not found" if student is not registered for the event
+     * @returns {boolean} True if cancellation was successful
+     */
+    async cancelEventRegistration(eventId, studentId) {
+        if (!(await EventRepo.isEventExists(eventId))) {
+            throw new Error("Event not found");
+        }
+
+        if (
+            !(await EventRepo.isStudentRegisteredForEvent(eventId, studentId))
+        ) {
+            throw new Error("Registration not found");
+        }
+
+        const cancelled = await EventRepo.cancelStudentRegistration(
+            eventId,
+            studentId
+        );
+        return cancelled;
+    }
+
     async getEventTime(id) {
         // TODO
     }
