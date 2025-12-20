@@ -11,6 +11,7 @@ import {
     cancelEventRegistration,
     checkInStudent,
     getEventPosts,
+    reportEventIssue,
 } from "../controllers/event.controller.js";
 import { verifyRole } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -49,4 +50,5 @@ router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
 router.get("/:event_id/attendance_list", getAttendeeListForEvent);
 router.get("/", getApprovedEvents);
 router.get("/:id/posts", getEventPosts);
+router.post("/report", reportEventIssue);
 export default router;

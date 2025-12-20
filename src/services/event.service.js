@@ -155,6 +155,16 @@ class EventService {
     async getEventTime(id) {
         // TODO
     }
+
+    async reportEventIssue(student_id, event_id, reason, details) {
+        try {
+            const reportData = [student_id, event_id, reason, details];
+            const result = await EventRepo.reportEventIssue(reportData);
+            return result;
+        } catch (error) {
+            throw new Error('Error in FacilityService: ' + error.message);
+        }
+    }
 }
 
 export default new EventService();

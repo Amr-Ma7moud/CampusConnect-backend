@@ -295,6 +295,27 @@ export const getEventPosts = async (req, res) => {
             .json({ message: "Internal server error", error: err.message });
     }
 };
+
+export const reportEventIssue = async (req, res) => {
+    const { event_id, reason, details } = req.body;
+    const userId = req.user.id;
+
+    try {
+        if(!event_id || !reason || !details) {
+            return res.status(400).json({ 
+                message: 'Missing required fields',
+                details: 'event_id, reason, and details are required.'
+            });
+        }
+        
+        await EventService.reportEventIssue(userId, event_id, reason, details);
+        
+        return res.status(200).json({ message: 'Event issue reported successfully'});
+    } catch(err) {
+        res.status(500).json({ message: 'Error reporting event issue: ' + err.message });
+    }
+};
+
 const checkId = (id) => {
     if (!id || isNaN(id) || id <= 0) throw new Error("Invalid ID");
 };

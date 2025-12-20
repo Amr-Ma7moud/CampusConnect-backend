@@ -423,6 +423,23 @@ class EventRepo {
             if (conn) conn.end();
         }
     }
+
+    async reportEventIssue(reportData) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO std_report_event ( student_id, event_id, reason, details)
+                VALUES (?, ?, ?, ?)
+                `,reportData);
+            return result;
+        }catch (error) {
+            console.log(error);
+            throw new Error('Error reporting facility issue: ' + error.message);
+        }finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new EventRepo();
