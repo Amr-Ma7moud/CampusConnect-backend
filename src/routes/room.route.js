@@ -1,10 +1,10 @@
 import express from 'express';
-import { cancelReservation, reserveRoom } from '../controllers/room.controller.js';
+import { cancelReservation, getAllRooms, reserveRoom } from '../controllers/room.controller.js';
 
 const router = express.Router();
 
 router.post('/reserve', reserveRoom);
 router.patch('/:id/cancel', cancelReservation);
-router.get('/', );
+router.get('/', getAllRooms);
 
 export default router;
