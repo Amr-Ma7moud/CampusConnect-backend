@@ -127,6 +127,23 @@ class RoomRepo {
             if (conn) conn.end();
         }
     }
+
+    async reportRoomIssue(reportData) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                INSERT INTO std_report_room ( student_id, room_id, reason, details)
+                VALUES (?, ?, ?, ?)
+                `,reportData);
+            return result;
+        }catch (error) {
+            console.log(error);
+            throw new Error('Error reporting facility issue: ' + error.message);
+        }finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new RoomRepo();

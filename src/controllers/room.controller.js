@@ -79,3 +79,23 @@ export const getAllRooms = async (req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const reportRoomIssue = async (req, res) => {
+    const { room_id, reason, details } = req.body;
+    const userId = req.user.id;
+
+    try {
+        if(!room_id || !reason || !details) {
+            return res.status(400).json({ 
+                    message: 'Missing required fields',
+                    details: 'room_id, reason, and details are required.'
+                 });
+        }
+
+        await RoomService.reportRoomIssue(userId, room_id, reason, details);
+
+        return res.status(200).json({ message: 'Room issue reported successfully'});
+    } catch(err) {
+        res.status(500).json({ message: 'Error reporting room issue: ' + err.message });
+    }
+};
