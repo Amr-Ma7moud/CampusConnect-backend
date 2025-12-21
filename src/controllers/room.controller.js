@@ -1,7 +1,7 @@
 import RoomService from "../services/room.service.js";
 
 export const createRoom = async (req, res) => {
-    let { room_number, building_name, start_time, end_time, capacity, type, is_available } = req.body;
+    let { room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids } = req.body;
     try {
         if (!room_number || !building_name || !capacity || !type) 
             return res.status(400).json({ message: 'Missing required fields' });
@@ -16,7 +16,7 @@ export const createRoom = async (req, res) => {
         if ( !is_available ) 
             is_available = true;
 
-        await RoomService.createRoom({room_number, building_name, start_time, end_time, capacity, type, is_available});
+        await RoomService.createRoom({room_number, building_name, start_time, end_time, capacity, type, is_available}, resources_ids);
         return res.status(200).json({ message: 'Room created successfully' });
     }catch (err) {
         // todo  i have to make the error codes as MR Senior forget to do so @mostafa3ssa

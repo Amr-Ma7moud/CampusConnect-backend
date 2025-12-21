@@ -16,11 +16,29 @@ class RoomRepo {
                 roomData.is_available,
                 roomData.type
             ]);
-            return result;
+            return result.room_id;
         } catch (error) {
             throw new Error('Error creating room: ' + error.message);
         } finally {
             if (conn) conn.end();
+        }
+    }
+
+    async addResourceToRoom(roomId, resourceId) {
+        let conn;
+        try {
+            conn = await getConnection();
+
+            const result = await conn.query(`
+                INSERT INTO room_has_resources (room_id, resource_id)  
+                VALUES (?, ?)  
+            `, [roomId, resourceId]);
+
+            return result;
+        } catch(error) {
+            throw new Error('Error adding resource at room: ' + error.message);
+        } finally {
+            if(conn) conn.end();
         }
     }
 

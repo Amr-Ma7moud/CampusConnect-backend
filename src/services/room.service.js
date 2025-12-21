@@ -20,6 +20,11 @@ class RoomService {
             throw new Error('This room already exists');
 
         const result = await RoomRepo.createRoom(roomData);
+
+        for(let resourceId of roomData.resources_ids) {
+            await RoomRepo.addResourceToRoom(result, resourceId);
+        }
+
         return result;
     }
 
