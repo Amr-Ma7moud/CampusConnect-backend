@@ -116,6 +116,15 @@ class AdminService {
 
         return pendingEvents;
     }
+
+    async approveEvent(eventId, status, roomId) {
+        if(status == "approved") {
+            await eventRepository.updateEventStatus(eventId, 'scheduled');
+            await eventRepository.assignRoomToEvent(eventId, roomId);
+        } else {
+            await eventRepository.updateEventStatus(eventId, 'cancelled')
+        }
+    }
 }
 
 export default new AdminService();

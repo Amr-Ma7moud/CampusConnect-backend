@@ -532,6 +532,40 @@ class EventRepo {
             if (conn) conn.end();
         }
     }
+
+    async assignRoomToEvent(eventId, roomId){ 
+        let conn;
+        try {
+            conn = await getConnection();
+            
+            await conn.query(`
+                UPDATE events
+                SET room_id = ?
+                WHERE event_id = ?
+                VALUES (?, ?) 
+            `, [roomId, eventId]);
+        } catch (error) {
+            console.log(error);
+            throw new Error ('Error assigning room to event', error.message);
+        }
+    }
+
+    async updateEventStatus(eventId, status) {
+        let conn;
+        try {
+            conn = await getConnection();
+            
+            await conn.query(`
+                UPDATE events
+                SET status = ?
+                WHERE event_id = ?
+                VALUES (?, ?) 
+            `, [status, eventId]);
+        } catch (error) {
+            console.log(error);
+            throw new Error ('Error assigning room to event', error.message);
+        }
+    }
 }
 
 export default new EventRepo();

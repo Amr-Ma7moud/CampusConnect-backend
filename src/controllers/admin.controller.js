@@ -1,4 +1,5 @@
 import adminService from "../services/admin.service";
+import eventService from "../services/event.service";
 
 
 export const getReports = async (req, res) => {
@@ -37,3 +38,30 @@ export const listPendingEvents = async (req, res) => {
         res.status(500).json({ message: 'Error listing pending events: ' + err.message });
     }
 };
+
+export const approveEvent = async (req, res) => {
+    try {
+        const { status, room_id } = req.body;
+        const eventId = req.params.id;
+
+        if(status == "approved" && !room_id) {
+            return res.status(404).json({
+                message: "room not found",
+                details: "Cannot approve event without a reserved room"
+            });
+        }
+
+        if(!await eventService.getEventById(eventId)) {
+            return res.status(404).json({
+                message: "event not found",
+                details: "Cannot approve not existed event"
+            });
+        }
+
+        await adminService.approveEvent(eventId, status, room_id);
+
+        res.status(200).json({ message: `Event has been ${status} successfully` });
+    } catch(err) {
+        res.status(500).json({ message: 'Error approving event: ' + err.message });
+    }
+}
