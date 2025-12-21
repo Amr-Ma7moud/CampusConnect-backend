@@ -456,6 +456,25 @@ class EventRepo {
             if (conn) conn.end();
         }
     }
+
+    async getAllEvents() {
+        let conn;
+        try {
+            conn = await getConnection();
+
+            const events = await conn.query(`
+                SELECT * FROM events
+                WHERE status == 'scheduled'
+            `);
+
+            return events;
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error fetching events: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new EventRepo();

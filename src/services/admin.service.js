@@ -2,6 +2,7 @@ import clubRepository from "../repositories/club.repository.js";
 import eventRepository from "../repositories/event.repository.js";
 import facilityRepository from "../repositories/facility.repository.js";
 import roomRepository from "../repositories/room.repository.js";
+import userRepository from "../repositories/user.repository.js";
 
 class AdminService {
     async getAllReports() {
@@ -57,6 +58,37 @@ class AdminService {
         }
 
         return reports;
+    }
+
+    async getStats() {
+        const students = userRepository.getAllStudents();
+
+        const clubs = clubRepository.getAllClubs();
+        let activeClubs = 0;
+        for(let club of clubs) activeClubs += club.status == "active";
+
+        const events = eventRepository.getAllEvents();
+        let activeEvents = 0, activeSessions = 0;
+        for(let event of events) 
+        {
+            activeEvents += event.type == "event";
+            activeSessions += event.type == "session";
+        }
+
+        const reservedRooms = roomRepository.getAllRoomsReservations();
+        const roomsReserved = new Set();         
+        for(let room of reservedRooms) {
+            roomsReserved.add(room.room_id);
+        }
+
+        return {
+            total_students: students.length,
+            active_clubs: activeClubs,
+            active_events: activeEvents,
+            active_sessions: activeSessions,
+            reserved_rooms: roomsReserved.size,
+            reserved_facilities: 0 // we will add this later
+        }
     }
 }
 

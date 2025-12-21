@@ -157,6 +157,23 @@ class UserRepo {
             if(conn) conn.end();
         }
     }
+
+    async getAllStudents() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const students = conn.query(`
+                SELECT * FROM users
+                WHERE role = 'student'
+            `);
+
+            return students;
+        } catch(err) {
+            throw err;
+        } finally {
+            if(conn) conn.end();
+        }
+    }
 }
 
 
