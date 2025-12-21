@@ -1,24 +1,35 @@
 import RoomService from "../services/room.service.js";
+import { saveLog } from "../utils/logs.js";
 
 export const createRoom = async (req, res) => {
     let { room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids } = req.body;
     try {
-        if (!room_number || !building_name || !capacity || !type) 
+        if (!room_number || !building_name || !capacity || !type)
             return res.status(400).json({ message: 'Missing required fields' });
 
-        if ( !start_time ) 
+        if (!start_time)
             start_time = 4;
 
-            if ( !end_time ) 
+        if (!end_time)
             end_time = 10;
 
         // Default values for testing
-        if ( !is_available ) 
+        if (!is_available)
             is_available = true;
 
-        await RoomService.createRoom({room_number, building_name, start_time, end_time, capacity, type, is_available}, resources_ids);
+        await RoomService.createRoom({ room_number, building_name, start_time, end_time, capacity, type, is_available }, resources_ids);
+
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'admin', // Assuming admin creates rooms
+            record_id: room_number, // Room number as ID or should I get the ID? Service doesn't return ID here.
+            edited_table: 'rooms',
+            action: 'create',
+            changed_by: req.user ? req.user.id : 'admin'
+        });
+
         return res.status(200).json({ message: 'Room created successfully' });
-    }catch (err) {
+    } catch (err) {
         // todo  i have to make the error codes as MR Senior forget to do so @mostafa3ssa
 
         return res.status(500).json({ message: 'Server error' });
@@ -38,6 +49,14 @@ export const reserveRoom = async (req, res) => {
         const reservedRoom = await RoomService.resreveRoom(start_time, end_time, purpose, std_ids);
 
         if (reservedRoom) {
+            await saveLog({
+                ip_address: req.ip,
+                user_type: 'student', // or user
+                record_id: reservedRoom.room_id || 'unknown', // Assuming reservedRoom has ID
+                edited_table: 'std_reserve_room',
+                action: 'reserve',
+                changed_by: userId
+            });
             return res.status(200).json(reservedRoom);
         } else {
             return res.status(404).json({ message: 'No available room found for the given time slot' });
@@ -53,20 +72,28 @@ export const cancelReservation = async (req, res) => {
     const userId = req.user.id;
     const start_time = req.body.start_time;
 
-    if(!start_time) {
+    if (!start_time) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    try { 
+    try {
 
         const result = await RoomService.cancelReservation(userId, roomId, start_time);
-        if(result.success) {
+        if (result.success) {
+            await saveLog({
+                ip_address: req.ip,
+                user_type: 'student',
+                record_id: roomId,
+                edited_table: 'std_reserve_room',
+                action: 'cancel_reservation',
+                changed_by: userId
+            });
             return res.status(200).json({ message: 'Reservation cancelled successfully' });
         } else {
             return res.status(404).json({ message: result.message });
         }
-        
-    } catch(err) {
+
+    } catch (err) {
         return res.status(500).json({ message: 'Server error' });
     }
 };
@@ -85,17 +112,26 @@ export const reportRoomIssue = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        if(!room_id || !reason || !details) {
-            return res.status(400).json({ 
-                    message: 'Missing required fields',
-                    details: 'room_id, reason, and details are required.'
-                 });
+        if (!room_id || !reason || !details) {
+            return res.status(400).json({
+                message: 'Missing required fields',
+                details: 'room_id, reason, and details are required.'
+            });
         }
 
         await RoomService.reportRoomIssue(userId, room_id, reason, details);
 
-        return res.status(200).json({ message: 'Room issue reported successfully'});
-    } catch(err) {
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'student',
+            record_id: room_id,
+            edited_table: 'std_report_room',
+            action: 'report_issue',
+            changed_by: userId
+        });
+
+        return res.status(200).json({ message: 'Room issue reported successfully' });
+    } catch (err) {
         res.status(500).json({ message: 'Error reporting room issue: ' + err.message });
     }
 };

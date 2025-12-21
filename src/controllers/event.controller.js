@@ -1,5 +1,6 @@
 import EventService from "../services/event.service.js";
 import postService from "../services/post.service.js";
+import { saveLog } from "../utils/logs.js";
 export const getEventById = async (req, res) => {
     const id = req.params.event_id;
     try {
@@ -32,6 +33,15 @@ export const registerStudentAtEvent = async (req, res) => {
     try {
         checkId(event_id);
         await EventService.registerStudentAtEvent(event_id, student_id);
+
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'student',
+            record_id: event_id,
+            edited_table: 'std_register_event',
+            action: 'register',
+            changed_by: student_id
+        });
 
         return res.status(200).send();
     } catch (err) {
@@ -78,6 +88,15 @@ export const cancelEventRegistration = async (req, res) => {
         checkId(eventId);
         await EventService.cancelEventRegistration(eventId, studentId);
 
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'student',
+            record_id: eventId,
+            edited_table: 'std_register_event',
+            action: 'cancel_registration',
+            changed_by: studentId
+        });
+
         return res.status(200).json({ message: "Registration cancelled" });
     } catch (err) {
         if (err.message === "Event not found") {
@@ -111,6 +130,16 @@ export const checkInStudent = async (req, res) => {
         checkId(eventId);
 
         await EventService.checkInStudent(eventId, studentId);
+
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'student', // or admin/scanner? The code uses `req.user.id` as `studentId`. So it seems student checks themselves in?
+            record_id: eventId,
+            edited_table: 'std_attend_event',
+            action: 'check_in',
+            changed_by: studentId
+        });
+
         return res.status(200).send();
     } catch (err) {
         if (err.message === "Event not found") {
@@ -250,6 +279,16 @@ export const scheduleEvent = async (req, res) => {
             club_manager_id,
             eventData
         );
+
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'club_manager',
+            record_id: newEventId,
+            edited_table: 'events',
+            action: 'schedule',
+            changed_by: club_manager_id
+        });
+
         return res.status(201).json({ event_id: newEventId });
     } catch (err) {
         if (err.message === "Club not found") {
@@ -266,6 +305,16 @@ export const deleteEvent = async (req, res) => {
     try {
         checkId(id);
         await EventService.deleteEvent(id);
+
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'admin', // or club manager? Assuming admin or authorized user.
+            record_id: id,
+            edited_table: 'events',
+            action: 'delete',
+            changed_by: req.user ? req.user.id : 'unknown'
+        });
+
         return res.status(200).json({ message: "Event deleted successfully" });
     } catch (err) {
         if (err.message === "Event not found") {
@@ -301,17 +350,26 @@ export const reportEventIssue = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        if(!event_id || !reason || !details) {
-            return res.status(400).json({ 
+        if (!event_id || !reason || !details) {
+            return res.status(400).json({
                 message: 'Missing required fields',
                 details: 'event_id, reason, and details are required.'
             });
         }
-        
+
         await EventService.reportEventIssue(userId, event_id, reason, details);
-        
-        return res.status(200).json({ message: 'Event issue reported successfully'});
-    } catch(err) {
+
+        await saveLog({
+            ip_address: req.ip,
+            user_type: 'student',
+            record_id: event_id,
+            edited_table: 'std_report_event',
+            action: 'report_issue',
+            changed_by: userId
+        });
+
+        return res.status(200).json({ message: 'Event issue reported successfully' });
+    } catch (err) {
         res.status(500).json({ message: 'Error reporting event issue: ' + err.message });
     }
 };
