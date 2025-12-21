@@ -15,7 +15,7 @@ const router = express.Router();
 router.post('/', verifyRole(['admin']), createClub);
 router.get('/', listClubs);
 router.get('/:id', getClubDetails);
-router.put('/:id', editClub);
+router.put('/:id', verifyRole['club_manager', 'admin'], editClub);
 router.post('/:id/follow', followClub);
 router.delete('/:id/follow', unfollowClub);
 router.post('/report', reportClubIssue);
