@@ -90,6 +90,11 @@ class AdminService {
             reserved_facilities: 0 // we will add this later
         }
     }
+
+    async getAttendanceOverview() {
+        const result = await eventRepository.getAttendanceForAllEvents();
+        return result;
+    }
 }
 
 export default new AdminService();

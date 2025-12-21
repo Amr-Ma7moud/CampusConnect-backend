@@ -444,6 +444,7 @@ class EventRepo {
     async getAllReports() {
         let conn;
         try {
+            conn = await getConnection();
             const rows = await conn.query(`
                 SELECT * FROM std_report_event
             `);
@@ -472,6 +473,32 @@ class EventRepo {
             console.log(error);
             throw new Error('Error fetching events: ' + error.message);
         } finally {
+            if (conn) conn.end();
+        }
+    }
+
+    async getAttendanceForAllEvents() {
+        let conn;
+        try {
+            conn = await getConnection();
+
+            const result = await conn.query(`
+                    SELECT 
+                        DATE_FORMAT(e.event_start_date, '%b') AS month,
+                        SUM(CASE WHEN e.type = 'event' THEN 1 ELSE 0 END) AS events,
+                        SUM(CASE WHEN e.type = 'session' THEN 1 ELSE 0 END) AS sessions
+                    FROM std_attend_event sa
+                    JOIN events e ON sa.event_id = e.event_id
+                    WHERE e.event_start_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+                    GROUP BY DATE_FORMAT(e.event_start_date, '%Y-%m'), month
+                    ORDER BY DATE_FORMAT(e.event_start_date, '%Y-%m')
+            `);
+
+            return result;
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error getting attendance overview: ' + error.message);
+        }finally {
             if (conn) conn.end();
         }
     }

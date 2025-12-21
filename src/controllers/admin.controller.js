@@ -18,3 +18,12 @@ export const getStats = async (req, res) => {
         res.status(500).json({ message: 'Error getting stats: ' + err.message });
     }
 };
+
+export const getAttendaceOverview = async (req, res) => {
+    try {
+        const attendance = await adminService.getAttendanceOverview();
+        res.status(200).json(attendance);
+    } catch (err) {
+        res.status(500).json({ message: 'Error getting attendance: ' + err.message });
+    }
+};
