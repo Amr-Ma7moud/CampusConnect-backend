@@ -48,7 +48,6 @@ router.get(
 );
 router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
 router.get("/:event_id/attendance_list", getAttendeeListForEvent);
-router.get("/", getApprovedEvents);
 router.get("/:id/posts", getEventPosts);
 router.post("/report", reportEventIssue);
 export default router;
