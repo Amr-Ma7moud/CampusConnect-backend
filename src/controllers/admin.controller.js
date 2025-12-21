@@ -27,3 +27,13 @@ export const getAttendaceOverview = async (req, res) => {
         res.status(500).json({ message: 'Error getting attendance: ' + err.message });
     }
 };
+
+export const listPendingEvents = async (req, res) => {
+    try {
+        const pendingEvents = await adminService.getPendingEvents();
+
+        res.status(200).json(pendingEvents);
+    } catch {
+        res.status(500).json({ message: 'Error listing pending events: ' + err.message });
+    }
+};

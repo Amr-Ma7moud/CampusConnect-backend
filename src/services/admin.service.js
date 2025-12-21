@@ -95,6 +95,27 @@ class AdminService {
         const result = await eventRepository.getAttendanceForAllEvents();
         return result;
     }
+
+    async getPendingEvents() {
+        const events = await eventRepository.getAllPendingEvents();
+
+        let pendingEvents = [];
+
+        for(myEvent of events) {
+            pendingEvents.push({
+                event_id: myEvent.event_id,
+                club_name: myEvent.name,
+                club_logo_url: myEvent.logo,
+                type: myEvent.type,
+                description: myEvent.description,
+                start_time: myEvent.event_start_date,
+                end_time: myEvent.event_end_date,
+                max_registerations: myEvent.max_capacity
+            })
+        }
+
+        return pendingEvents;
+    }
 }
 
 export default new AdminService();

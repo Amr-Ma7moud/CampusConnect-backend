@@ -502,6 +502,36 @@ class EventRepo {
             if (conn) conn.end();
         }
     }
+
+    async getAllPendingEvents() {
+        let conn;
+        try {
+            conn = await getConnection();
+
+            const events = await conn.query(`
+                SELECT 
+                    e.event_id,
+                    e.type, 
+                    e.title, 
+                    e.description, 
+                    e.event_start_date, 
+                    e.event_end_date,
+                    e.max_capacity,
+                    c.name,
+                    c.logo
+                FROM events e
+                JOIN ON e.club_id = c.club_id
+                WHERE e.status = 'pending'
+            `);
+
+            return events;
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error getting pending events: ' + error.message);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
 }
 
 export default new EventRepo();
