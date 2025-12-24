@@ -1,11 +1,12 @@
 import express from 'express';
-import { banUser, getStudentProfile } from '../controllers/user.controller.js';
+import { banUser, getAllStudents, getUserProfile, searchForStudent } from '../controllers/user.controller.js';
 import { verifyRole } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-router.get('/me', getStudentProfile);
+router.get('/me', getUserProfile);
+router.get('/students', verifyRole(['admin']), getAllStudents);
 router.patch('/:id/ban', verifyRole(['admin']), banUser);
-router.get('/', verifyRole['admin'], );
+router.post('/', verifyRole(['admin']), searchForStudent);
 
 export default router;

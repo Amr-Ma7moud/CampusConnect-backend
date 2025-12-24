@@ -21,7 +21,7 @@ export class FacilityRepo{
             console.log(error);
             throw new Error('Error creating facility: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -38,13 +38,14 @@ export class FacilityRepo{
             console.log(error);
             throw new Error('Error reporting facility issue: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
     async getAllReports() {
         let conn;
         try {
+            conn = await getConnection();
             const rows = await conn.query(`
                 SELECT * FROM std_report_facility
             `);
@@ -54,7 +55,7 @@ export class FacilityRepo{
             console.log(error);
             throw new Error('Error getting reports: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 

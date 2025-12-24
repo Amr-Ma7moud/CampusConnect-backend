@@ -19,7 +19,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error creating post: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -35,7 +35,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error linking post to event: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -51,7 +51,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error fetching post: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -67,7 +67,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error updating post: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -84,7 +84,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error inserting comment: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -100,7 +100,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error fetching comments: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -117,7 +117,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error liking post: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -133,7 +133,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error unliking post: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -149,7 +149,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error fetching likes: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -167,7 +167,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error fetching posts: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -187,7 +187,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error fetching event ID: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }   
     }
 
@@ -207,7 +207,7 @@ class PostRepo {
         } catch (error) {
             throw new Error('Error fetching posts for event: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 

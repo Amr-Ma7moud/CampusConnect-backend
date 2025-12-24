@@ -6,7 +6,7 @@ class ClubRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(
-                `INSERT INTO clubs (name, description, email, status) VALUES (?, ?, ?)`,
+                `INSERT INTO clubs (name, description, email, status) VALUES (?, ?, ?, ?)`,
                 [name, description, email, "active"]
             );
 
@@ -14,7 +14,36 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
+        }
+    }
+
+    async getAllClubsWithDetails(userId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`
+                SELECT c.*, 
+                    (SELECT COUNT(*) FROM club_manager cm WHERE cm.club_id = c.club_id) as followers_count,
+                    COUNT(DISTINCT e.event_id) as event_number,
+                    COUNT(DISTINCT CASE WHEN e.type = 'session' THEN e.event_id END) as session_number,
+                    COUNT(DISTINCT CASE WHEN e.type = 'event' THEN e.event_id END) as real_event_number,
+                    (SELECT COUNT(*) FROM posts p WHERE p.club_id = c.club_id) as post_number,
+                    (SELECT COUNT(*) FROM std_follow_club WHERE club_id = c.club_id AND student_id = ?) > 0 as is_joined,
+                    (SELECT CONCAT(u.first_name, ' ', u.last_name) 
+                     FROM club_manager cm 
+                     JOIN users u ON cm.student_id = u.user_id 
+                     WHERE cm.club_id = c.club_id 
+                     LIMIT 1) as club_admin_name
+                FROM clubs c
+                LEFT JOIN events e ON c.club_id = e.club_id
+                GROUP BY c.club_id
+            `, [userId]);
+            return rows;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
         }
     }
 
@@ -38,7 +67,7 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -46,7 +75,7 @@ class ClubRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT * FROM clubs WHERE email = ?`,
                 [email]
             );
@@ -55,24 +84,24 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
-    async findClubById(id) {
+    async findClubById(club_id) {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT * FROM clubs WHERE club_id = ?`,
-                [id]
+                [club_id]
             );
 
             return rows[0];
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -80,7 +109,7 @@ class ClubRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT cm.student_id, u.first_name, u.last_name, cm.role_title
                 FROM club_manager cm
@@ -94,7 +123,7 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -133,7 +162,7 @@ class ClubRepo {
             )} WHERE club_id = ?`;
             await conn.query(sql, values);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -151,7 +180,7 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -169,7 +198,7 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -177,7 +206,7 @@ class ClubRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT student_id
                 FROM std_follow_club
@@ -190,7 +219,7 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -198,23 +227,23 @@ class ClubRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`SELECT * FROM clubs`);
+            const rows = await conn.query(`SELECT * FROM clubs`);
 
             return rows;
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
-    async getClubIdByManagerId(managerId) {
+    async getClubIdByManagerId(student_id) {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT club_id FROM club_manager WHERE student_id = ?`,
-                [managerId]
+                [student_id]
             );
 
             if (rows.length === 0) {
@@ -225,7 +254,7 @@ class ClubRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -242,13 +271,14 @@ class ClubRepo {
             console.log(error);
             throw new Error('Error reporting facility issue: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
     async getAllReports() {
         let conn;
         try {
+            conn = await getConnection();
             const rows = await conn.query(`
                 SELECT * FROM std_report_club
             `);
@@ -258,7 +288,7 @@ class ClubRepo {
             console.log(error);
             throw new Error('Error getting reports: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 }

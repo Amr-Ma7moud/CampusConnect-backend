@@ -37,9 +37,12 @@ class AuthService {
         return {
             token,
             user: {
-                id: user.id,
+                id: user.user_id.toString(),
                 email: user.email,
-                role: user.role
+                role: user.role,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                user_name: user.user_name
             }
         };
     }

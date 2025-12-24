@@ -20,7 +20,8 @@ class AdminService {
                 report_type: 'club',
                 status: report.status,
                 details: report.details,
-                reason: report.reason
+                reason: report.reason,
+                created_at: report.created_at
             });
         }
 
@@ -31,7 +32,8 @@ class AdminService {
                 report_type: 'event',
                 status: report.status,
                 details: report.details,
-                reason: report.reason
+                reason: report.reason,
+                created_at: report.created_at
             });
         }
 
@@ -42,7 +44,8 @@ class AdminService {
                 report_type: 'room',
                 status: report.status,
                 details: report.details,
-                reason: report.reason
+                reason: report.reason,
+                created_at: report.created_at
             });
         }
 
@@ -53,7 +56,8 @@ class AdminService {
                 report_type: 'facility',
                 status: report.status,
                 details: report.details,
-                reason: report.reason
+                reason: report.reason,
+                created_at: report.created_at
             });
         }
 
@@ -61,33 +65,36 @@ class AdminService {
     }
 
     async getStats() {
-        const students = userRepository.getAllStudents();
+        try {
+            const students = await userRepository.getAllStudents();
 
-        const clubs = clubRepository.getAllClubs();
-        let activeClubs = 0;
-        for(let club of clubs) activeClubs += club.status == "active";
+            const clubs = await clubRepository.getAllClubs();
+            let activeClubs = 0;
+            for (let club of clubs) activeClubs += club.status == "active";
 
-        const events = eventRepository.getAllEvents();
-        let activeEvents = 0, activeSessions = 0;
-        for(let event of events) 
-        {
-            activeEvents += event.type == "event";
-            activeSessions += event.type == "session";
-        }
+            const events = await eventRepository.getAllEvents();
+            let activeEvents = 0, activeSessions = 0;
+            for (let event of events) {
+                activeEvents += event.type == "event";
+                activeSessions += event.type == "session";
+            }
 
-        const reservedRooms = roomRepository.getAllRoomsReservations();
-        const roomsReserved = new Set();         
-        for(let room of reservedRooms) {
-            roomsReserved.add(room.room_id);
-        }
+            const reservedRooms = await roomRepository.getAllRoomsReservations();
+            const roomsReserved = new Set();
+            for (let room of reservedRooms) {
+                roomsReserved.add(room.room_id);
+            }
 
-        return {
-            total_students: students.length,
-            active_clubs: activeClubs,
-            active_events: activeEvents,
-            active_sessions: activeSessions,
-            reserved_rooms: roomsReserved.size,
-            reserved_facilities: 0 // we will add this later
+            return {
+                total_students: students.length,
+                active_clubs: activeClubs,
+                active_events: activeEvents,
+                active_sessions: activeSessions,
+                reserved_rooms: roomsReserved.size,
+                reserved_facilities: 0 // we will add this later
+            }
+        } catch(err) {
+            return null;
         }
     }
 
@@ -97,6 +104,8 @@ class AdminService {
     }
 
     async getPendingEvents() {
+        console.log("Hello from admin get pending events");
+        
         const events = await eventRepository.getAllPendingEvents();
 
         let pendingEvents = [];
@@ -113,6 +122,8 @@ class AdminService {
                 max_registerations: myEvent.max_capacity
             })
         }
+
+        console.log("Hello from admin get pending events");
 
         return pendingEvents;
     }

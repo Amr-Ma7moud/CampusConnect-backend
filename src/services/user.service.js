@@ -63,17 +63,38 @@ class UserService {
 
         let students = [];
 
-        for(let student of results) {
+        for (let student of results) {
             students.push({
-                student_id: student.user_id,
+                student_id: student.user_id.toString(),
                 student_name: `${student.first_name} ${student.last_name}`,
                 faculty: student.faculty,
                 major: student.major,
                 student_email: student.email,
-                status: student.is_active === 0 ? "banned" : "active"
+                status: student.is_active === 0 ? "banned" : "active",
+                reservations: Number(student.reservations),
+                complaints: Number(student.complaints)
             });
         }
 
+        return students;
+    }
+
+    async getAllStudents() {
+        const results = await userRepository.getAllStudents();
+        let students = [];
+
+        for (let student of results) {
+            students.push({
+                student_id: student.user_id.toString(),
+                student_name: `${student.first_name} ${student.last_name}`,
+                faculty: student.faculty,
+                major: student.major,
+                student_email: student.email,
+                status: student.is_active === 0 ? "banned" : "active",
+                reservations: Number(student.reservations),
+                complaints: Number(student.complaints)
+            });
+        }
         return students;
     }
 

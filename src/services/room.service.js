@@ -9,20 +9,22 @@ class RoomService {
     async createRoom(roomData) {
         const TYPES = ['public study room', 'private study room', 'meeting room', 'theatre'];
 
-        if (roomData.capacity <= 0) 
+        if (roomData.capacity <= 0)
             throw new Error('Capacity must be a positive number');
-        
-        if( ! TYPES.includes(roomData.type))
+
+        if (!TYPES.includes(roomData.type))
             throw new Error('Invalid room type');
 
         const room = await RoomRepo.findRoom(roomData.room_number, roomData.building_name);
-        if (room) 
+        if (room)
             throw new Error('This room already exists');
 
         const result = await RoomRepo.createRoom(roomData);
 
-        for(let resourceId of roomData.resources_ids) {
-            await RoomRepo.addResourceToRoom(result, resourceId);
+        if (roomData.resources_ids && Array.isArray(roomData.resources_ids)) {
+            for (let resourceId of roomData.resources_ids) {
+                await RoomRepo.addResourceToRoom(result, resourceId);
+            }
         }
 
         return result;
@@ -94,11 +96,18 @@ class RoomService {
 
         let formattedRooms = [];
 
-        for(let room of rooms) {
+        for (let room of rooms) {
             formattedRooms.push({
-                room_id: room.room_id,
+                id: room.room_id,
+                name: room.room_number, // Mapping room_number to name for frontend
                 room_number: room.room_number,
                 building_name: room.building_name,
+                capacity: room.capacity,
+                type: room.type,
+                status: room.is_available ? 'available' : 'maintenance', // Simple mapping
+                start_time: room.start_time,
+                end_time: room.end_time,
+                resources: room.resources ? room.resources.split(',') : []
             });
         }
 
@@ -114,6 +123,15 @@ class RoomService {
                 throw new Error('Error in RoomService: ' + error.message);
             }
         }
+
+    async createResource(name) {
+        if (!name) throw new Error('Resource name is required');
+        return await RoomRepo.createResource(name);
+    }
+
+    async getAllResources() {
+        return await RoomRepo.getAllResources();
+    }
 }
 
 export default new RoomService();

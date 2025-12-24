@@ -5,7 +5,7 @@ class UserRepo {
         let conn;
         try {
             conn = await getConnection();
-            
+
 
             await conn.query(
                 `INSERT INTO students (student_id, faculty, major, level, picture, in_dorms) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -16,7 +16,7 @@ class UserRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     };
 
@@ -26,7 +26,7 @@ class UserRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(
-                `INSERT INTO users (first_name, last_name, email, password, user_name, phone, role) VALUES (?, ?, ?, ?, ?, ?)`,
+                `INSERT INTO users (first_name, last_name, email, password, user_name, phone, role) VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [first_name, last_name, email, password, user_name, phone, role]
             );
 
@@ -34,7 +34,7 @@ class UserRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     };
 
@@ -47,12 +47,12 @@ class UserRepo {
                 `INSERT INTO admins (admin_id, role) VALUES (?, ?)`,
                 [admin_id, role]
             );
-            
+
             return admin_id;
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -61,12 +61,12 @@ class UserRepo {
 
         try {
             conn = await getConnection();
-            
+
             const result = await conn.query(
                 `SELECT u.user_id, u.first_name, u.last_name, u.email, u.user_name, s.faculty, s.major, s.level, s.picture, s.in_dorms, s.type
                  FROM users u
                  JOIN students s ON u.user_id = s.student_id
-                 WHERE u.id = ?`,
+                 WHERE u.user_id = ?`,
                 [student_id]
             );
 
@@ -74,21 +74,21 @@ class UserRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     };
 
 
     async getAdminById(admin_id) {
         let conn;
-        
+
         try {
-            conn = await getConnection();   
+            conn = await getConnection();
             const result = await conn.query(
                 `SELECT u.user_id, u.first_name, u.last_name, u.email, u.user_name, a.role
                  FROM users u
                  JOIN admins a ON u.user_id = a.admin_id
-                 WHERE u.id = ?`,
+                 WHERE u.user_id = ?`,
                 [admin_id]
             );
 
@@ -96,13 +96,13 @@ class UserRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     };
 
     async getUserByEmail(email) {
         let conn;
-        
+
         try {
             conn = await getConnection();
             const result = await conn.query(
@@ -113,7 +113,7 @@ class UserRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     };
 
@@ -125,14 +125,14 @@ class UserRepo {
                 UPDATE users
                 SET is_active = ?
                 WHERE user_id = ?
-                `, 
+                `,
                 [status, userId]
             );
 
         } catch (err) {
             throw err;
         } finally {
-            if(conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -143,7 +143,9 @@ class UserRepo {
         try {
             conn = await getConnection();
             const results = await conn.query(
-                `SELECT u.user_id, u.first_name, u.last_name, u.email, s.faculty, s.major, u.is_active
+                `SELECT u.user_id, u.first_name, u.last_name, u.email, s.faculty, s.major, u.is_active,
+                (SELECT COUNT(*) FROM std_register_event WHERE student_id = u.user_id) as reservations,
+                (SELECT COUNT(*) FROM std_report_event WHERE student_id = u.user_id) as complaints
                  FROM users u
                  JOIN students s ON u.user_id = s.student_id
                  WHERE u.first_name LIKE ? OR u.last_name LIKE ?`,
@@ -154,7 +156,7 @@ class UserRepo {
         } catch (err) {
             throw err;
         } finally {
-            if(conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -162,16 +164,20 @@ class UserRepo {
         let conn;
         try {
             conn = await getConnection();
-            const students = conn.query(`
-                SELECT * FROM users
-                WHERE role = 'student'
+            const students = await conn.query(`
+                SELECT u.*, s.faculty, s.major, s.level, s.picture, s.in_dorms,
+                (SELECT COUNT(*) FROM std_register_event WHERE student_id = u.user_id) as reservations,
+                (SELECT COUNT(*) FROM std_report_event WHERE student_id = u.user_id) as complaints
+                FROM users u
+                JOIN students s ON u.user_id = s.student_id
+                WHERE u.role = 'student'
             `);
-
-            return students;
-        } catch(err) {
+            
+            return students ? students : [];
+        } catch (err) {
             throw err;
         } finally {
-            if(conn) conn.end();
+            if (conn) conn.release();
         }
     }
 }

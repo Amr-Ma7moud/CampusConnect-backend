@@ -5,11 +5,13 @@ import { addCommentToPost, createPost, editPost, getNewsFeed, getPostComments, l
 const router = express.Router();
 
 
-router.post('/', verifyRole['club_manager', 'admin'], createPost);
+router.post('/', verifyRole(['club_manager', 'admin']), createPost);
 // router.delete('/:post_id', verifyRole['club_manager', 'admin'], );
-router.put('/:post_id', verifyRole['club_manager', 'admin'], editPost);
+router.put('/:post_id', verifyRole(['club_manager', 'admin']), editPost);
 router.get('/', getNewsFeed);
 router.post('/:id/like', likePost);
 router.delete('/:id/like', unlikePost);
 router.post('/:id/comments', addCommentToPost);
 router.get('/:id/comments', getPostComments);
+
+export default router;

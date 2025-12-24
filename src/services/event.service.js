@@ -35,7 +35,14 @@ class EventService {
             throw new Error("Club not found");
         }
         const events = await EventRepo.getApprovedEvents(type, clubId);
-        return events;
+        
+        let myEvents = [];
+
+        for(let event of myEvents) {
+            myEvents.push(event);
+        }
+
+        return myEvents;
     }
 
     async scheduleEvent(club_manager_id, eventData) {
@@ -164,6 +171,11 @@ class EventService {
         } catch (error) {
             throw new Error('Error in EventService: ' + error.message);
         }
+    }
+
+    async getAllEvents() {
+        const events = await EventRepo.getAllEvents();
+        return events;
     }
 }
 

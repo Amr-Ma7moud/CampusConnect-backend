@@ -6,19 +6,26 @@ const checkIfUserExists = async (email) => {
     return !!user;
 }
 
-export const getStudentProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
     try {
-        const studentId = req.user.id;
-        const student = await userService.getStudentById(studentId);
+        const userId = req.user.id;
+        let user;
 
-        if (!student) {
-            return res.status(404).json({
-                message: 'Student not found',
-                details: "No student exists with the provided ID."
-            });
+        if(req.user.role == "student") {
+            user = await userService.getStudentById(userId);
+        } else {
+            user = await userService.getAdminById(userId);
         }
 
-        res.status(200).json(student);
+        if (!user) {
+                return res.status(404).json({
+                    message: 'user not found',
+                    details: "No user exists with the provided ID."
+                });
+            }
+
+        res.status(200).json(user);
+
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
@@ -28,15 +35,28 @@ export const getStudentProfile = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
+
+        console.log("Hello from the createUser controller");
+        
         const userData = req.body;
+
+        console.log("Received createUser request:", userData);
 
         if (!userData.first_name || !userData.last_name || !userData.email || !userData.password ||
             !userData.user_name || !userData.phone || !userData.role) {
             return res.status(400).json({ message: 'Bad Request', details: 'Missing required user fields' });
         }
-        if (await checkIfUserExists(userData.email)) {
+
+        const user = await checkIfUserExists(userData.email);
+        if (user) {
+            console.log(user);
+            const currentUser = await userService.getUserByEmail(userData.email);
+            console.log(currentUser);
+            
             return res.status(409).json({ message: 'Conflict', details: 'A user withthis email already exists' });
         }
+
+        console.log("Hello from the createUser controller");
 
         const userId = await userService.createUser({
             first_name: userData.first_name,
@@ -72,20 +92,24 @@ export const createUser = async (req, res) => {
         await saveLog({
             ip_address: req.ip,
             user_type: userData.role,
-            record_id: userId,
+            record_id: userId.toString(),
             edited_table: 'users',
             action: 'create',
-            changed_by: userId // Self-registration
+            changed_by: req.user.id.toString() // Self-registration
         });
 
-        res.status(201).json({ message: 'User created successfully', user_id: userId });
+        console.log("UserId type:", typeof userId, "Value:", userId);
+        const responseData = { message: 'User created successfully', user_id: userId.toString() };
+        console.log("Sending response:", responseData);
+        res.status(201).json(responseData);
     } catch (error) {
+        console.log(error.message);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 }
 
 export const banUser = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.params.id;
 
     try {
         await userService.banUser(userId);
@@ -101,10 +125,10 @@ export const banUser = async (req, res) => {
             record_id: userId,
             edited_table: 'users',
             action: 'ban/deactivate',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
-        res.status(200).json({ message: "User has been baned" });
+        res.status(200).json({ message: "User has been banned" });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
@@ -118,6 +142,16 @@ export const searchForStudent = async (req, res) => {
 
         res.status(200).json(students);
     } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+
+export const getAllStudents = async (req, res) => {
+    try {
+        const students = await userService.getAllStudents();
+        res.status(200).json(students);
+    } catch (error) {
+        console.error("ERROR IN GETTING STUDETNTS" + error.message);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };

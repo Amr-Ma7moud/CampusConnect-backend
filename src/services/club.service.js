@@ -4,7 +4,12 @@ import eventService from "./event.service.js";
 class ClubService {
     async createClub({ name, description, email, std_ids }) {
         const clubId = await ClubRepo.createClub({ name, description, email });
-        await ClubRepo.addMembersToClub(clubId, std_ids);
+        const members = std_ids.map(member => {
+            if (typeof member === 'object' && member.id) return member;
+            return { id: member, role_title: 'Club Manager' };
+        });
+
+        await ClubRepo.addMembersToClub(clubId, members);
         return clubId;
     }
 
@@ -69,15 +74,24 @@ class ClubService {
     }
 
     async listAllClubs(userId) {
-        const clubs = await ClubRepo.getAllClubs();
+        const clubs = await ClubRepo.getAllClubsWithDetails(userId);
 
-        let clubList = [];
-
-        for (const club of clubs) {
-            clubList.push(await this.getClubDetails(club.club_id, userId));
-        }
-
-        return clubList;
+        return clubs.map(club => ({
+            id: club.club_id,
+            name: club.name,
+            description: club.description,
+            email: club.email,
+            logo: club.logo,
+            cover: club.cover,
+            followers_count: Number(club.followers_count),
+            members: Number(club.followers_count),
+            event_number: Number(club.real_event_number), // Only type='event'
+            sessions_number: Number(club.session_number), // Only type='session'
+            posts_number: Number(club.post_number),
+            club_admin_name: club.club_admin_name || 'N/A',
+            status: club.status,
+            is_joined: Boolean(club.is_joined)
+        }));
     }
 
     async getClubIdByManagerId(managerId) {

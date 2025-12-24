@@ -32,14 +32,15 @@ export const createClub = async (req, res) => {
         await saveLog({
             ip_address: req.ip,
             user_type: 'admin', // or system? Assuming admin creates clubs or authorized user.
-            record_id: clubId,
+            record_id: clubId.toString(),
             edited_table: 'clubs',
             action: 'create',
-            changed_by: req.user ? req.user.id : 'admin'
+            changed_by: req.user ? req.user.id.toString() : 'admin'
         });
 
-        res.status(201);
+        res.status(201).json({ message: 'Club created successfully', clubId: clubId.toString() });
     } catch (err) {
+        console.log("ERROR CREATING CLUB", err.message);
         res.status(500).json({ error: 'Failed to create club' });
     }
 };
@@ -76,7 +77,7 @@ export const editClub = async (req, res) => {
             record_id: id,
             edited_table: 'clubs',
             action: 'update',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         res.status(200).json({ message: 'Club updated successfully' });
@@ -105,6 +106,8 @@ export const followClub = async (req, res) => {
 
     try {
         await ClubService.followClub(id, userId);
+        console.log("Start following club");
+        
 
         await saveLog({
             ip_address: req.ip,
@@ -112,7 +115,7 @@ export const followClub = async (req, res) => {
             record_id: id,
             edited_table: 'std_follow_club',
             action: 'follow',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         res.status(200).json({ message: 'Successfully followed the club' });
@@ -148,7 +151,7 @@ export const unfollowClub = async (req, res) => {
             record_id: id,
             edited_table: 'std_follow_club',
             action: 'unfollow',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         res.status(200).json({ message: 'Successfully unfollowed the club' });
@@ -181,8 +184,10 @@ export const listClubs = async (req, res) => {
     try {
         const userId = req.user.id;
         const clubs = await ClubService.listAllClubs(userId);
+        console.log(clubs);
         res.status(200).json(clubs);
     } catch (err) {
+        console.error("ERROR LISTING CLUBS" + err.message);
         res.status(500).json({ error: 'Failed to list clubs' });
     }
 }
@@ -204,10 +209,10 @@ export const reportClubIssue = async (req, res) => {
         await saveLog({
             ip_address: req.ip,
             user_type: 'student',
-            record_id: club_id,
+            record_id: club_id.toString(),
             edited_table: 'std_report_club',
             action: 'report_issue',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Club issue reported successfully' });

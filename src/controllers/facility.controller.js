@@ -16,7 +16,7 @@ export const createFacility = async (req, res) => {
             record_id: name, // Using name as ID since ID isn't returned
             edited_table: 'facilities',
             action: 'create',
-            changed_by: req.user ? req.user.id : 'admin'
+            changed_by: req.user ? req.user.id.toString() : 'admin'
         });
 
         return res.status(200).json({ message: 'Facility created successfully' });
@@ -43,10 +43,10 @@ export const reportFacilityIssue = async (req, res) => {
         await saveLog({
             ip_address: req.ip,
             user_type: 'student',
-            record_id: facility_id,
+            record_id: facility_id.toString(),
             edited_table: 'std_report_facility',
             action: 'report_issue',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Facility issue reported successfully' });

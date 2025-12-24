@@ -22,8 +22,8 @@ router.post('/users', createUser);
 router.get('/report', getReports);
 router.get('/stats', getStats);
 router.get('/attendance', getAttendaceOverview);
-router.get('/admin/approvals/events', listPendingEvents);
-router.get('/admin/approvals/events/:id', approveEvent);
+router.get('/approvals/events', listPendingEvents);
+router.patch('/approvals/events/:id', approveEvent);
 router.get('/logs', getLogs);
 
 export default router;

@@ -34,10 +34,10 @@ export const createPost = async (req, res) => {
         await saveLog({
             ip_address: req.ip,
             user_type: 'club_manager',
-            record_id: clubId, // or post ID if returned? Service doesn't seem to return it here, but let's assume we log the action on the club or event.
+            record_id: clubId.userId.toString(), // or post ID if returned? Service doesn't seem to return it here, but let's assume we log the action on the club or event.
             edited_table: 'posts',
             action: 'create',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(201).json({ message: 'Post created successfully' });
@@ -85,7 +85,7 @@ export const editPost = async (req, res) => {
             record_id: postId,
             edited_table: 'posts',
             action: 'update',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Post updated successfully' });
@@ -114,7 +114,7 @@ export const addCommentToPost = async (req, res) => {
             record_id: postId,
             edited_table: 'comments',
             action: 'comment',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Comment added successfully' });
@@ -152,7 +152,7 @@ export const likePost = async (req, res) => {
             record_id: postId,
             edited_table: 'likes',
             action: 'like',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Post liked successfully' });
@@ -174,7 +174,7 @@ export const unlikePost = async (req, res) => {
             record_id: postId,
             edited_table: 'likes',
             action: 'unlike',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Post unliked successfully' });

@@ -39,10 +39,12 @@ export const getAttendaceOverview = async (req, res) => {
 
 export const listPendingEvents = async (req, res) => {
     try {
+        console.log("Hello from admin get pending events (controller)");
+
         const pendingEvents = await adminService.getPendingEvents();
 
         res.status(200).json(pendingEvents);
-    } catch {
+    } catch (err) {
         res.status(500).json({ message: 'Error listing pending events: ' + err.message });
     }
 };
@@ -74,7 +76,7 @@ export const approveEvent = async (req, res) => {
             record_id: eventId,
             edited_table: 'events',
             action: status, // 'approved' or 'rejected'
-            changed_by: req.user ? req.user.id : 'admin'
+            changed_by: req.user ? req.user.id.toString() : 'admin'
         });
 
         res.status(200).json({ message: `Event has been ${status} successfully` });

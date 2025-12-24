@@ -40,7 +40,7 @@ export const registerStudentAtEvent = async (req, res) => {
             record_id: event_id,
             edited_table: 'std_register_event',
             action: 'register',
-            changed_by: student_id
+            changed_by: student_id.toString()
         });
 
         return res.status(200).send();
@@ -94,7 +94,7 @@ export const cancelEventRegistration = async (req, res) => {
             record_id: eventId,
             edited_table: 'std_register_event',
             action: 'cancel_registration',
-            changed_by: studentId
+            changed_by: studentId.toString()
         });
 
         return res.status(200).json({ message: "Registration cancelled" });
@@ -137,7 +137,7 @@ export const checkInStudent = async (req, res) => {
             record_id: eventId,
             edited_table: 'std_attend_event',
             action: 'check_in',
-            changed_by: studentId
+            changed_by: studentId.toString()
         });
 
         return res.status(200).send();
@@ -192,22 +192,41 @@ export const getRegisteredStudentsForEvent = async (req, res) => {
 };
 
 export const getApprovedEvents = async (req, res) => {
+    const type = req.query.type;
+    const clubId = req.query.club_id;
+
     try {
-        const type = req.query.type;
-        const clubId = req.query.club_id;
-        if (!type || (type !== "event" && type !== "session")) {
-            return res.status(400).json({
-                message:
-                    'Invalid query parameters type should be "event" or "session"',
-            });
+        let events;
+        if (type && clubId) {
+            if (type !== "event" && type !== "session") {
+                return res.status(400).json({
+                    message: 'Invalid query parameters type should be "event" or "session"',
+                });
+            }
+            if (isNaN(clubId) || clubId <= 0) {
+                return res.status(400).json({
+                    message: "Invalid query parameters clubId should be a valid Club ID",
+                });
+            }
+            events = await EventService.getApprovedEvents(type, clubId);
+        } else {
+            // If no filters, fetch all approved events (you might need to update service/repo to handle this, 
+            // but looking at the repo, it expects args. For now, let's assume the user wants *all* if nothing is passed, 
+            // but the repo method `getApprovedEvents` strictly takes type and clubId.
+            // Wait, the user said "I found all these errors when I opened events tab".
+            // The frontend is likely calling `/api/events` without params.
+            // I need to check `EventService.getApprovedEvents` and `EventRepo.getApprovedEvents`.
+            // `EventRepo.getApprovedEvents` uses `WHERE e.club_id = ? AND e.type = ?`.
+            // So I cannot just call it without args.
+            // I should probably create a new method in repo or modify the existing one to handle nulls, 
+            // OR for now, just return all events if no params are passed by calling a different repo method 
+            // or modifying the repo query.
+
+            // Let's look at `EventRepo.getAllEvents` which I just fixed. It returns `WHERE status = 'scheduled'`.
+            // That seems to be exactly what we want if no filters are applied!
+            events = await EventService.getAllEvents();
         }
-        if (!clubId || isNaN(clubId) || clubId <= 0) {
-            return res.status(400).json({
-                message:
-                    "Invalid query parameters clubId should be a valid Club ID",
-            });
-        }
-        const events = await EventService.getApprovedEvents(type, clubId);
+
         if (!events || events.length === 0) {
             return res
                 .status(204)
@@ -283,10 +302,10 @@ export const scheduleEvent = async (req, res) => {
         await saveLog({
             ip_address: req.ip,
             user_type: 'club_manager',
-            record_id: newEventId,
+            record_id: newEventId.toString(),
             edited_table: 'events',
             action: 'schedule',
-            changed_by: club_manager_id
+            changed_by: club_manager_id.toString()
         });
 
         return res.status(201).json({ event_id: newEventId });
@@ -312,7 +331,7 @@ export const deleteEvent = async (req, res) => {
             record_id: id,
             edited_table: 'events',
             action: 'delete',
-            changed_by: req.user ? req.user.id : 'unknown'
+            changed_by: req.user ? req.user.id.toString() : 'unknown'
         });
 
         return res.status(200).json({ message: "Event deleted successfully" });
@@ -365,7 +384,7 @@ export const reportEventIssue = async (req, res) => {
             record_id: event_id,
             edited_table: 'std_report_event',
             action: 'report_issue',
-            changed_by: userId
+            changed_by: userId.toString()
         });
 
         return res.status(200).json({ message: 'Event issue reported successfully' });

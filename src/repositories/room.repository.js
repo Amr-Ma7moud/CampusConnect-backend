@@ -2,8 +2,9 @@ import { getConnection } from "../config/db.js";
 
 class RoomRepo {
     async createRoom(roomData) {
+        let conn;
         try {
-            let conn = await getConnection();
+            conn = await getConnection();
             const result = await conn.query(`
                 INSERT INTO rooms ( building_name, room_number, capacity, start_time, end_time, is_available, type)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -16,11 +17,11 @@ class RoomRepo {
                 roomData.is_available,
                 roomData.type
             ]);
-            return result.room_id;
+            return result.insertId;
         } catch (error) {
             throw new Error('Error creating room: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -43,16 +44,17 @@ class RoomRepo {
     }
 
     async findRoom(room_number, building_name) {
+        let conn;
         try {
-            let conn = await getConnection();
+            conn = await getConnection();
             const rows = await conn.query(`
                 SELECT * FROM rooms WHERE room_number = ? AND building_name = ?
             `, [room_number, building_name]);
-            return rows[0];
+            return rows[0][0];
         } catch (error) {
             return null;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -60,12 +62,19 @@ class RoomRepo {
         let conn;
         try {
             conn = await getConnection();
-            const rows = await conn.query(`SELECT room_id FROM rooms`);
+            const rows = await conn.query(`
+                SELECT r.*, GROUP_CONCAT(res.name) as resources 
+                FROM rooms r 
+                LEFT JOIN room_has_resources rhr ON r.room_id = rhr.room_id 
+                LEFT JOIN resources res ON rhr.resource_id = res.resource_id 
+                GROUP BY r.room_id
+            `);            
+            console.log('RoomRepo rows:', JSON.stringify(rows, null, 2));
             return rows;
         } catch (error) {
             return null;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -78,7 +87,33 @@ class RoomRepo {
         } catch (error) {
             return null;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
+        }
+    }
+
+    async createResource(name) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`INSERT INTO resources (name) VALUES (?)`, [name]);
+            return result.insertId;
+        } catch (error) {
+            throw new Error('Error creating resource: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
+    async getAllResources() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`SELECT * FROM resources`);
+            return rows;
+        } catch (error) {
+            throw new Error('Error getting resources: ' + error.message);
+        } finally {
+            if (conn) conn.release();
         }
     }
 
@@ -101,7 +136,7 @@ class RoomRepo {
         } catch (error) {
             throw new Error('Error reserving room: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -122,7 +157,7 @@ class RoomRepo {
         } catch (error) {
             throw new Error('Error cancelling reservation: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -138,11 +173,11 @@ class RoomRepo {
                 roomId,
                 start_time
             ]);
-            return rows[0];
+            return rows[0][0];
         } catch (error) {
             return null;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -153,19 +188,20 @@ class RoomRepo {
             const result = await conn.query(`
                 INSERT INTO std_report_room ( student_id, room_id, reason, details)
                 VALUES (?, ?, ?, ?)
-                `,reportData);
+                `, reportData);
             return result;
         }catch (error) {
             console.log(error);
             throw new Error('Error reporting facility issue: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
     async getAllReports() {
         let conn;
         try {
+            conn = await getConnection();
             const rows = await conn.query(`
                 SELECT * FROM std_report_room
             `);
@@ -175,7 +211,7 @@ class RoomRepo {
             console.log(error);
             throw new Error('Error getting reports: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 }

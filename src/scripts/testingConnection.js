@@ -35,22 +35,35 @@ export const createTestAdminUser = async() => {
 };
 
 // fetch the user using the email to check if already exists
-export const checkIfUserExists = async (email) => {
+export const checkIfUserExists = async (email, username = null) => {
     let connection;
     try {
         connection = await getConnection();
-        const [rows] = await connection.query(
-            'SELECT * FROM users WHERE email = ?',
-            [email]
-        );
+        
+        let query = 'SELECT * FROM users WHERE email = ?';
+        let params = [email];
+        
+        if (username) {
+            query += ' OR user_name = ?';
+            params.push(username);
+        }
+        
+        const rows = await connection.query(query, params);
+        
+        console.log(`Found ${rows.length} user(s) with email '${email}'${username ? ` or username '${username}'` : ''}`);
+        
         return rows.length > 0;
     } catch (error) {
         console.error('Error checking user existence:', error);
         throw error;
     } finally {
-        if (connection) connection.end();
+        if (connection) connection.release();
     }
 };
 
-await createTestAdminUser();
+// Usage:
+const exists = await checkIfUserExists('test1@ejust.edu.eg', 'testAdmin1');
+console.log(exists);
+
+// await createTestAdminUser();
 // console.log(await checkIfUserExists('test1@ejust.edu.eg'));

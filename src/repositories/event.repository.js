@@ -11,7 +11,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [row] = await conn.query(
+            const row = await conn.query(
                 `
                 SELECT 
                 e.event_id,
@@ -40,7 +40,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -48,7 +48,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT 
                     s.student_id,
@@ -68,7 +68,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -83,7 +83,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT 1 
                 FROM events 
@@ -95,7 +95,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -103,7 +103,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT 
                     s.student_id,
@@ -123,7 +123,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -131,7 +131,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT 
                     e.event_id,
@@ -154,7 +154,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -162,7 +162,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `
                 SELECT 
                     e.event_id,
@@ -194,7 +194,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -212,7 +212,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -220,7 +220,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [result] = await conn.query(
+            const result = await conn.query(
                 `
                 INSERT INTO events (
                     type, 
@@ -248,7 +248,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -263,7 +263,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT 1 FROM std_register_event WHERE event_id = ? AND student_id = ?`,
                 [eventId, studentId]
             );
@@ -271,7 +271,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -285,7 +285,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT COUNT(*) as count FROM std_register_event WHERE event_id = ?`,
                 [eventId]
             );
@@ -293,7 +293,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -307,7 +307,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT status, event_start_date, event_end_date 
                  FROM events WHERE event_id = ?`,
                 [eventId]
@@ -316,7 +316,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -330,7 +330,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT max_capacity FROM events WHERE event_id = ?`,
                 [eventId]
             );
@@ -338,7 +338,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -353,7 +353,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [result] = await conn.query(
+            const result = await conn.query(
                 `INSERT INTO std_register_event (event_id, student_id, registration_date) 
                  VALUES (?, ?, NOW())`,
                 [eventId, studentId]
@@ -362,7 +362,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -377,7 +377,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [result] = await conn.query(
+            const result = await conn.query(
                 `
                 DELETE FROM std_register_event 
                 WHERE event_id = ? AND student_id = ?`,
@@ -387,7 +387,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -395,7 +395,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(
+            const rows = await conn.query(
                 `SELECT 1 FROM std_attend_event WHERE event_id = ? AND student_id = ?`,
                 [eventId, studentId]
             );
@@ -403,7 +403,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -411,7 +411,7 @@ class EventRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [result] = await conn.query(
+            const result = await conn.query(
                 `INSERT INTO std_attend_event (event_id, student_id, attend_date) 
                 VALUES (?, ?, NOW())`,
                 [eventId, studentId]
@@ -420,7 +420,7 @@ class EventRepo {
         } catch (err) {
             throw err;
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -437,7 +437,7 @@ class EventRepo {
             console.log(error);
             throw new Error('Error reporting facility issue: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -454,7 +454,7 @@ class EventRepo {
             console.log(error);
             throw new Error('Error getting reports: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -465,7 +465,7 @@ class EventRepo {
 
             const events = await conn.query(`
                 SELECT * FROM events
-                WHERE status == 'scheduled'
+                WHERE status = 'scheduled'
             `);
 
             return events;
@@ -473,7 +473,7 @@ class EventRepo {
             console.log(error);
             throw new Error('Error fetching events: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -499,7 +499,7 @@ class EventRepo {
             console.log(error);
             throw new Error('Error getting attendance overview: ' + error.message);
         }finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -520,7 +520,7 @@ class EventRepo {
                     c.name,
                     c.logo
                 FROM events e
-                JOIN ON e.club_id = c.club_id
+                JOIN clubs c ON e.club_id = c.club_id
                 WHERE e.status = 'pending'
             `);
 
@@ -529,7 +529,7 @@ class EventRepo {
             console.log(error);
             throw new Error('Error getting pending events: ' + error.message);
         } finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 
@@ -542,11 +542,12 @@ class EventRepo {
                 UPDATE events
                 SET room_id = ?
                 WHERE event_id = ?
-                VALUES (?, ?) 
             `, [roomId, eventId]);
         } catch (error) {
             console.log(error);
             throw new Error ('Error assigning room to event', error.message);
+        } finally {
+            if (conn) conn.release();
         }
     }
 
@@ -559,11 +560,12 @@ class EventRepo {
                 UPDATE events
                 SET status = ?
                 WHERE event_id = ?
-                VALUES (?, ?) 
             `, [status, eventId]);
         } catch (error) {
             console.log(error);
             throw new Error ('Error assigning room to event', error.message);
+        } finally {
+            if (conn) conn.release();
         }
     }
 }
