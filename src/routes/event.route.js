@@ -28,7 +28,7 @@ router.delete(
     cancelEventRegistration
 );
 router.post(
-    "/:event_id/attendance",
+    "/:id/attendance",
     verifyRole(["club_manager", "admin"]),
     checkInStudent
 );

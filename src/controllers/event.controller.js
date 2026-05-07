@@ -123,8 +123,8 @@ export const cancelEventRegistration = async (req, res) => {
 };
 
 export const checkInStudent = async (req, res) => {
-    const eventId = req.params.event_id;
-    const studentId = req.user.id;
+    const eventId = req.params.id;
+    const studentId = req.body.student_id;
 
     try {
         checkId(eventId);
@@ -133,11 +133,11 @@ export const checkInStudent = async (req, res) => {
 
         await saveLog({
             ip_address: req.ip,
-            user_type: 'student', // or admin/scanner? The code uses `req.user.id` as `studentId`. So it seems student checks themselves in?
+            user_type: req.user.role, // or admin/scanner? The code uses `req.user.id` as `studentId`. So it seems student checks themselves in?
             record_id: eventId,
             edited_table: 'std_attend_event',
             action: 'check_in',
-            changed_by: studentId.toString()
+            changed_by: (req.user.id).toString()
         });
 
         return res.status(200).send();
