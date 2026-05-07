@@ -37,6 +37,15 @@ export const getAttendaceOverview = async (req, res) => {
     }
 };
 
+export const getFacilitiesUsage = async (req, res) => {
+    try {
+        const facilitiesUsage = await adminService.getFacilitiesUsage();
+        res.status(200).json(facilitiesUsage);
+    } catch (err) {
+        res.status(500).json({ message: 'Error getting facilities usage: ' + err.message });
+    }
+};
+
 export const listPendingEvents = async (req, res) => {
     try {
         console.log("Hello from admin get pending events (controller)");

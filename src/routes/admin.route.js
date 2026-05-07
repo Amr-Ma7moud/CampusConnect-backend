@@ -6,6 +6,7 @@ import { createUser } from "../controllers/user.controller.js";
 import {
     approveEvent,
     getAttendaceOverview,
+    getFacilitiesUsage,
     getReports,
     getStats,
     listPendingEvents,
@@ -22,6 +23,7 @@ router.post('/users', createUser);
 router.get('/report', getReports);
 router.get('/stats', getStats);
 router.get('/attendance', getAttendaceOverview);
+router.get('/facilities-usage', getFacilitiesUsage);
 router.get('/approvals/events', listPendingEvents);
 router.patch('/approvals/events/:id', approveEvent);
 router.get('/logs', getLogs);

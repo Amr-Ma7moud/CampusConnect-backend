@@ -179,6 +179,30 @@ export class FacilityRepo{
         }
     }
 
+    async getCompletedReservationsCountByType(type) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(
+                `
+                SELECT COUNT(*) AS count
+                FROM std_reserve_facility srf
+                JOIN facilities f ON srf.facility_id = f.facility_id
+                WHERE srf.status = 'completed'
+                    AND f.type = ?
+                `,
+                [type]
+            );
+
+            return Number(rows[0].count);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error getting completed facility reservations count: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
 }
 
 export default new FacilityRepo();

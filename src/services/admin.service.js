@@ -103,6 +103,32 @@ class AdminService {
         return result;
     }
 
+    async getFacilitiesUsage() {
+        const roomCount = await roomRepository.getCompletedReservationsCount();
+        const gymCount = await facilityRepository.getCompletedReservationsCountByType('gym');
+        const playgroundCount = await facilityRepository.getCompletedReservationsCountByType('playground');
+
+        const total = roomCount + gymCount + playgroundCount;
+
+        if (total === 0) {
+            return [
+                { type: 'room', value: 0 },
+                { type: 'gym', value: 0 },
+                { type: 'playground', value: 0 }
+            ];
+        }
+
+        const roomValue = Number(((roomCount / total) * 100).toFixed(2));
+        const gymValue = Number(((gymCount / total) * 100).toFixed(2));
+        const playgroundValue = Number((100 - roomValue - gymValue).toFixed(2));
+
+        return [
+            { type: 'room', value: roomValue },
+            { type: 'gym', value: gymValue },
+            { type: 'playground', value: playgroundValue }
+        ];
+    }
+
     async getPendingEvents() {
         console.log("Hello from admin get pending events");
         

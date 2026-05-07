@@ -214,6 +214,25 @@ class RoomRepo {
             if (conn) conn.release();
         }
     }
+
+    async getCompletedReservationsCount() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`
+                SELECT COUNT(*) AS count
+                FROM std_reserve_room
+                WHERE status = 'completed'
+            `);
+
+            return Number(rows[0].count);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error getting completed room reservations count: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }
+    }
 }
 
 export default new RoomRepo();
