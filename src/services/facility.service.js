@@ -27,6 +27,15 @@ class FacilityService {
         }
     }
 
+    async getFacilities() {
+        try {
+            const result = await FacilityRepo.getFacilities();
+            return result;
+        } catch (error) {
+            throw new Error('Error in FacilityService: ' + error.message);
+        }
+    }
+
     async reportFacilityIssue(student_id, facility_id, reason, details) {
         try {
             const reportData = [student_id, facility_id, reason, details];

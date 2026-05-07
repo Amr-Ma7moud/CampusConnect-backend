@@ -25,6 +25,30 @@ export class FacilityRepo{
         }
     }
 
+    async getFacilities() {
+        let conn;
+        try {
+            conn = await getConnection();
+            const rows = await conn.query(`
+                SELECT 
+                    id As facility_id,
+                    name,
+                    type,
+                    location_description,
+                    min_capacity,
+                    max_capacity
+                FROM facilities
+            `);
+            
+            return rows;
+        }catch (error) {
+            console.log(error);
+            throw new Error('Error getting facilities: ' + error.message);
+        }finally {
+            if (conn) conn.release();
+        }
+    }
+
     async reportFacilityIssue(reportData) {
         let conn;
         try {

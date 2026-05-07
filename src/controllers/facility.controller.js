@@ -26,6 +26,15 @@ export const createFacility = async (req, res) => {
 
 };
 
+export const getFacilities = async (req, res) => {
+    try {
+        const facilities = await FacilityService.getFacilities();
+        res.status(200).json(facilities);
+    } catch (err) {
+        res.status(500).json({ message: 'Error getting facilities: ' + err.message });
+    }
+};
+
 export const reportFacilityIssue = async (req, res) => {
     try {
         const { facility_id, reason, details } = req.body;
@@ -42,7 +51,7 @@ export const reportFacilityIssue = async (req, res) => {
 
         await saveLog({
             ip_address: req.ip,
-            user_type: 'student',
+            user_type: req.user.role,
             record_id: facility_id.toString(),
             edited_table: 'std_report_facility',
             action: 'report_issue',
