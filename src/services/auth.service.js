@@ -8,7 +8,7 @@ class AuthService {
         const user = await authRepository.findUserByEmail(email);
 
         if (!user) {
-            throw new Error('User record corrupted. Please contact support.');
+            throw new Error('Invalid email or password');
         }
 
         if(user.role === "student") {

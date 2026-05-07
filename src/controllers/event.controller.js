@@ -5,7 +5,7 @@ export const getEventById = async (req, res) => {
     const id = req.params.event_id;
     try {
         checkId(id);
-        const event = await EventService.getEventById(id);
+        const event = await EventService.getEventById(id, req.user.id);
         return res.status(200).json(event);
     } catch (err) {
         if (err.message === "Event not found") {
@@ -211,6 +211,7 @@ export const getApprovedEvents = async (req, res) => {
         const events = await EventService.getApprovedEvents({
             type,
             clubId: clubId ? Number(clubId) : undefined,
+            currentUserId: req.user.id,
         });
 
         return res.status(200).json(events);

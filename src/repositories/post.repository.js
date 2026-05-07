@@ -76,7 +76,7 @@ class PostRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                INSERT INTO std_comment_post (student_id, post_id, comment)
+                INSERT INTO std_comment_post (student_id, post_id, content)
                 VALUES (?, ?, ?)
             `, [userId, postId, comment]);
 

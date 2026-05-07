@@ -7,11 +7,26 @@ class EventRepo {
      * @param {number} eventId
      * @return {object} event details
      */
-    async getEventById(eventId) {
+    async getEventById(eventId, currentUserId = null) {
         let conn;
         try {
             conn = await getConnection();
-            const row = await conn.query(
+            const params = [eventId];
+            let registrationJoin = "";
+            let registrationSelect = "0 AS is_registered";
+
+            if (currentUserId) {
+                registrationJoin = `
+                LEFT JOIN std_register_event cur_ser
+                    ON e.event_id = cur_ser.event_id AND cur_ser.student_id = ?
+                `;
+                registrationSelect = `
+                MAX(CASE WHEN cur_ser.student_id IS NOT NULL THEN 1 ELSE 0 END) AS is_registered
+                `;
+                params.unshift(currentUserId);
+            }
+
+            const rows = await conn.query(
                 `
                 SELECT 
                 e.event_id,
@@ -25,18 +40,20 @@ class EventRepo {
                 e.event_end_date AS end_time,
                 CONCAT(r.building_name, ' - Room ', r.room_number) AS location,
                 COUNT(ser.student_id) AS regestrations,
-                e.max_capacity AS max_regestrations
+                e.max_capacity AS max_regestrations,
+                ${registrationSelect}
                 FROM events e
                 LEFT JOIN clubs c ON e.club_id = c.club_id
                 LEFT JOIN rooms r ON e.room_id = r.room_id
                 LEFT JOIN std_register_event ser ON e.event_id = ser.event_id
+                ${registrationJoin}
                 WHERE e.event_id = ?
                 GROUP BY e.event_id, c.name, c.logo, c.cover, e.type, e.title, e.description, 
                     e.event_start_date, e.event_end_date, r.building_name, r.room_number, e.max_capacity;
                 `,
-                [eventId]
+                params
             );
-            return row;
+            return rows[0];
         } catch (err) {
             throw err;
         } finally {
@@ -158,7 +175,7 @@ class EventRepo {
         }
     }
 
-    async getApprovedEvents({ type, clubId } = {}) {
+    async getApprovedEvents({ type, clubId, currentUserId } = {}) {
         let conn;
         try {
             conn = await getConnection();
@@ -167,6 +184,19 @@ class EventRepo {
                     e.status = 'scheduled'
                     AND c.status = 'active'
             `;
+            let registrationJoin = "";
+            let registrationSelect = "0 AS is_registered";
+
+            if (currentUserId) {
+                registrationJoin = `
+                LEFT JOIN std_register_event cur_ser
+                    ON e.event_id = cur_ser.event_id AND cur_ser.student_id = ?
+                `;
+                registrationSelect = `
+                MAX(CASE WHEN cur_ser.student_id IS NOT NULL THEN 1 ELSE 0 END) AS is_registered
+                `;
+                params.push(currentUserId);
+            }
 
             if (type) {
                 filters += `
@@ -196,11 +226,13 @@ class EventRepo {
                     e.event_end_date AS end_time,
                     CONCAT(r.building_name, ' - Room ', r.room_number) AS location,
                     COUNT(ser.student_id) AS regestrations,
-                    e.max_capacity AS max_regestrations
+                    e.max_capacity AS max_regestrations,
+                    ${registrationSelect}
                 FROM events e
                 INNER JOIN clubs c ON e.club_id = c.club_id
                 LEFT JOIN rooms r ON e.room_id = r.room_id
                 LEFT JOIN std_register_event ser ON e.event_id = ser.event_id
+                ${registrationJoin}
                 WHERE ${filters}
                 GROUP BY e.event_id, e.type, c.name, c.logo, c.cover, e.title, e.description, 
                         e.event_start_date, e.event_end_date, r.building_name, r.room_number, e.max_capacity
@@ -372,8 +404,8 @@ class EventRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(
-                `INSERT INTO std_register_event (event_id, student_id, registration_date) 
-                 VALUES (?, ?, NOW())`,
+                `INSERT INTO std_register_event (event_id, student_id) 
+                 VALUES (?, ?)`,
                 [eventId, studentId]
             );
             return result.insertId;

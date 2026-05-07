@@ -1,12 +1,21 @@
 import EventRepo from "../repositories/event.repository.js";
 import clubService from "./club.service.js";
 class EventService {
-    async getEventById(id) {
-        const event = await EventRepo.getEventById(id);
+    async getEventById(id, currentUserId) {
+        const event = await EventRepo.getEventById(id, currentUserId);
         if (!event) {
             throw new Error("Event not found");
         }
-        return event;
+        return {
+            ...event,
+            event_id: Number(event.event_id),
+            regestrations: Number(event.regestrations ?? 0),
+            max_regestrations:
+                event.max_regestrations === null || event.max_regestrations === undefined
+                    ? null
+                    : Number(event.max_regestrations),
+            is_registered: Boolean(event.is_registered),
+        };
     }
 
     async getRegisteredStudentsForEvent(id) {
@@ -30,12 +39,23 @@ class EventService {
         return events;
     }
 
-    async getApprovedEvents({ type, clubId }) {
+    async getApprovedEvents({ type, clubId, currentUserId }) {
         if (clubId && !(await clubService.findClubById(clubId))) {
             throw new Error("Club not found");
         }
 
-        return await EventRepo.getApprovedEvents({ type, clubId });
+        const events = await EventRepo.getApprovedEvents({ type, clubId, currentUserId });
+
+        return events.map((event) => ({
+            ...event,
+            event_id: Number(event.event_id),
+            regestrations: Number(event.regestrations ?? 0),
+            max_regestrations:
+                event.max_regestrations === null || event.max_regestrations === undefined
+                    ? null
+                    : Number(event.max_regestrations),
+            is_registered: Boolean(event.is_registered),
+        }));
     }
 
     async scheduleEvent(club_manager_id, eventData) {

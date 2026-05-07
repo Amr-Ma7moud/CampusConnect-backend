@@ -24,7 +24,8 @@ class ClubRepo {
             conn = await getConnection();
             const rows = await conn.query(`
                 SELECT c.*, 
-                    (SELECT COUNT(*) FROM club_manager cm WHERE cm.club_id = c.club_id) as followers_count,
+                    (SELECT COUNT(*) FROM std_follow_club sfc WHERE sfc.club_id = c.club_id) as followers_count,
+                    (SELECT COUNT(*) FROM club_manager cm WHERE cm.club_id = c.club_id) as members_count,
                     COUNT(DISTINCT e.event_id) as event_number,
                     COUNT(DISTINCT CASE WHEN e.type = 'session' THEN e.event_id END) as session_number,
                     COUNT(DISTINCT CASE WHEN e.type = 'event' THEN e.event_id END) as real_event_number,
