@@ -46,8 +46,6 @@ router.get(
     verifyRole(["club_manager"]),
     getAttendeeListForEvent
 );
-router.get("/:event_id/registered_students", getRegisteredStudentsForEvent);
-router.get("/:event_id/attendance_list", getAttendeeListForEvent);
 router.get("/:id/posts", getEventPosts);
 router.post("/report", reportEventIssue);
 export default router;
