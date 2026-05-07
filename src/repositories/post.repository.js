@@ -211,6 +211,22 @@ class PostRepo {
         }
     }
 
+    async deletePost(postId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                DELETE FROM posts WHERE post_id = ?
+            `, [postId]);
+
+            return result;
+        } catch (error) {
+            throw new Error('Error deleting post: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
 }
 
 export default new PostRepo();

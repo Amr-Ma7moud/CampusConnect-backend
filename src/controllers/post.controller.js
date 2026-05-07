@@ -194,3 +194,14 @@ export const getNewsFeed = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
 };
+
+
+export const deletePost = async (req, res) => {
+    try {
+        const postId = req.params.post_id;
+        await postService.deletePost(postId);
+        return res.status(200).json({ message: 'Post deleted successfully' });
+    } catch(error) {
+        return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+};

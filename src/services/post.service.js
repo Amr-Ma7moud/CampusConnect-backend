@@ -108,6 +108,10 @@ class PostService {
 
         return eventPosts;
     }
+
+    async deletePost(postId) {
+        await postRepo.deletePost(postId);
+    }
 }
 
 export default new PostService();
