@@ -11,7 +11,7 @@ export const createPost = async (req, res) => {
             return res.status(400).json({ message: 'Content is required' });
         }
 
-        const clubId = clubService.getClubIdByManagerId(userId);
+        const clubId = await clubService.getClubIdByManagerId(userId);
 
         if (!clubId) {
             return res.status(403).json(
@@ -57,7 +57,7 @@ export const editPost = async (req, res) => {
             return res.status(400).json({ message: 'Content is required' });
         }
 
-        const clubId = clubService.getClubIdByManagerId(userId);
+        const clubId = await clubService.getClubIdByManagerId(userId);
 
         if (!clubId) {
             return res.status(403).json(
