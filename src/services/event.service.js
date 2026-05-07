@@ -30,19 +30,12 @@ class EventService {
         return events;
     }
 
-    async getApprovedEvents(type, clubId) {
-        if (!(await clubService.findClubById(clubId))) {
+    async getApprovedEvents({ type, clubId }) {
+        if (clubId && !(await clubService.findClubById(clubId))) {
             throw new Error("Club not found");
         }
-        const events = await EventRepo.getApprovedEvents(type, clubId);
-        
-        let myEvents = [];
 
-        for(let event of myEvents) {
-            myEvents.push(event);
-        }
-
-        return myEvents;
+        return await EventRepo.getApprovedEvents({ type, clubId });
     }
 
     async scheduleEvent(club_manager_id, eventData) {
@@ -174,8 +167,7 @@ class EventService {
     }
 
     async getAllEvents() {
-        const events = await EventRepo.getAllEvents();
-        return events;
+        return await EventRepo.getApprovedEvents({});
     }
 }
 

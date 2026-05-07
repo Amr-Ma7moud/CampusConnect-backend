@@ -196,42 +196,23 @@ export const getApprovedEvents = async (req, res) => {
     const clubId = req.query.club_id;
 
     try {
-        let events;
-        if (type && clubId) {
-            if (type !== "event" && type !== "session") {
-                return res.status(400).json({
-                    message: 'Invalid query parameters type should be "event" or "session"',
-                });
-            }
-            if (isNaN(clubId) || clubId <= 0) {
-                return res.status(400).json({
-                    message: "Invalid query parameters clubId should be a valid Club ID",
-                });
-            }
-            events = await EventService.getApprovedEvents(type, clubId);
-        } else {
-            // If no filters, fetch all approved events (you might need to update service/repo to handle this, 
-            // but looking at the repo, it expects args. For now, let's assume the user wants *all* if nothing is passed, 
-            // but the repo method `getApprovedEvents` strictly takes type and clubId.
-            // Wait, the user said "I found all these errors when I opened events tab".
-            // The frontend is likely calling `/api/events` without params.
-            // I need to check `EventService.getApprovedEvents` and `EventRepo.getApprovedEvents`.
-            // `EventRepo.getApprovedEvents` uses `WHERE e.club_id = ? AND e.type = ?`.
-            // So I cannot just call it without args.
-            // I should probably create a new method in repo or modify the existing one to handle nulls, 
-            // OR for now, just return all events if no params are passed by calling a different repo method 
-            // or modifying the repo query.
-
-            // Let's look at `EventRepo.getAllEvents` which I just fixed. It returns `WHERE status = 'scheduled'`.
-            // That seems to be exactly what we want if no filters are applied!
-            events = await EventService.getAllEvents();
+        if (type && type !== "event" && type !== "session") {
+            return res.status(400).json({
+                message: 'Invalid query parameter: type should be "event" or "session"',
+            });
         }
 
-        if (!events || events.length === 0) {
-            return res
-                .status(204)
-                .json({ message: "No approved events found" });
+        if (clubId && (isNaN(clubId) || Number(clubId) <= 0)) {
+            return res.status(400).json({
+                message: "Invalid query parameter: club_id should be a valid Club ID",
+            });
         }
+
+        const events = await EventService.getApprovedEvents({
+            type,
+            clubId: clubId ? Number(clubId) : undefined,
+        });
+
         return res.status(200).json(events);
     } catch (err) {
         if (err.message === "Club not found") {

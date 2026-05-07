@@ -158,14 +158,35 @@ class EventRepo {
         }
     }
 
-    async getApprovedEvents(type, clubId) {
+    async getApprovedEvents({ type, clubId } = {}) {
         let conn;
         try {
             conn = await getConnection();
+            const params = [];
+            let filters = `
+                    e.status = 'scheduled'
+                    AND c.status = 'active'
+            `;
+
+            if (type) {
+                filters += `
+                    AND e.type = ?
+                `;
+                params.push(type);
+            }
+
+            if (clubId) {
+                filters += `
+                    AND e.club_id = ?
+                `;
+                params.push(clubId);
+            }
+
             const rows = await conn.query(
                 `
                 SELECT 
                     e.event_id,
+                    e.type,
                     c.name AS club_name,
                     c.logo AS club_logo_url,
                     c.cover AS club_cover_url,
@@ -180,15 +201,12 @@ class EventRepo {
                 INNER JOIN clubs c ON e.club_id = c.club_id
                 LEFT JOIN rooms r ON e.room_id = r.room_id
                 LEFT JOIN std_register_event ser ON e.event_id = ser.event_id
-                WHERE e.club_id = ?
-                    AND e.type = ?
-                    AND e.status = 'scheduled'
-                    AND c.status = 'active'
-                GROUP BY e.event_id, c.name, c.logo, c.cover, e.title, e.description, 
+                WHERE ${filters}
+                GROUP BY e.event_id, e.type, c.name, c.logo, c.cover, e.title, e.description, 
                         e.event_start_date, e.event_end_date, r.building_name, r.room_number, e.max_capacity
                 ORDER BY e.event_start_date ASC;
                 `,
-                [clubId, type]
+                params
             );
             return rows;
         } catch (err) {
@@ -459,22 +477,7 @@ class EventRepo {
     }
 
     async getAllEvents() {
-        let conn;
-        try {
-            conn = await getConnection();
-
-            const events = await conn.query(`
-                SELECT * FROM events
-                WHERE status = 'scheduled'
-            `);
-
-            return events;
-        } catch (error) {
-            console.log(error);
-            throw new Error('Error fetching events: ' + error.message);
-        } finally {
-            if (conn) conn.release();
-        }
+        return await this.getApprovedEvents({});
     }
 
     async getAttendanceForAllEvents() {
