@@ -8,7 +8,7 @@ export const createFacility = async (req, res) => {
             return res.status(400).json({ message: 'Missing required fields' });
         if (!status)
             status = 'available';
-        await FacilityService.createFacility([name, location, min_capacity, max_capacity, type, status]);
+        await FacilityService.createFacility({name, location, min_capacity, max_capacity, type, status});
 
         await saveLog({
             ip_address: req.ip,
