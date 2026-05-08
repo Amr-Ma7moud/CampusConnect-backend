@@ -9,6 +9,7 @@ import roomRouter from './routes/room.route.js';
 import clubRouter from './routes/club.route.js';
 import postRouter from './routes/post.route.js';
 import facilityRouter from './routes/facility.route.js';
+import reservationRouter from './routes/reservation.route.js';
 import cors from 'cors';
 
 
@@ -40,6 +41,7 @@ app.use('/api/rooms', roomRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/clubs', clubRouter);
 app.use('/api/facilities', facilityRouter);
+app.use('/api/reservations', reservationRouter);
 
 app.use((err, req, res, next) => {
     console.error('Error:', err);

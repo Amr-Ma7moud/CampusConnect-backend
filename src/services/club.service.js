@@ -84,7 +84,7 @@ class ClubService {
             logo: club.logo,
             cover: club.cover,
             followers_count: Number(club.followers_count),
-            members: Number(club.followers_count),
+            members: Number(club.members_count),
             event_number: Number(club.real_event_number), // Only type='event'
             sessions_number: Number(club.session_number), // Only type='session'
             posts_number: Number(club.post_number),
