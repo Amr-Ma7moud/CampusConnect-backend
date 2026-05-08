@@ -15,7 +15,7 @@ class AuthRepository {
             throw err;
         }
         finally {
-            if (conn) conn.end();
+            if (conn) conn.release();
         }
     }
 }

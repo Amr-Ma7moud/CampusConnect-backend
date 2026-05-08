@@ -265,7 +265,7 @@ class EventRepo {
             if (conn) conn.release();
         }
     }
-
+//first bug fixed
     async scheduleEvent(eventData) {
         let conn;
         try {
@@ -281,7 +281,7 @@ class EventRepo {
                     club_id,
                     room_id, 
                     max_capacity
-                ) VALUES (?, ?, ?, ?, ?, ?, ?);
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
                 `,
                 [
                     eventData.type,

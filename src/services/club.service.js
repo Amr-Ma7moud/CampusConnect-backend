@@ -4,6 +4,9 @@ import eventService from "./event.service.js";
 class ClubService {
     async createClub({ name, description, email, std_ids }) {
         const clubId = await ClubRepo.createClub({ name, description, email });
+        if (!std_ids || std_ids.length === 0) {
+        return clubId; 
+    }
         const members = std_ids.map(member => {
             if (typeof member === 'object' && member.id) return member;
             return { id: member, role_title: 'Club Manager' };

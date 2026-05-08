@@ -24,7 +24,7 @@ class RoomRepo {
             if (conn) conn.release();
         }
     }
-
+//bug 3 fixed changed conn.end to conn.realse
     async addResourceToRoom(roomId, resourceId) {
         let conn;
         try {
@@ -39,18 +39,18 @@ class RoomRepo {
         } catch(error) {
             throw new Error('Error adding resource at room: ' + error.message);
         } finally {
-            if(conn) conn.end();
+            if(conn) conn.release();
         }
     }
-
+//second bug fixed
     async findRoom(room_number, building_name) {
         let conn;
         try {
             conn = await getConnection();
-            const rows = await conn.query(`
+            const [rows] = await conn.query(`
                 SELECT * FROM rooms WHERE room_number = ? AND building_name = ?
             `, [room_number, building_name]);
-            return rows[0][0];
+        return (rows && rows.length > 0) ? rows[0] : null;
         } catch (error) {
             return null;
         } finally {
@@ -160,12 +160,13 @@ class RoomRepo {
             if (conn) conn.release();
         }
     }
+//second bug fixed
 
     async getReservation(studentId, roomId, start_time) {
         let conn;
         try {
             conn = await getConnection();
-            const rows = await conn.query(`
+            const [rows] = await conn.query(`
                 SELECT * FROM std_reserve_room
                 WHERE student_id = ? AND room_id = ? AND start_time = ?
             `, [
@@ -173,7 +174,7 @@ class RoomRepo {
                 roomId,
                 start_time
             ]);
-            return rows[0][0];
+            return (rows && rows.length > 0) ? rows[0] : null ;
         } catch (error) {
             return null;
         } finally {

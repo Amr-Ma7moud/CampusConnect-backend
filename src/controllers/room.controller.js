@@ -14,8 +14,8 @@ export const createRoom = async (req, res) => {
             end_time = 10;
 
         // Default values for testing
-        if (!is_available)
-            is_available = true;
+        if (is_available === undefined || is_available === null) is_available = true;
+
 
         await RoomService.createRoom({ room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids });
 
