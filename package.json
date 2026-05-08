@@ -5,7 +5,7 @@
   "main": "/src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.js",
+    "start": "bun src/server.js",
     "dev": "bun --watch --env-file=.env src/server.js",
     "seed": "node src/scripts/seedData.js"
   },
