@@ -6,12 +6,15 @@ import { dirname, join } from 'path';
 import {CloudinaryStorage} from "multer-storage-cloudinary";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+// CLOUDINARY_CLOUD_NAME=dywqpypqt
+// CLOUDINARY_API_KEY=684985321986348
+// CLOUDINARY_API_SECRET=iXJk7oJc65tCkEYainvTlvpvpII
 
 dotenv.config({ path: join(__dirname, '../../.env') });
 cloudinary.v2.config({
-    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
-    api_key:process.env.CLOUDINARY_API_KEY,
-    api_secret:process.env.CLOUDINARY_API_SECRET
+    cloud_name:"dywqpypqt",
+    api_key:"684985321986348",
+    api_secret:"iXJk7oJc65tCkEYainvTlvpvpII"
 });
 const storage = new CloudinaryStorage({
 cloudinary: cloudinary.v2,
