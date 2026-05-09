@@ -4,8 +4,8 @@ import { saveLog } from "../utils/logs.js";
 
 export const createPost = async (req, res) => {
     const userId = req.user.id;
-    const { event_id, content, image_url } = req.body;
-
+    const { event_id, content} = req.body;
+   const  image_url = req.file ? req.file.path : req.body.image_url;
     try {
         if (!content) {
             return res.status(400).json({ message: 'Content is required' });
