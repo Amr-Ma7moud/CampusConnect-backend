@@ -143,6 +143,7 @@ class AdminService {
                 club_name: myEvent.name,
                 club_logo_url: myEvent.logo,
                 type: myEvent.type,
+                title: myEvent.title,
                 description: myEvent.description,
                 start_time: myEvent.event_start_date,
                 end_time: myEvent.event_end_date,
