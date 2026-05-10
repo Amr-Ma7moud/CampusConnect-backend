@@ -138,3 +138,16 @@ export const reportFacilityIssue = async (req, res) => {
         res.status(500).json({ message: 'Error reporting facility issue: ' + err.message });
     }
 }
+export const updateFacility=async (req,res)=>{
+const facilityId = req.params.id;
+    if(! await FacilityService.getFacilityById(facilityId)){
+return res.status(404).json({ message: 'Facility not found' });
+    }
+    const {name, location, min_capacity, max_capacity, type, status } = req.body;
+    try{
+await FacilityService.updateFacility(facilityId,{name, location, min_capacity, max_capacity, type, status });
+res.status(200).json({ message: 'Facility updated successfully' });
+    }catch(err){
+        res.status(500).json({ message: 'Error updating facility: ' + err.message });
+    }
+};

@@ -203,6 +203,59 @@ export class FacilityRepo{
         }
     }
 
+    async updateFacility(facilityId,{name, location, min_capacity, max_capacity, type, status }){
+
+        let conn;
+        try{
+            conn = await getConnection();
+            const fields = [];
+            const values = [];
+            if(name){
+                fields.push("name = ?");
+                values.push(name);
+
+            }
+            if(location){
+                fields.push("location_description = ?");
+                values.push(location);
+            }
+            if(min_capacity !== undefined){
+                fields.push("min_capacity = ?");
+                values.push(min_capacity);
+            }
+            if(max_capacity !== undefined){
+                fields.push("max_capacity = ?");
+                values.push(max_capacity);
+            }
+            if(type !== undefined){
+                fields.push("type = ?");
+                values.push(type);
+            }
+            if(status !== undefined){
+                fields.push("status = ?");
+                values.push(status);
+            }
+
+            if(fields.length === 0){
+            return;            
+                        }
+
+            values.push(facilityId);
+
+            const query = `
+                UPDATE facilities
+                SET ${fields.join(', ')}
+                WHERE facility_id = ?
+            `;
+            await conn.query(query, values);
+        }catch (error) {
+            console.log(error);
+            throw new Error('Error updating facility: ' + error.message);
+        }finally {
+            if (conn) conn.release();
+        }
+
+    }
 }
 
 export default new FacilityRepo();

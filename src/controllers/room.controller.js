@@ -1,5 +1,6 @@
 import RoomService from "../services/room.service.js";
 import { saveLog } from "../utils/logs.js";
+import RoomRepo from "../repositories/room.repository.js";
 
 export const createRoom = async (req, res) => {
     let { room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids } = req.body;
@@ -165,4 +166,28 @@ export const getAllResources = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: 'Error fetching resources: ' + err.message });
     }
+};
+export const updateRoom = async (req,res)=>{
+const roomId = req.params.id;
+const { room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids } = req.body;
+if(! await RoomService.findRoomById(roomId)){
+    return res.status(404).json({ message: 'Room not found' });
+}
+try{
+    await RoomService.editRoom(roomId,{room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids});
+    await saveLog({
+        ip_address: req.ip,
+        user_type: 'admin',
+        record_id: roomId.toString(),
+        edited_table: 'rooms',
+        action: 'update',
+        changed_by: req.user ? req.user.id.toString() : 'admin'
+    });
+    return res.status(200).json({ message: 'Room updated successfully' });
+}
+catch(err){
+    return res.status(500).json({ message: 'Error updating room: ' + err.message });
+}
+
+
 };
