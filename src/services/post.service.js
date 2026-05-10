@@ -64,15 +64,14 @@ class PostService {
     }
 
     async getPostDetails(postId, userId) {
-        const post = await postRepo.getPostById(postId);
+        const [postData, comments] = await Promise.all([
+            postRepo.getPostWithAggregates(postId, userId),
+            this.getCommentsForPost(postId)
+        ]);
         
-        if (!post) {
+        if (!postData) {
             throw new Error('Post not found');
         }
-
-        const comments = await this.getCommentsForPost(postId);
-
-        const postData = await postRepo.getPostWithAggregates(postId, userId);
 
         return {
             post_id: Number(postData.post_id),
