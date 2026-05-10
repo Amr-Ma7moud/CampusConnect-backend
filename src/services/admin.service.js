@@ -21,7 +21,7 @@ class AdminService {
                 status: report.status,
                 details: report.details,
                 reason: report.reason,
-                created_at: report.created_at
+                created_at: report.date
             });
         }
 
@@ -33,7 +33,7 @@ class AdminService {
                 status: report.status,
                 details: report.details,
                 reason: report.reason,
-                created_at: report.created_at
+                created_at: report.date
             });
         }
 
@@ -45,7 +45,7 @@ class AdminService {
                 status: report.status,
                 details: report.details,
                 reason: report.reason,
-                created_at: report.created_at
+                created_at: report.date
             });
         }
 
@@ -57,7 +57,7 @@ class AdminService {
                 status: report.status,
                 details: report.details,
                 reason: report.reason,
-                created_at: report.created_at
+                created_at: report.report_date
             });
         }
 
