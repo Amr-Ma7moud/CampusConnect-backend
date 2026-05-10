@@ -49,14 +49,14 @@ class PostService {
         const posts = await postRepo.getAllPosts(15, userId);
         
         const newsFeed = posts.map(post => ({
-            post_id: post.post_id,
-            club_id: post.club_id,
-            event_id: post.event_id,
+            post_id: Number(post.post_id),
+            club_id: Number(post.club_id),
+            event_id: post.event_id ? Number(post.event_id) : null,
             content: post.content,
             image_url: post.image_url,
             created_at: post.created_at,
-            like_count: post.like_count,
-            comment_count: post.comment_count,
+            like_count: Number(post.like_count),
+            comment_count: Number(post.comment_count),
             is_liked: post.is_liked === 1
         }));
 
@@ -75,14 +75,14 @@ class PostService {
         const postData = await postRepo.getPostWithAggregates(postId, userId);
 
         return {
-            post_id: postData.post_id,
-            club_id: postData.club_id,
-            event_id: postData.event_id,
+            post_id: Number(postData.post_id),
+            club_id: Number(postData.club_id),
+            event_id: postData.event_id ? Number(postData.event_id) : null,
             content: postData.content,
             image_url: postData.image_url,
             created_at: postData.created_at,
-            like_count: postData.like_count,
-            comment_count: postData.comment_count,
+            like_count: Number(postData.like_count),
+            comment_count: Number(postData.comment_count),
             is_liked: postData.is_liked === 1,
             comments
         };
@@ -92,13 +92,13 @@ class PostService {
         const posts = await postRepo.getPostsByEventId(eventId);
 
         const eventPosts = posts.map(post => ({
-            post_id: post.post_id,
-            club_id: post.club_id,
+            post_id: Number(post.post_id),
+            club_id: Number(post.club_id),
             content: post.content,
             image_url: post.image_url,
             created_at: post.created_at,
-            like_count: post.like_count,
-            comment_count: post.comment_count,
+            like_count: Number(post.like_count),
+            comment_count: Number(post.comment_count),
             is_liked: false
         }));
 
