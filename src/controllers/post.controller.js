@@ -96,6 +96,20 @@ export const editPost = async (req, res) => {
 
 };
 
+export const getPostById = async (req, res) => {
+    const postId = req.params.id;
+    const userId = req.user.id;
+    
+    try {
+        const post = await postService.getPostDetails(postId, userId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+        return res.status(200).json(post);
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+};
 export const addCommentToPost = async (req, res) => {
     const userId = req.user.id;
     const postId = req.params.id;

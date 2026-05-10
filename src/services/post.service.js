@@ -86,6 +86,31 @@ class PostService {
         return newsFeed;
     }
 
+    async getPostDetails(postId, userId) {
+        const post = await postRepo.getPostById(postId);
+        
+        if (!post) {
+            throw new Error('Post not found');
+        }
+
+        const comments = await this.getCommentsForPost(postId);
+        const likes = await postRepo.getWhoLikedPost(postId);
+        const eventId = await postRepo.getEventIdByPostId(postId);
+
+        return {
+            post_id: post.post_id,
+            club_id: post.club_id,
+            event_id: eventId,
+            content: post.content,
+            image_url: post.image_url,
+            created_at: post.created_at,
+            like_count: likes.length,
+            comment_count: comments.length,
+            is_liked: likes.some(like => like.student_id === userId),
+            comments
+        };
+    }
+
     async getPostsByEventId(eventId, userId) {
         const posts = await postRepo.getPostsByEventId(eventId);
 
