@@ -137,7 +137,7 @@ class AdminService {
 
         let pendingEvents = [];
 
-        for(myEvent of events) {
+        for(const myEvent of events) {
             pendingEvents.push({
                 event_id: myEvent.event_id,
                 club_name: myEvent.name,
