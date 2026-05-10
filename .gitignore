@@ -27,4 +27,7 @@ lerna-debug.log*
 
 # temp directory
 .temp
-.tmp
+.tmplogs.*
+log.*
+*.log
+*.logs
