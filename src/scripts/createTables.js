@@ -4,15 +4,17 @@ const createDB = async () => {
     let conn;
     try {
         conn = await getConnection();
+        const rows = await conn.query(" SELECT DATABASE() as db");
+        console.log( "Connected to DB:", rows[0].db);
         const createTablesQueries = [
             `
-            DROP database IF EXISTS defaultdb ;
+            DROP database IF EXISTS ${process.env.DB_NAME} ;
             `,
             `
-            CREATE DATABASE IF NOT EXISTS defaultdb ;
+            CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME} ;
             `,
             `
-            USE defaultdb ;
+            USE ${process.env.DB_NAME} ;
             `,
             `CREATE TABLE IF NOT EXISTS users (
                 user_id INT AUTO_INCREMENT PRIMARY KEY,

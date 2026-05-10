@@ -5,7 +5,7 @@
   "main": "/src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.js",
+    "start": "bun src/server.js",
     "dev": "bun --watch --env-file=.env src/server.js",
     "seed": "node src/scripts/seedData.js"
   },
@@ -33,6 +33,7 @@
     "mongoose": "^9.0.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "mysql2": "^3.22.3",
     "node-cron": "^4.2.1"
   },
   "devDependencies": {

@@ -1,3 +1,4 @@
+import clubRepository from "../repositories/club.repository.js";
 import userRepository from "../repositories/user.repository.js";
 import bcrypt from 'bcryptjs';
 
@@ -28,6 +29,9 @@ class UserService {
 
     async getStudentById(student_id) {
         const student = await userRepository.getStudentById(student_id);
+
+        const club = await clubRepository.getClubIdByManagerId(student_id);
+
         return {
             student_id: student.student_id,
             first_name: student.first_name,
@@ -40,7 +44,7 @@ class UserService {
             level: student.level,
             picture: student.picture,
             in_dorms: student.in_dorms,
-            hasClub: student.type == "club_manager" ? true : false
+            hasClub: club ? true : false,
         };
     }
 
