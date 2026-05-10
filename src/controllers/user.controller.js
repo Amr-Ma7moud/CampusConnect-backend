@@ -11,7 +11,7 @@ export const getUserProfile = async (req, res) => {
         const userId = req.user.id;
         let user;
 
-        if(req.user.role == "student") {
+        if(req.user.role == "student" || req.user.role == "club_manager") {
             user = await userService.getStudentById(userId);
         } else {
             user = await userService.getAdminById(userId);
