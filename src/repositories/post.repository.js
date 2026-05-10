@@ -93,7 +93,16 @@ class PostRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                SELECT * FROM std_comment_post WHERE post_id = ?
+                SELECT 
+                    scp.student_id,
+                    CONCAT(s.first_name, ' ', s.last_name) as student_name,
+                    s.picture as student_image_url,
+                    scp.content,
+                    scp.created_at
+                FROM std_comment_post scp
+                JOIN students s ON scp.student_id = s.student_id
+                WHERE scp.post_id = ?
+                ORDER BY scp.created_at DESC
             `, [postId]);
 
             return result;
@@ -158,8 +167,22 @@ class PostRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                SELECT * FROM posts ORDER BY created_at DESC LIMIT ?
-
+                SELECT 
+                    p.post_id,
+                    p.club_id,
+                    p.content,
+                    p.image_url,
+                    p.created_at,
+                    pfe.event_id,
+                    COUNT(DISTINCT slp.student_id) as like_count,
+                    COUNT(DISTINCT scp.student_id) as comment_count
+                FROM posts p
+                LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
+                LEFT JOIN std_like_post slp ON p.post_id = slp.post_id
+                LEFT JOIN std_comment_post scp ON p.post_id = scp.post_id
+                GROUP BY p.post_id, p.club_id, p.content, p.image_url, p.created_at, pfe.event_id
+                ORDER BY p.created_at DESC 
+                LIMIT ?
             `, [limit]
             );
 
@@ -169,6 +192,37 @@ class PostRepo {
         } finally {
             if (conn) conn.release();
         }
+    }
+
+    async getPostWithAggregates(postId, userId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT 
+                    p.post_id,
+                    p.club_id,
+                    p.content,
+                    p.image_url,
+                    p.created_at,
+                    pfe.event_id,
+                    COUNT(DISTINCT slp.student_id) as like_count,
+                    COUNT(DISTINCT scp.student_id) as comment_count,
+                    MAX(CASE WHEN slp.student_id = ? THEN 1 ELSE 0 END) as is_liked
+                FROM posts p
+                LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
+                LEFT JOIN std_like_post slp ON p.post_id = slp.post_id
+                LEFT JOIN std_comment_post scp ON p.post_id = scp.post_id
+                WHERE p.post_id = ?
+                GROUP BY p.post_id, p.club_id, p.content, p.image_url, p.created_at, pfe.event_id
+            `, [userId, postId]);
+
+            return result[0] || null;
+        } catch (error) {
+            throw new Error('Error fetching post with aggregates: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }   
     }
 
     async getEventIdByPostId(postId) {
@@ -196,10 +250,20 @@ class PostRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                SELECT p.post_id, p.content, p.image_url, p.created_at, p.club_id
+                SELECT 
+                    p.post_id,
+                    p.club_id,
+                    p.content,
+                    p.image_url,
+                    p.created_at,
+                    COUNT(DISTINCT slp.student_id) as like_count,
+                    COUNT(DISTINCT scp.student_id) as comment_count
                 FROM posts p
                 JOIN posts_for_event pe ON p.post_id = pe.post_id
+                LEFT JOIN std_like_post slp ON p.post_id = slp.post_id
+                LEFT JOIN std_comment_post scp ON p.post_id = scp.post_id
                 WHERE pe.event_id = ?
+                GROUP BY p.post_id, p.club_id, p.content, p.image_url, p.created_at
                 ORDER BY p.created_at DESC
             `, [eventId]);
 

@@ -34,22 +34,7 @@ class PostService {
     }
 
     async getCommentsForPost(postId) {
-        const comments = await postRepo.getCommentsByPostId(postId);
-
-        let postComments = [];
-
-        for (let comment of comments) {
-            const student = await userService.getStudentById(comment.student_id);
-
-            postComments.push({
-                student_name: `${student.first_name} ${student.last_name}`,
-                student_image_url: student.picture,
-                content: comment.content,
-                created_at: comment.created_at
-            });
-        }
-
-        return postComments;
+        return await postRepo.getCommentsByPostId(postId);
     }
 
     async likePost(postId, userId) {
@@ -63,25 +48,17 @@ class PostService {
     async getNewsFeed(userId) {
         const posts = await postRepo.getAllPosts(15);
         
-        let newsFeed = [];
-
-        for(let post of posts) {
-            const comments = await this.getCommentsForPost(post.post_id);
-            const likes = await postRepo.getWhoLikedPost(post.post_id);
-            const eventId = await postRepo.getEventIdByPostId(post.post_id);
-
-            newsFeed.push({
-                post_id: post.post_id,
-                club_id: post.club_id,
-                event_id: eventId,
-                content: post.content,
-                image_url: post.image_url,
-                created_at: post.created_at,
-                like_count: likes.length,
-                comment_count: comments.length,
-                is_liked: likes.some(like => like.student_id === userId),
-            });
-        }
+        const newsFeed = posts.map(post => ({
+            post_id: post.post_id,
+            club_id: post.club_id,
+            event_id: post.event_id,
+            content: post.content,
+            image_url: post.image_url,
+            created_at: post.created_at,
+            like_count: post.like_count,
+            comment_count: post.comment_count,
+            is_liked: false
+        }));
 
         return newsFeed;
     }
@@ -94,19 +71,19 @@ class PostService {
         }
 
         const comments = await this.getCommentsForPost(postId);
-        const likes = await postRepo.getWhoLikedPost(postId);
-        const eventId = await postRepo.getEventIdByPostId(postId);
+
+        const postData = await postRepo.getPostWithAggregates(postId, userId);
 
         return {
-            post_id: post.post_id,
-            club_id: post.club_id,
-            event_id: eventId,
-            content: post.content,
-            image_url: post.image_url,
-            created_at: post.created_at,
-            like_count: likes.length,
-            comment_count: comments.length,
-            is_liked: likes.some(like => like.student_id === userId),
+            post_id: postData.post_id,
+            club_id: postData.club_id,
+            event_id: postData.event_id,
+            content: postData.content,
+            image_url: postData.image_url,
+            created_at: postData.created_at,
+            like_count: postData.like_count,
+            comment_count: postData.comment_count,
+            is_liked: postData.is_liked === 1,
             comments
         };
     }
@@ -114,22 +91,16 @@ class PostService {
     async getPostsByEventId(eventId, userId) {
         const posts = await postRepo.getPostsByEventId(eventId);
 
-        let eventPosts = [];
-        
-        for(let post of posts) {
-            const comments = await this.getCommentsForPost(post.post_id);
-            const likes = await postRepo.getWhoLikedPost(post.post_id);
-            eventPosts.push({
-                post_id: post.post_id,
-                club_id: post.club_id,
-                content: post.content,
-                image_url: post.image_url,
-                created_at: post.created_at,
-                like_count: likes.length,
-                comment_count: comments.length,
-                is_liked: likes.some(like => like.student_id === userId),
-            });
-        }
+        const eventPosts = posts.map(post => ({
+            post_id: post.post_id,
+            club_id: post.club_id,
+            content: post.content,
+            image_url: post.image_url,
+            created_at: post.created_at,
+            like_count: post.like_count,
+            comment_count: post.comment_count,
+            is_liked: false
+        }));
 
         return eventPosts;
     }
