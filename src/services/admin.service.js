@@ -67,7 +67,8 @@ class AdminService {
     async getStats() {
         try {
             const students = await userRepository.getAllStudents();
-
+            const reservedGym = await facilityRepository.getCompletedReservationsCountByType('gym');
+            const reservedPlayground = await facilityRepository.getCompletedReservationsCountByType('playground');
             const clubs = await clubRepository.getAllClubs();
             let activeClubs = 0;
             for (let club of clubs) activeClubs += club.status == "active";
@@ -91,7 +92,7 @@ class AdminService {
                 active_events: activeEvents,
                 active_sessions: activeSessions,
                 reserved_rooms: roomsReserved.size,
-                reserved_facilities: 0 // we will add this later
+                reserved_facilities: reservedGym + reservedPlayground
             }
         } catch(err) {
             return null;
