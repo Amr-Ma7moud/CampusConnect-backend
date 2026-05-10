@@ -13,6 +13,11 @@ class ClubService {
         });
 
         await ClubRepo.addMembersToClub(clubId, members);
+
+        for (let studentId of std_ids) {
+            await ClubRepo.upgradeStudentToClubManager(studentId);
+        }
+        
         return clubId;
     }
 

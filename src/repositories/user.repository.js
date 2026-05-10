@@ -208,6 +208,22 @@ class UserRepo {
             if (conn) conn.release();
         }
     }
+
+    async upgradeStudentToClubManager(studentId) {
+        let conn;
+        try {
+            conn = await getConnection();
+            await conn.query(`
+                UPDATE students
+                SET type = 'club_manager'
+                WHERE student_id = ?
+            `, [studentId]);
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
+        }
+    }
 }
 
 
