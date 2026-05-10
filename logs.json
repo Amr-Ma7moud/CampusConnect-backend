@@ -355,5 +355,31 @@
     "action": "reserve",
     "changed_by": "6",
     "time": "2026-05-07T20:35:51.261Z"
+  },
+  {
+    "ip_address": "::1",
+    "user_type": "student",
+    "record_id": "2",
+    "edited_table": "likes",
+    "action": "unlike",
+    "changed_by": "6",
+    "time": "2026-05-08T21:32:44.449Z"
+  },
+  {
+    "user_type": "student",
+    "record_id": "2",
+    "edited_table": "std_register_event",
+    "action": "register",
+    "changed_by": "7",
+    "time": "2026-05-08T22:05:43.230Z"
+  },
+  {
+    "ip_address": "::1",
+    "user_type": "student",
+    "record_id": "1",
+    "edited_table": "std_register_event",
+    "action": "cancel_registration",
+    "changed_by": "7",
+    "time": "2026-05-08T22:05:48.147Z"
   }
 ]

@@ -33,6 +33,7 @@
     "mongoose": "^9.0.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "mysql2": "^3.22.3",
     "node-cron": "^4.2.1"
   },
   "devDependencies": {
