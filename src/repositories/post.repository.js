@@ -95,12 +95,13 @@ class PostRepo {
             const result = await conn.query(`
                 SELECT 
                     scp.student_id,
-                    CONCAT(s.first_name, ' ', s.last_name) as student_name,
-                    s.picture as student_image_url,
+                    CONCAT(u.first_name, ' ', u.last_name) as student_name,
+                    st.picture as student_image_url,
                     scp.content,
                     scp.created_at
                 FROM std_comment_post scp
-                JOIN students s ON scp.student_id = s.student_id
+                JOIN users u ON scp.student_id = u.user_id
+                LEFT JOIN students st ON scp.student_id = st.student_id
                 WHERE scp.post_id = ?
                 ORDER BY scp.created_at DESC
             `, [postId]);
@@ -162,7 +163,7 @@ class PostRepo {
         }
     }
 
-    async getAllPosts(limit) {
+    async getAllPosts(limit, userId) {
         let conn;
         try {
             conn = await getConnection();
@@ -174,8 +175,9 @@ class PostRepo {
                     p.image_url,
                     p.created_at,
                     pfe.event_id,
-                    COUNT(DISTINCT slp.student_id) as like_count,
-                    COUNT(DISTINCT scp.student_id) as comment_count
+                    CAST(COUNT(DISTINCT slp.student_id) AS UNSIGNED) as like_count,
+                    CAST(COUNT(DISTINCT scp.student_id) AS UNSIGNED) as comment_count,
+                    MAX(CASE WHEN slp.student_id = ? THEN 1 ELSE 0 END) as is_liked
                 FROM posts p
                 LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
                 LEFT JOIN std_like_post slp ON p.post_id = slp.post_id
@@ -183,7 +185,7 @@ class PostRepo {
                 GROUP BY p.post_id, p.club_id, p.content, p.image_url, p.created_at, pfe.event_id
                 ORDER BY p.created_at DESC 
                 LIMIT ?
-            `, [limit]
+            `, [userId, limit]
             );
 
             return result;
@@ -256,8 +258,8 @@ class PostRepo {
                     p.content,
                     p.image_url,
                     p.created_at,
-                    COUNT(DISTINCT slp.student_id) as like_count,
-                    COUNT(DISTINCT scp.student_id) as comment_count
+                    CAST(COUNT(DISTINCT slp.student_id) AS UNSIGNED) as like_count,
+                    CAST(COUNT(DISTINCT scp.student_id) AS UNSIGNED) as comment_count
                 FROM posts p
                 JOIN posts_for_event pe ON p.post_id = pe.post_id
                 LEFT JOIN std_like_post slp ON p.post_id = slp.post_id

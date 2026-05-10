@@ -46,7 +46,7 @@ class PostService {
     }
 
     async getNewsFeed(userId) {
-        const posts = await postRepo.getAllPosts(15);
+        const posts = await postRepo.getAllPosts(15, userId);
         
         const newsFeed = posts.map(post => ({
             post_id: post.post_id,
@@ -57,7 +57,7 @@ class PostService {
             created_at: post.created_at,
             like_count: post.like_count,
             comment_count: post.comment_count,
-            is_liked: false
+            is_liked: post.is_liked === 1
         }));
 
         return newsFeed;
