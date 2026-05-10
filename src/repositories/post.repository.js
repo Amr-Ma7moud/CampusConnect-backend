@@ -169,12 +169,12 @@ class PostRepo {
             conn = await getConnection();
             const result = await conn.query(`
                 SELECT 
-                    p.post_id,
-                    p.club_id,
+                    CAST(p.post_id AS UNSIGNED) as post_id,
+                    CAST(p.club_id AS UNSIGNED) as club_id,
                     p.content,
                     p.image_url,
                     p.created_at,
-                    pfe.event_id,
+                    CAST(pfe.event_id AS UNSIGNED) as event_id,
                     CAST(COUNT(DISTINCT slp.student_id) AS UNSIGNED) as like_count,
                     CAST(COUNT(DISTINCT scp.student_id) AS UNSIGNED) as comment_count,
                     MAX(CASE WHEN slp.student_id = ? THEN 1 ELSE 0 END) as is_liked
@@ -202,14 +202,14 @@ class PostRepo {
             conn = await getConnection();
             const result = await conn.query(`
                 SELECT 
-                    p.post_id,
-                    p.club_id,
+                    CAST(p.post_id AS UNSIGNED) as post_id,
+                    CAST(p.club_id AS UNSIGNED) as club_id,
                     p.content,
                     p.image_url,
                     p.created_at,
-                    pfe.event_id,
-                    COUNT(DISTINCT slp.student_id) as like_count,
-                    COUNT(DISTINCT scp.student_id) as comment_count,
+                    CAST(pfe.event_id AS UNSIGNED) as event_id,
+                    CAST(COUNT(DISTINCT slp.student_id) AS UNSIGNED) as like_count,
+                    CAST(COUNT(DISTINCT scp.student_id) AS UNSIGNED) as comment_count,
                     MAX(CASE WHEN slp.student_id = ? THEN 1 ELSE 0 END) as is_liked
                 FROM posts p
                 LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
@@ -232,7 +232,7 @@ class PostRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                SELECT event_id FROM posts_for_event WHERE post_id = ?
+                SELECT CAST(event_id AS UNSIGNED) as event_id FROM posts_for_event WHERE post_id = ?
             `, [postId]);
 
             if (result.length > 0) {
@@ -253,8 +253,8 @@ class PostRepo {
             conn = await getConnection();
             const result = await conn.query(`
                 SELECT 
-                    p.post_id,
-                    p.club_id,
+                    CAST(p.post_id AS UNSIGNED) as post_id,
+                    CAST(p.club_id AS UNSIGNED) as club_id,
                     p.content,
                     p.image_url,
                     p.created_at,
