@@ -36,6 +36,14 @@ class FacilityService {
             throw new Error('Error in FacilityService: ' + error.message);
         }
     }
+    async getFacilityById(facilityId) {
+        try {
+            const result = await FacilityRepo.getFacilityById(facilityId);
+            return result;
+        }catch (error) {
+            throw new Error('Error in FacilityService: ' + error.message);
+        }
+    }
 
     async reserveFacility({ facilityId, startTime, endTime, teamIds, currentUserId }) {
         try {
@@ -104,6 +112,13 @@ class FacilityService {
         } catch (error) {
             throw new Error('Error in FacilityService: ' + error.message);
         }
+    }
+
+    async updateFacility(facilityId,{name, location, min_capacity, max_capacity, type, status }){
+        try{
+await FacilityRepo.updateFacility(facilityId,{name, location, min_capacity, max_capacity, type, status });}
+catch (error) {
+    throw new Error('Error in FacilityService: ' + error.message);}
     }
 }
 

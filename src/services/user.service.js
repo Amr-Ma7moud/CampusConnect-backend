@@ -57,6 +57,9 @@ class UserService {
     async banUser(userId) {
         await userRepository.updateUserStatus(userId, 0);
     }
+     async unbanUser(userId) {
+        await userRepository.updateUserStatus(userId, 1);
+    }
 
     async searchForStudent(query) {
         const results = await userRepository.searchForUsers(query);

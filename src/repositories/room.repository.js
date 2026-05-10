@@ -57,7 +57,20 @@ class RoomRepo {
             if (conn) conn.release();
         }
     }
-
+    async findRoomById(roomId) {
+        let conn;
+        try{
+            conn = await getConnection();
+            const [rows] = await conn.query( `
+                SELECT * FROM rooms WHERE room_id = ?
+            `, [roomId]);
+            return (rows && rows.length > 0) ? rows[0] : null;
+        }catch(error ){
+            return null;
+        }finally{
+            if(conn) conn.release();
+        }
+    }
     async getAllRooms() {
         let conn;
         try {
@@ -234,6 +247,62 @@ class RoomRepo {
             if (conn) conn.release();
         }
     }
+
+    async updateRoom (roomId,{room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids}){
+    let conn;
+    try{
+       conn = await getConnection();
+            const fields = [];
+            const values = [];
+            if(room_number){
+                fields.push("room_number = ?");
+                values.push(room_number);
+            }
+            if(building_name){
+                fields.push("building_name = ?");
+                values.push(building_name);
+            }
+            if(start_time){
+                fields.push("start_time = ?");
+                values.push(start_time);
+            }
+            if(end_time){
+                fields.push("end_time = ?");
+                values.push(end_time);
+            }
+            if(capacity){
+                fields.push("capacity = ?");
+                values.push(capacity);
+            }
+            if(type){
+                fields.push("type = ?");
+                values.push(type);
+            }
+            if(is_available !== undefined){
+                fields.push("is_available = ?");
+                values.push(is_available);
+            }
+            if(resources_ids){
+                fields.push("resources_ids = ?");
+                values.push(resources_ids.join(','));
+            }
+
+            if(fields.length === 0){
+                return;
+            }
+            
+            values.push(roomId); 
+            const sql = `UPDATE rooms SET ${fields.join(', ')} WHERE id = ?`;
+            await conn.query(sql, values);
+
+    }catch (error) {
+        console.log(error);
+        throw new Error('Error updating room: ' + error.message);
+    }finally{
+        if(conn) conn.release();
+    }
+}
+
 }
 
 export default new RoomRepo();

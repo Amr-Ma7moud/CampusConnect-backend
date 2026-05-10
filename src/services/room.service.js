@@ -137,6 +137,21 @@ class RoomService {
     async getAllResources() {
         return await RoomRepo.getAllResources();
     }
+
+async editRoom(roomId,{room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids}){
+    try{
+    await RoomRepo.updateRoom(roomId,{room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids});  
+    }catch (error) {    throw new Error('Error in RoomService: ' + error.message);}
+    }
+async findRoomById(roomId){
+    try{
+    
+        return await RoomRepo.findRoomById(roomId);}
+    
+    catch (error) {    throw new Error('Error in RoomService: ' + error.message);
+
+    }
+}
 }
 
 export default new RoomService();

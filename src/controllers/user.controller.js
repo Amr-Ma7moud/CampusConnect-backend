@@ -133,6 +133,22 @@ export const banUser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
+export const unbanUser=async (req,res)=>{
+const userId = req.params.id;
+try{
+    await userService.unbanUser(userId);
+    await saveLog({
+            ip_address: req.ip,
+            user_type: 'admin', 
+            record_id: userId,
+            edited_table: 'users',
+            action: 'unban/activate',
+            changed_by: req.user.id.toString()
+        });
+res.status(200).json({message:"User has been unbanned"});
+}catch(error){
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+}};
 
 
 export const searchForStudent = async (req, res) => {
