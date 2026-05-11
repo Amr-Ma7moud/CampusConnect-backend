@@ -25,6 +25,9 @@ lerna-debug.log*
 *.suo
 .history/
 
+# Test coverage
+coverage/
+
 # temp directory
 .temp
 .tmplogs.*
