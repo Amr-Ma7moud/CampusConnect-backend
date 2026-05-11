@@ -1,6 +1,18 @@
 import EventRepo from "../repositories/event.repository.js";
 import clubService from "./club.service.js";
 class EventService {
+    // Helper function to convert ISO 8601 datetime to MySQL DATETIME format
+    convertToMySQLDateTime(isoDateTime) {
+        const date = new Date(isoDateTime);
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     async getEventById(id, currentUserId) {
         const event = await EventRepo.getEventById(id, currentUserId);
         if (!event) {
@@ -64,6 +76,11 @@ class EventService {
             throw new Error("Club not found");
         }
         eventData.club_id = clubId;
+        
+        // Convert ISO 8601 datetime to MySQL format
+        eventData.startTime = this.convertToMySQLDateTime(eventData.startTime);
+        eventData.endTime = this.convertToMySQLDateTime(eventData.endTime);
+        
         const newEvent = await EventRepo.scheduleEvent(eventData);
         return newEvent;
     }
