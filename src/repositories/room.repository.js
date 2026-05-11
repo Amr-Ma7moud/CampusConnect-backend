@@ -248,6 +248,29 @@ class RoomRepo {
         }
     }
 
+    async checkStudentsExist(studentIds) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const placeholders = studentIds.map(() => '?').join(',');
+            const [rows] = await conn.query(`
+                SELECT student_id FROM students WHERE student_id IN (${placeholders})
+            `, studentIds);
+            
+            const foundIds = rows.map(row => row.student_id);
+            const missingIds = studentIds.filter(id => !foundIds.includes(id));
+            
+            return {
+                allExist: missingIds.length === 0,
+                missingIds: missingIds
+            };
+        } catch (error) {
+            throw new Error('Error checking students: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
     async updateRoom (roomId,{room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids}){
     let conn;
     try{

@@ -54,6 +54,12 @@ class RoomService {
              or the resrevation status is cancelled or completed (means that the student left the room)
         */
 
+        // Validate all students exist before attempting reservation
+        const studentCheck = await RoomRepo.checkStudentsExist(std_ids);
+        if (!studentCheck.allExist) {
+            throw new Error(`Invalid student IDs: ${studentCheck.missingIds.join(', ')}`);
+        }
+
         // Convert ISO 8601 datetime to MySQL format
         const mysqlStartTime = this.convertToMySQLDateTime(start_time);
         const mysqlEndTime = this.convertToMySQLDateTime(end_time);

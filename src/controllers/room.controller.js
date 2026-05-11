@@ -64,6 +64,12 @@ export const reserveRoom = async (req, res) => {
 
     } catch (err) {
         console.error('Error in reserveRoom:', err);
+        
+        // Check if it's a validation error
+        if (err.message.includes('Invalid student IDs')) {
+            return res.status(400).json({ message: err.message });
+        }
+        
         return res.status(500).json({ message: 'Server error', error: err.message }); 
     }
 };
