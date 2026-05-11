@@ -254,7 +254,8 @@ class EventRepo {
             conn = await getConnection();
             await conn.query(
                 `
-                DELETE FROM events
+                UPDATE events
+                SET status = 'cancelled'
                 WHERE event_id = ?;
                 `,
                 [eventId]
