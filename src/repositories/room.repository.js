@@ -253,7 +253,7 @@ class RoomRepo {
         try {
             conn = await getConnection();
             const placeholders = studentIds.map(() => '?').join(',');
-            const [rows] = await conn.query(`
+            const rows = await conn.query(`
                 SELECT student_id FROM students WHERE student_id IN (${placeholders})
             `, studentIds);
             
