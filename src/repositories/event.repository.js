@@ -279,9 +279,8 @@ class EventRepo {
                     event_start_date, 
                     event_end_date, 
                     club_id,
-                    room_id, 
                     max_capacity
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                ) VALUES (?, ?, ?, ?, ?, ?, ?);
                 `,
                 [
                     eventData.type,
@@ -290,7 +289,6 @@ class EventRepo {
                     eventData.startTime,
                     eventData.endTime,
                     eventData.club_id,
-                    eventData.roomId,
                     eventData.max_regestrations,
                 ]
             );

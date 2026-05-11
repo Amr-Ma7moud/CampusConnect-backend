@@ -272,7 +272,6 @@ export const scheduleEvent = async (req, res) => {
             description: req.body.description,
             startTime: req.body.start_time,
             endTime: req.body.end_time,
-            roomId: req.body.room_id,
             club_id: null, // to be set in service
             max_regestrations: req.body.max_registrations,
         };
