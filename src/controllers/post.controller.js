@@ -29,12 +29,12 @@ export const createPost = async (req, res) => {
             event_id
         };
 
-        await postService.createPost(postData);
+        const postId = await postService.createPost(postData);
 
         await saveLog({
             ip_address: req.ip,
             user_type: 'club_manager',
-            record_id: clubId.userId.toString(), // or post ID if returned? Service doesn't seem to return it here, but let's assume we log the action on the club or event.
+            record_id: postId, // or post ID if returned? Service doesn't seem to return it here, but let's assume we log the action on the club or event.
             edited_table: 'posts',
             action: 'create',
             changed_by: userId.toString()
