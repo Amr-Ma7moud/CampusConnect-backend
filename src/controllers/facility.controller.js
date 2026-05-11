@@ -63,10 +63,15 @@ export const reserveFacility = async (req, res) => {
             return res.status(400).json({ message: 'end_time must be after start_time' });
         }
 
+        const formatDateTime = (date) => {
+            const pad = (value) => String(value).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        };
+
         const reservation = await FacilityService.reserveFacility({
             facilityId,
-            startTime: start_time,
-            endTime: end_time,
+            startTime: formatDateTime(startDate),
+            endTime: formatDateTime(endDate),
             teamIds: team_ids,
             currentUserId,
         });
