@@ -280,11 +280,9 @@ class PostRepo {
             conn = await getConnection();
             await conn.beginTransaction();
 
-            await Promise.all([
-                conn.query('DELETE FROM std_like_post WHERE post_id = ?', [postId]),
-                conn.query('DELETE FROM std_comment_post WHERE post_id = ?', [postId]),
-                conn.query('DELETE FROM posts_for_event WHERE post_id = ?', [postId])
-            ]);
+            await conn.query('DELETE FROM std_like_post WHERE post_id = ?', [postId]);
+            await conn.query('DELETE FROM std_comment_post WHERE post_id = ?', [postId]);
+            await conn.query('DELETE FROM posts_for_event WHERE post_id = ?', [postId]);
 
             await conn.query('DELETE FROM posts WHERE post_id = ?', [postId]);
 
