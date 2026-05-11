@@ -61,11 +61,13 @@ class ClubService {
     }
 
     async getClubDetails(clubId, userId) {
-        const club = await this.findClubById(clubId);
-        const followers = await ClubRepo.getClubFollowers(clubId);
-        const members = await this.findClubMembers(clubId);
-        const isJoined = await this.isUserFollowingClub(clubId, userId);
-        const events = await eventService.getAllClubEvents(userId);
+        club , followers, members, isJoined, events = await Promise.all([ 
+        this.findClubById(clubId),
+        ClubRepo.getClubFollowers(clubId),
+        this.findClubMembers(clubId),
+        this.isUserFollowingClub(clubId, userId),
+        eventService.getAllClubEvents(userId)
+        ]);
 
         return {
             id: club.club_id,

@@ -6,7 +6,8 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: join(__dirname, '../../.env') });
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+dotenv.config({ path: join(__dirname, '../../', envFile) });
 
 const pool = mariaDB.createPool({
   host: process.env.DB_HOST,
@@ -15,11 +16,15 @@ const pool = mariaDB.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   connectionLimit: 5,
-  connectTimeout: 10000, 
+  connectTimeout: 10000,
   acquireTimeout: 10000,
-
+  idleTimeout: 5,
 });
 
 export const getConnection = async () => {
   return await pool.getConnection();
+};
+
+export const closePool = async () => {
+  await pool.end();
 };

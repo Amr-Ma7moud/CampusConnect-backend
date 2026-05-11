@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="201" failures="4" errors="0" time="42.897">
+  <testsuite name="POST /api/events/" errors="0" failures="1" skipped="0" timestamp="2026-05-10T19:01:40" time="5.872" tests="19">
+    <testcase classname="POST /api/events/ 403 for plain student" name="POST /api/events/ 403 for plain student" time="0.261">
+    </testcase>
+    <testcase classname="POST /api/events/ 400 for invalid type" name="POST /api/events/ 400 for invalid type" time="0.236">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register 404 when event does not exist" name="POST /api/events/:event_id/register 404 when event does not exist" time="0.218">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register 400 when event id is non-numeric" name="POST /api/events/:event_id/register 400 when event id is non-numeric" time="0.242">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register happy path returns 200 and inserts row" name="POST /api/events/:event_id/register happy path returns 200 and inserts row" time="0.25">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register 400 when event status is not scheduled" name="POST /api/events/:event_id/register 400 when event status is not scheduled" time="0.24">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register 400 when registration deadline has passed" name="POST /api/events/:event_id/register 400 when registration deadline has passed" time="0.229">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register 409 when already registered" name="POST /api/events/:event_id/register 409 when already registered" time="0.251">
+    </testcase>
+    <testcase classname="POST /api/events/:event_id/register 400 when capacity is reached" name="POST /api/events/:event_id/register 400 when capacity is reached" time="0.324">
+    </testcase>
+    <testcase classname="DELETE /api/events/:event_id/register 404 when not registered" name="DELETE /api/events/:event_id/register 404 when not registered" time="0.227">
+    </testcase>
+    <testcase classname="DELETE /api/events/:event_id/register 200 when cancelling existing registration" name="DELETE /api/events/:event_id/register 200 when cancelling existing registration" time="0.241">
+    </testcase>
+    <testcase classname="POST /api/events/:id/attendance 400 when student_id missing in body (regression guard from to_be_continue.md)" name="POST /api/events/:id/attendance 400 when student_id missing in body (regression guard from to_be_continue.md)" time="0.24">
+    </testcase>
+    <testcase classname="GET /api/events/ returns 200 array of approved events" name="GET /api/events/ returns 200 array of approved events" time="0.232">
+    </testcase>
+    <testcase classname="GET /api/events/ 400 for invalid type query param" name="GET /api/events/ 400 for invalid type query param" time="0.251">
+    </testcase>
+    <testcase classname="GET /api/events/ filtering by type=event returns only event-type rows (regression guard for to_be_continue.md item 1)" name="GET /api/events/ filtering by type=event returns only event-type rows (regression guard for to_be_continue.md item 1)" time="0.213">
+    </testcase>
+    <testcase classname="GET /api/events/:event_id 200 for existing event" name="GET /api/events/:event_id 200 for existing event" time="0.218">
+    </testcase>
+    <testcase classname="GET /api/events/:event_id 404 for missing event" name="GET /api/events/:event_id 404 for missing event" time="0.223">
+    </testcase>
+    <testcase classname="POST /api/events/report 400 when fields missing" name="POST /api/events/report 400 when fields missing" time="0.202">
+    </testcase>
+    <testcase classname="POST /api/events/report 200 on valid report" name="POST /api/events/report 200 on valid report" time="0.221">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 500
+    at Object.&lt;anonymous&gt; (/mnt/extra-space/code-stuff/projects/CampusConnect-backend/tests/api/events.test.js:183:28)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/admin/users" errors="0" failures="1" skipped="0" timestamp="2026-05-10T19:01:46" time="4.105" tests="16">
+    <testcase classname="POST /api/admin/users 403 for student" name="POST /api/admin/users 403 for student" time="0.247">
+    </testcase>
+    <testcase classname="POST /api/admin/users 400 missing required fields" name="POST /api/admin/users 400 missing required fields" time="0.231">
+    </testcase>
+    <testcase classname="POST /api/admin/users 409 duplicate email" name="POST /api/admin/users 409 duplicate email" time="0.293">
+    </testcase>
+    <testcase classname="POST /api/admin/users 201 create admin" name="POST /api/admin/users 201 create admin" time="0.283">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 500
+    at Object.&lt;anonymous&gt; (/mnt/extra-space/code-stuff/projects/CampusConnect-backend/tests/api/admin.test.js:37:28)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/admin/users 400 student role missing student-specific fields" name="POST /api/admin/users 400 student role missing student-specific fields" time="0.281">
+    </testcase>
+    <testcase classname="POST /api/admin/rooms 400 missing fields" name="POST /api/admin/rooms 400 missing fields" time="0.203">
+    </testcase>
+    <testcase classname="POST /api/admin/rooms 200 valid create" name="POST /api/admin/rooms 200 valid create" time="0.238">
+    </testcase>
+    <testcase classname="POST /api/admin/facilities 400 missing fields" name="POST /api/admin/facilities 400 missing fields" time="0.248">
+    </testcase>
+    <testcase classname="POST /api/admin/facilities 200 valid create (regression guard for to_be_continue.md item 6)" name="POST /api/admin/facilities 200 valid create (regression guard for to_be_continue.md item 6)" time="0.201">
+    </testcase>
+    <testcase classname="GET admin reads GET /api/admin/stats returns 200 with shape" name="GET admin reads GET /api/admin/stats returns 200 with shape" time="0.239">
+    </testcase>
+    <testcase classname="GET admin reads GET /api/admin/report returns array" name="GET admin reads GET /api/admin/report returns array" time="0.226">
+    </testcase>
+    <testcase classname="GET admin reads GET /api/admin/facilities-usage returns 3 buckets" name="GET admin reads GET /api/admin/facilities-usage returns 3 buckets" time="0.218">
+    </testcase>
+    <testcase classname="GET admin reads GET /api/admin/approvals/events returns array" name="GET admin reads GET /api/admin/approvals/events returns array" time="0.235">
+    </testcase>
+    <testcase classname="PATCH /api/admin/approvals/events/:id 404 missing room when approving" name="PATCH /api/admin/approvals/events/:id 404 missing room when approving" time="0.218">
+    </testcase>
+    <testcase classname="PATCH /api/admin/approvals/events/:id 200 approve with room" name="PATCH /api/admin/approvals/events/:id 200 approve with room" time="0.21">
+    </testcase>
+    <testcase classname="GET /api/admin/logs 200 returns logs array (file may be empty)" name="GET /api/admin/logs 200 returns logs array (file may be empty)" time="0.23">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/clubs/" errors="0" failures="1" skipped="0" timestamp="2026-05-10T19:01:50" time="3.389" tests="14">
+    <testcase classname="POST /api/clubs/ 403 for non-admin" name="POST /api/clubs/ 403 for non-admin" time="0.238">
+    </testcase>
+    <testcase classname="POST /api/clubs/ 400 missing fields" name="POST /api/clubs/ 400 missing fields" time="0.221">
+    </testcase>
+    <testcase classname="POST /api/clubs/ 400 empty std_ids" name="POST /api/clubs/ 400 empty std_ids" time="0.239">
+    </testcase>
+    <testcase classname="POST /api/clubs/ 201 on create + DB row inserted" name="POST /api/clubs/ 201 on create + DB row inserted" time="0.29">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 500
+    at Object.&lt;anonymous&gt; (/mnt/extra-space/code-stuff/projects/CampusConnect-backend/tests/api/clubs.test.js:37:28)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/clubs/ 409 duplicate email" name="POST /api/clubs/ 409 duplicate email" time="0.292">
+    </testcase>
+    <testcase classname="GET /api/clubs/ and /:id 200 with list" name="GET /api/clubs/ and /:id 200 with list" time="0.199">
+    </testcase>
+    <testcase classname="GET /api/clubs/ and /:id 404 for missing club detail" name="GET /api/clubs/ and /:id 404 for missing club detail" time="0.196">
+    </testcase>
+    <testcase classname="POST /api/clubs/:id/follow and DELETE follow then unfollow happy path" name="POST /api/clubs/:id/follow and DELETE follow then unfollow happy path" time="0.227">
+    </testcase>
+    <testcase classname="POST /api/clubs/:id/follow and DELETE 404 follow on non-existent club" name="POST /api/clubs/:id/follow and DELETE 404 follow on non-existent club" time="0.198">
+    </testcase>
+    <testcase classname="POST /api/clubs/report 400 missing fields" name="POST /api/clubs/report 400 missing fields" time="0.189">
+    </testcase>
+    <testcase classname="POST /api/clubs/report 200 on valid report" name="POST /api/clubs/report 200 on valid report" time="0.206">
+    </testcase>
+    <testcase classname="PUT /api/clubs/:id 403 when caller is not manager of this club" name="PUT /api/clubs/:id 403 when caller is not manager of this club" time="0.193">
+    </testcase>
+    <testcase classname="PUT /api/clubs/:id 200 when caller manages this club" name="PUT /api/clubs/:id 200 when caller manages this club" time="0.218">
+    </testcase>
+    <testcase classname="PUT /api/clubs/:id 404 when club does not exist" name="PUT /api/clubs/:id 404 when club does not exist" time="0.202">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/posts/" errors="0" failures="1" skipped="0" timestamp="2026-05-10T19:01:54" time="1.964" tests="8">
+    <testcase classname="POST /api/posts/ club_manager creating a post should succeed with 201 (regression guard)" name="POST /api/posts/ club_manager creating a post should succeed with 201 (regression guard)" time="0.244">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 500
+    at Object.&lt;anonymous&gt; (/mnt/extra-space/code-stuff/projects/CampusConnect-backend/tests/api/posts.test.js:15:28)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/posts/ 403 when caller is not manager of any club" name="POST /api/posts/ 403 when caller is not manager of any club" time="0.133">
+    </testcase>
+    <testcase classname="POST /api/posts/ 400 when content missing" name="POST /api/posts/ 400 when content missing" time="0.229">
+    </testcase>
+    <testcase classname="POST /api/posts/ 403 for plain student" name="POST /api/posts/ 403 for plain student" time="0.223">
+    </testcase>
+    <testcase classname="GET /api/posts/ 200 news feed" name="GET /api/posts/ 200 news feed" time="0.248">
+    </testcase>
+    <testcase classname="POST /api/posts/:id/like and DELETE like and unlike happy path" name="POST /api/posts/:id/like and DELETE like and unlike happy path" time="0.219">
+    </testcase>
+    <testcase classname="POST /api/posts/:id/comments 400 when comment empty" name="POST /api/posts/:id/comments 400 when comment empty" time="0.205">
+    </testcase>
+    <testcase classname="POST /api/posts/:id/comments 200 adds comment" name="POST /api/posts/:id/comments 200 adds comment" time="0.217">
+    </testcase>
+  </testsuite>
+  <testsuite name="cross-cutting auth guards" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:01:56" time="3.218" tests="22">
+    <testcase classname="cross-cutting auth guards GET /api/users/me returns 401 with no token" name="cross-cutting auth guards GET /api/users/me returns 401 with no token" time="0.14">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/events/ returns 401 with no token" name="cross-cutting auth guards GET /api/events/ returns 401 with no token" time="0.119">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/clubs/ returns 401 with no token" name="cross-cutting auth guards GET /api/clubs/ returns 401 with no token" time="0.112">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/posts/ returns 401 with no token" name="cross-cutting auth guards GET /api/posts/ returns 401 with no token" time="0.115">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/rooms/ returns 401 with no token" name="cross-cutting auth guards GET /api/rooms/ returns 401 with no token" time="0.109">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/facilities/ returns 401 with no token" name="cross-cutting auth guards GET /api/facilities/ returns 401 with no token" time="0.108">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/users/me returns 401 with malformed token" name="cross-cutting auth guards GET /api/users/me returns 401 with malformed token" time="0.123">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/events/ returns 401 with malformed token" name="cross-cutting auth guards GET /api/events/ returns 401 with malformed token" time="0.12">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/clubs/ returns 401 with malformed token" name="cross-cutting auth guards GET /api/clubs/ returns 401 with malformed token" time="0.127">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/posts/ returns 401 with malformed token" name="cross-cutting auth guards GET /api/posts/ returns 401 with malformed token" time="0.113">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/rooms/ returns 401 with malformed token" name="cross-cutting auth guards GET /api/rooms/ returns 401 with malformed token" time="0.111">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/facilities/ returns 401 with malformed token" name="cross-cutting auth guards GET /api/facilities/ returns 401 with malformed token" time="0.106">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/users/me returns 401 with expired token" name="cross-cutting auth guards GET /api/users/me returns 401 with expired token" time="0.123">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/events/ returns 401 with expired token" name="cross-cutting auth guards GET /api/events/ returns 401 with expired token" time="0.126">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/clubs/ returns 401 with expired token" name="cross-cutting auth guards GET /api/clubs/ returns 401 with expired token" time="0.109">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/posts/ returns 401 with expired token" name="cross-cutting auth guards GET /api/posts/ returns 401 with expired token" time="0.121">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/rooms/ returns 401 with expired token" name="cross-cutting auth guards GET /api/rooms/ returns 401 with expired token" time="0.147">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/facilities/ returns 401 with expired token" name="cross-cutting auth guards GET /api/facilities/ returns 401 with expired token" time="0.112">
+    </testcase>
+    <testcase classname="cross-cutting auth guards admin-only {&quot;method&quot;:&quot;get&quot;,&quot;path&quot;:&quot;/api/admin/stats&quot;} returns 403 for student" name="cross-cutting auth guards admin-only {&quot;method&quot;:&quot;get&quot;,&quot;path&quot;:&quot;/api/admin/stats&quot;} returns 403 for student" time="0.252">
+    </testcase>
+    <testcase classname="cross-cutting auth guards admin-only {&quot;method&quot;:&quot;get&quot;,&quot;path&quot;:&quot;/api/admin/report&quot;} returns 403 for student" name="cross-cutting auth guards admin-only {&quot;method&quot;:&quot;get&quot;,&quot;path&quot;:&quot;/api/admin/report&quot;} returns 403 for student" time="0.21">
+    </testcase>
+    <testcase classname="cross-cutting auth guards admin-only {&quot;method&quot;:&quot;get&quot;,&quot;path&quot;:&quot;/api/users/students&quot;} returns 403 for student" name="cross-cutting auth guards admin-only {&quot;method&quot;:&quot;get&quot;,&quot;path&quot;:&quot;/api/users/students&quot;} returns 403 for student" time="0.229">
+    </testcase>
+    <testcase classname="cross-cutting auth guards GET /api/reservations/ is student-only and rejects admin" name="cross-cutting auth guards GET /api/reservations/ is student-only and rejects admin" time="0.133">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/facilities/" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:01:59" time="2.903" tests="11">
+    <testcase classname="GET /api/facilities/ 200 list" name="GET /api/facilities/ 200 list" time="0.247">
+    </testcase>
+    <testcase classname="POST /api/facilities/:id/reserve 403 for admin (student/club_manager only)" name="POST /api/facilities/:id/reserve 403 for admin (student/club_manager only)" time="0.239">
+    </testcase>
+    <testcase classname="POST /api/facilities/:id/reserve 400 missing fields" name="POST /api/facilities/:id/reserve 400 missing fields" time="0.221">
+    </testcase>
+    <testcase classname="POST /api/facilities/:id/reserve 400 end before start" name="POST /api/facilities/:id/reserve 400 end before start" time="0.239">
+    </testcase>
+    <testcase classname="POST /api/facilities/:id/reserve 400 current user not in team_ids" name="POST /api/facilities/:id/reserve 400 current user not in team_ids" time="0.277">
+    </testcase>
+    <testcase classname="POST /api/facilities/:id/reserve 404 facility not found" name="POST /api/facilities/:id/reserve 404 facility not found" time="0.235">
+    </testcase>
+    <testcase classname="POST /api/facilities/:id/reserve 201 happy path" name="POST /api/facilities/:id/reserve 201 happy path" time="0.309">
+    </testcase>
+    <testcase classname="PATCH /api/facilities/:id 403 for student" name="PATCH /api/facilities/:id 403 for student" time="0.223">
+    </testcase>
+    <testcase classname="PATCH /api/facilities/:id 404 for missing facility (admin)" name="PATCH /api/facilities/:id 404 for missing facility (admin)" time="0.235">
+    </testcase>
+    <testcase classname="POST /api/facilities/report 400 missing fields" name="POST /api/facilities/report 400 missing fields" time="0.214">
+    </testcase>
+    <testcase classname="POST /api/facilities/report 200 with valid data" name="POST /api/facilities/report 200 with valid data" time="0.231">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/rooms/" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:02" time="2.98" tests="12">
+    <testcase classname="GET /api/rooms/ 200 with array of rooms" name="GET /api/rooms/ 200 with array of rooms" time="0.259">
+    </testcase>
+    <testcase classname="POST /api/rooms/reserve 400 when fields missing" name="POST /api/rooms/reserve 400 when fields missing" time="0.228">
+    </testcase>
+    <testcase classname="POST /api/rooms/reserve 404 when no fitting room available" name="POST /api/rooms/reserve 404 when no fitting room available" time="0.217">
+    </testcase>
+    <testcase classname="POST /api/rooms/reserve 200 reserves smallest fitting room and writes to DB" name="POST /api/rooms/reserve 200 reserves smallest fitting room and writes to DB" time="0.225">
+    </testcase>
+    <testcase classname="POST /api/rooms/reserve overlapping reservation is rejected with 404" name="POST /api/rooms/reserve overlapping reservation is rejected with 404" time="0.21">
+    </testcase>
+    <testcase classname="PATCH /api/rooms/:id/cancel 400 when start_time missing" name="PATCH /api/rooms/:id/cancel 400 when start_time missing" time="0.214">
+    </testcase>
+    <testcase classname="PATCH /api/rooms/:id/cancel 404 when no reservation matches (regression guard for to_be_continue.md item 5)" name="PATCH /api/rooms/:id/cancel 404 when no reservation matches (regression guard for to_be_continue.md item 5)" time="0.232">
+    </testcase>
+    <testcase classname="POST /api/rooms/ (admin-only) 403 for non-admin" name="POST /api/rooms/ (admin-only) 403 for non-admin" time="0.224">
+    </testcase>
+    <testcase classname="POST /api/rooms/ (admin-only) 400 missing fields" name="POST /api/rooms/ (admin-only) 400 missing fields" time="0.218">
+    </testcase>
+    <testcase classname="POST /api/rooms/ (admin-only) 200 valid create" name="POST /api/rooms/ (admin-only) 200 valid create" time="0.217">
+    </testcase>
+    <testcase classname="POST /api/rooms/resources and GET 400 when name missing" name="POST /api/rooms/resources and GET 400 when name missing" time="0.229">
+    </testcase>
+    <testcase classname="POST /api/rooms/resources and GET 201 + list lookup" name="POST /api/rooms/resources and GET 201 + list lookup" time="0.25">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/users/me" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:05" time="2.584" tests="10">
+    <testcase classname="GET /api/users/me 401 without token" name="GET /api/users/me 401 without token" time="0.125">
+    </testcase>
+    <testcase classname="GET /api/users/me 200 with student profile when authenticated as student" name="GET /api/users/me 200 with student profile when authenticated as student" time="0.222">
+    </testcase>
+    <testcase classname="GET /api/users/me 200 with admin profile when authenticated as admin" name="GET /api/users/me 200 with admin profile when authenticated as admin" time="0.219">
+    </testcase>
+    <testcase classname="GET /api/users/students (admin-only) 401 without token" name="GET /api/users/students (admin-only) 401 without token" time="0.127">
+    </testcase>
+    <testcase classname="GET /api/users/students (admin-only) 403 for student" name="GET /api/users/students (admin-only) 403 for student" time="0.208">
+    </testcase>
+    <testcase classname="GET /api/users/students (admin-only) 200 for admin and returns array" name="GET /api/users/students (admin-only) 200 for admin and returns array" time="0.362">
+    </testcase>
+    <testcase classname="PATCH /api/users/:id/ban and /unban (admin-only) 403 for non-admin" name="PATCH /api/users/:id/ban and /unban (admin-only) 403 for non-admin" time="0.278">
+    </testcase>
+    <testcase classname="PATCH /api/users/:id/ban and /unban (admin-only) 200 + DB flip on ban" name="PATCH /api/users/:id/ban and /unban (admin-only) 200 + DB flip on ban" time="0.29">
+    </testcase>
+    <testcase classname="PATCH /api/users/:id/ban and /unban (admin-only) 200 + DB flip on unban" name="PATCH /api/users/:id/ban and /unban (admin-only) 200 + DB flip on unban" time="0.272">
+    </testcase>
+    <testcase classname="GET /api/users/ (search, admin-only) 403 for student" name="GET /api/users/ (search, admin-only) 403 for student" time="0.223">
+    </testcase>
+  </testsuite>
+  <testsuite name="EventService.registerStudentAtEvent" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:08" time="1.814" tests="15">
+    <testcase classname="EventService.registerStudentAtEvent throws &quot;Event not found&quot; when event does not exist" name="EventService.registerStudentAtEvent throws &quot;Event not found&quot; when event does not exist" time="0.158">
+    </testcase>
+    <testcase classname="EventService.registerStudentAtEvent throws &quot;Registration closed&quot; when event status is not scheduled" name="EventService.registerStudentAtEvent throws &quot;Registration closed&quot; when event status is not scheduled" time="0.112">
+    </testcase>
+    <testcase classname="EventService.registerStudentAtEvent throws &quot;Registration deadline passed&quot; when current time &gt;= event start" name="EventService.registerStudentAtEvent throws &quot;Registration deadline passed&quot; when current time &gt;= event start" time="0.113">
+    </testcase>
+    <testcase classname="EventService.registerStudentAtEvent throws &quot;Already registered&quot; when student is already registered" name="EventService.registerStudentAtEvent throws &quot;Already registered&quot; when student is already registered" time="0.117">
+    </testcase>
+    <testcase classname="EventService.registerStudentAtEvent throws &quot;Event is full&quot; when capacity reached" name="EventService.registerStudentAtEvent throws &quot;Event is full&quot; when capacity reached" time="0.109">
+    </testcase>
+    <testcase classname="EventService.registerStudentAtEvent succeeds and returns registration id on happy path" name="EventService.registerStudentAtEvent succeeds and returns registration id on happy path" time="0.123">
+    </testcase>
+    <testcase classname="EventService.registerStudentAtEvent proceeds when event has no max_capacity set" name="EventService.registerStudentAtEvent proceeds when event has no max_capacity set" time="0.109">
+    </testcase>
+    <testcase classname="EventService.cancelEventRegistration throws &quot;Event not found&quot; when event does not exist" name="EventService.cancelEventRegistration throws &quot;Event not found&quot; when event does not exist" time="0.104">
+    </testcase>
+    <testcase classname="EventService.cancelEventRegistration throws &quot;Registration not found&quot; when student is not registered" name="EventService.cancelEventRegistration throws &quot;Registration not found&quot; when student is not registered" time="0.112">
+    </testcase>
+    <testcase classname="EventService.cancelEventRegistration cancels successfully" name="EventService.cancelEventRegistration cancels successfully" time="0.107">
+    </testcase>
+    <testcase classname="EventService.checkInStudent throws when student not registered" name="EventService.checkInStudent throws when student not registered" time="0.114">
+    </testcase>
+    <testcase classname="EventService.checkInStudent throws when already checked in" name="EventService.checkInStudent throws when already checked in" time="0.114">
+    </testcase>
+    <testcase classname="EventService.checkInStudent returns check-in id on happy path" name="EventService.checkInStudent returns check-in id on happy path" time="0.108">
+    </testcase>
+    <testcase classname="EventService.scheduleEvent throws when manager has no club" name="EventService.scheduleEvent throws when manager has no club" time="0.119">
+    </testcase>
+    <testcase classname="EventService.scheduleEvent injects club_id and delegates to repo" name="EventService.scheduleEvent injects club_id and delegates to repo" time="0.11">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/auth/login" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:10" time="1.811" tests="7">
+    <testcase classname="POST /api/auth/login 400 when email missing" name="POST /api/auth/login 400 when email missing" time="0.142">
+    </testcase>
+    <testcase classname="POST /api/auth/login 400 when password missing" name="POST /api/auth/login 400 when password missing" time="0.127">
+    </testcase>
+    <testcase classname="POST /api/auth/login 401 when email does not exist" name="POST /api/auth/login 401 when email does not exist" time="0.119">
+    </testcase>
+    <testcase classname="POST /api/auth/login 401 when password is wrong" name="POST /api/auth/login 401 when password is wrong" time="0.304">
+    </testcase>
+    <testcase classname="POST /api/auth/login 200 with token and user object on valid credentials (student role)" name="POST /api/auth/login 200 with token and user object on valid credentials (student role)" time="0.293">
+    </testcase>
+    <testcase classname="POST /api/auth/login admin logs in with admin role in token" name="POST /api/auth/login admin logs in with admin role in token" time="0.274">
+    </testcase>
+    <testcase classname="POST /api/auth/login student who manages a club gets club_manager role in token" name="POST /api/auth/login student who manages a club gets club_manager role in token" time="0.304">
+    </testcase>
+  </testsuite>
+  <testsuite name="FacilityService.createFacility" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:12" time="1.568" tests="13">
+    <testcase classname="FacilityService.createFacility rejects when min_capacity &gt; max_capacity" name="FacilityService.createFacility rejects when min_capacity &gt; max_capacity" time="0.164">
+    </testcase>
+    <testcase classname="FacilityService.createFacility rejects negative capacity" name="FacilityService.createFacility rejects negative capacity" time="0.107">
+    </testcase>
+    <testcase classname="FacilityService.createFacility rejects invalid status" name="FacilityService.createFacility rejects invalid status" time="0.108">
+    </testcase>
+    <testcase classname="FacilityService.createFacility happy path delegates to repo" name="FacilityService.createFacility happy path delegates to repo" time="0.104">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects duplicate team IDs" name="FacilityService.reserveFacility rejects duplicate team IDs" time="0.108">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects when current user not in team_ids" name="FacilityService.reserveFacility rejects when current user not in team_ids" time="0.118">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects when facility does not exist" name="FacilityService.reserveFacility rejects when facility does not exist" time="0.106">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects when facility not available" name="FacilityService.reserveFacility rejects when facility not available" time="0.105">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects team size below min_capacity" name="FacilityService.reserveFacility rejects team size below min_capacity" time="0.135">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects team size above max_capacity" name="FacilityService.reserveFacility rejects team size above max_capacity" time="0.105">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects when some team members are not active students" name="FacilityService.reserveFacility rejects when some team members are not active students" time="0.107">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility rejects on overlapping reservation" name="FacilityService.reserveFacility rejects on overlapping reservation" time="0.112">
+    </testcase>
+    <testcase classname="FacilityService.reserveFacility happy path returns repo result" name="FacilityService.reserveFacility happy path returns repo result" time="0.106">
+    </testcase>
+  </testsuite>
+  <testsuite name="RoomService.createRoom" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:13" time="1.358" tests="11">
+    <testcase classname="RoomService.createRoom rejects non-positive capacity" name="RoomService.createRoom rejects non-positive capacity" time="0.162">
+    </testcase>
+    <testcase classname="RoomService.createRoom rejects invalid room type" name="RoomService.createRoom rejects invalid room type" time="0.104">
+    </testcase>
+    <testcase classname="RoomService.createRoom rejects when room with same number+building already exists" name="RoomService.createRoom rejects when room with same number+building already exists" time="0.114">
+    </testcase>
+    <testcase classname="RoomService.createRoom creates the room and links resources" name="RoomService.createRoom creates the room and links resources" time="0.125">
+    </testcase>
+    <testcase classname="RoomService.resreveRoom (overlap &amp; capacity) picks the smallest fitting available room" name="RoomService.resreveRoom (overlap &amp; capacity) picks the smallest fitting available room" time="0.114">
+    </testcase>
+    <testcase classname="RoomService.resreveRoom (overlap &amp; capacity) skips rooms that overlap an active reservation" name="RoomService.resreveRoom (overlap &amp; capacity) skips rooms that overlap an active reservation" time="0.114">
+    </testcase>
+    <testcase classname="RoomService.resreveRoom (overlap &amp; capacity) ignores cancelled / completed reservations when looking for overlap" name="RoomService.resreveRoom (overlap &amp; capacity) ignores cancelled / completed reservations when looking for overlap" time="0.106">
+    </testcase>
+    <testcase classname="RoomService.resreveRoom (overlap &amp; capacity) returns null when no room can fit" name="RoomService.resreveRoom (overlap &amp; capacity) returns null when no room can fit" time="0.104">
+    </testcase>
+    <testcase classname="RoomService.cancelReservation returns failure object when no reservation exists" name="RoomService.cancelReservation returns failure object when no reservation exists" time="0.119">
+    </testcase>
+    <testcase classname="RoomService.cancelReservation returns success on cancellation" name="RoomService.cancelReservation returns success on cancellation" time="0.105">
+    </testcase>
+    <testcase classname="RoomService.createResource rejects empty name" name="RoomService.createResource rejects empty name" time="0.107">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthService.login" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:15" time="1.546" tests="5">
+    <testcase classname="AuthService.login throws when no user exists for the given email" name="AuthService.login throws when no user exists for the given email" time="0.192">
+    </testcase>
+    <testcase classname="AuthService.login throws when password does not match the stored hash" name="AuthService.login throws when password does not match the stored hash" time="0.322">
+    </testcase>
+    <testcase classname="AuthService.login returns token + user object for valid credentials, role stays student" name="AuthService.login returns token + user object for valid credentials, role stays student" time="0.287">
+    </testcase>
+    <testcase classname="AuthService.login upgrades role to club_manager when student manages a club" name="AuthService.login upgrades role to club_manager when student manages a club" time="0.296">
+    </testcase>
+    <testcase classname="AuthService.login admin role is not consulted against club_manager check" name="AuthService.login admin role is not consulted against club_manager check" time="0.337">
+    </testcase>
+  </testsuite>
+  <testsuite name="auth.middleware" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:16" time="1.264" tests="9">
+    <testcase classname="auth.middleware verifyToken rejects with 401 when Authorization header is missing" name="auth.middleware verifyToken rejects with 401 when Authorization header is missing" time="0.177">
+    </testcase>
+    <testcase classname="auth.middleware verifyToken rejects with 401 when header does not start with &quot;Bearer &quot;" name="auth.middleware verifyToken rejects with 401 when header does not start with &quot;Bearer &quot;" time="0.139">
+    </testcase>
+    <testcase classname="auth.middleware verifyToken rejects with 401 when token signature is invalid" name="auth.middleware verifyToken rejects with 401 when token signature is invalid" time="0.127">
+    </testcase>
+    <testcase classname="auth.middleware verifyToken rejects with 401 when token is expired" name="auth.middleware verifyToken rejects with 401 when token is expired" time="0.113">
+    </testcase>
+    <testcase classname="auth.middleware verifyToken attaches decoded payload to req.user and calls next() for valid token" name="auth.middleware verifyToken attaches decoded payload to req.user and calls next() for valid token" time="0.121">
+    </testcase>
+    <testcase classname="auth.middleware verifyRole forbids when user role is not in required list" name="auth.middleware verifyRole forbids when user role is not in required list" time="0.112">
+    </testcase>
+    <testcase classname="auth.middleware verifyRole allows when user role matches one of the required roles" name="auth.middleware verifyRole allows when user role matches one of the required roles" time="0.116">
+    </testcase>
+    <testcase classname="auth.middleware verifyRole allows when only one role required and matches" name="auth.middleware verifyRole allows when only one role required and matches" time="0.114">
+    </testcase>
+    <testcase classname="auth.middleware verifyRole forbids when required list is empty" name="auth.middleware verifyRole forbids when required list is empty" time="0.131">
+    </testcase>
+  </testsuite>
+  <testsuite name="PostService.createPost" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:17" time="1.061" tests="6">
+    <testcase classname="PostService.createPost creates post without event link when no event_id" name="PostService.createPost creates post without event link when no event_id" time="0.318">
+    </testcase>
+    <testcase classname="PostService.createPost links post to event when event_id provided" name="PostService.createPost links post to event when event_id provided" time="0.117">
+    </testcase>
+    <testcase classname="PostService.checkIfPostBelongsToClub returns true when club_id matches" name="PostService.checkIfPostBelongsToClub returns true when club_id matches" time="0.11">
+    </testcase>
+    <testcase classname="PostService.checkIfPostBelongsToClub returns falsy when no post" name="PostService.checkIfPostBelongsToClub returns falsy when no post" time="0.11">
+    </testcase>
+    <testcase classname="PostService.getPostDetails throws when post not found" name="PostService.getPostDetails throws when post not found" time="0.141">
+    </testcase>
+    <testcase classname="PostService.getPostDetails returns normalized post + comments" name="PostService.getPostDetails returns normalized post + comments" time="0.13">
+    </testcase>
+  </testsuite>
+  <testsuite name="AdminService.getAllReports" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:18" time="0.996" tests="6">
+    <testcase classname="AdminService.getAllReports flattens reports from all sources into a single array" name="AdminService.getAllReports flattens reports from all sources into a single array" time="0.34">
+    </testcase>
+    <testcase classname="AdminService.getStats counts only active clubs and events" name="AdminService.getStats counts only active clubs and events" time="0.106">
+    </testcase>
+    <testcase classname="AdminService.getFacilitiesUsage returns zero distribution when no reservations" name="AdminService.getFacilitiesUsage returns zero distribution when no reservations" time="0.112">
+    </testcase>
+    <testcase classname="AdminService.getFacilitiesUsage returns percentage breakdown" name="AdminService.getFacilitiesUsage returns percentage breakdown" time="0.12">
+    </testcase>
+    <testcase classname="AdminService.approveEvent approval sets event to scheduled and assigns room" name="AdminService.approveEvent approval sets event to scheduled and assigns room" time="0.123">
+    </testcase>
+    <testcase classname="AdminService.approveEvent rejection sets event to cancelled" name="AdminService.approveEvent rejection sets event to cancelled" time="0.105">
+    </testcase>
+  </testsuite>
+  <testsuite name="UserService.createUser" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:19" time="1.062" tests="5">
+    <testcase classname="UserService.createUser hashes password before persisting" name="UserService.createUser hashes password before persisting" time="0.497">
+    </testcase>
+    <testcase classname="UserService.banUser / unbanUser banUser sets status to 0" name="UserService.banUser / unbanUser banUser sets status to 0" time="0.124">
+    </testcase>
+    <testcase classname="UserService.banUser / unbanUser unbanUser sets status to 1" name="UserService.banUser / unbanUser unbanUser sets status to 1" time="0.109">
+    </testcase>
+    <testcase classname="UserService.getStudentById hasClub=true when manager mapping exists" name="UserService.getStudentById hasClub=true when manager mapping exists" time="0.121">
+    </testcase>
+    <testcase classname="UserService.getStudentById hasClub=false when no mapping" name="UserService.getStudentById hasClub=false when no mapping" time="0.117">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/reservations/" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:21" time="0.986" tests="3">
+    <testcase classname="GET /api/reservations/ 401 without token" name="GET /api/reservations/ 401 without token" time="0.143">
+    </testcase>
+    <testcase classname="GET /api/reservations/ 403 for admin (students only)" name="GET /api/reservations/ 403 for admin (students only)" time="0.377">
+    </testcase>
+    <testcase classname="GET /api/reservations/ 200 returns array for student" name="GET /api/reservations/ 200 returns array for student" time="0.216">
+    </testcase>
+  </testsuite>
+  <testsuite name="ClubService.createClub" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:22" time="0.767" tests="5">
+    <testcase classname="ClubService.createClub creates club without managers when std_ids is empty" name="ClubService.createClub creates club without managers when std_ids is empty" time="0.236">
+    </testcase>
+    <testcase classname="ClubService.createClub creates club with managers and upgrades each student" name="ClubService.createClub creates club with managers and upgrades each student" time="0.112">
+    </testcase>
+    <testcase classname="ClubService.checkUserIsClubManager returns true when user appears in members list" name="ClubService.checkUserIsClubManager returns true when user appears in members list" time="0.123">
+    </testcase>
+    <testcase classname="ClubService.checkUserIsClubManager returns false otherwise" name="ClubService.checkUserIsClubManager returns false otherwise" time="0.106">
+    </testcase>
+    <testcase classname="ClubService.isUserFollowingClub returns true when user appears in followers" name="ClubService.isUserFollowingClub returns true when user appears in followers" time="0.108">
+    </testcase>
+  </testsuite>
+  <testsuite name="saveLog" errors="0" failures="0" skipped="0" timestamp="2026-05-10T19:02:22" time="0.78" tests="4">
+    <testcase classname="saveLog creates the file and writes one entry" name="saveLog creates the file and writes one entry" time="0.282">
+    </testcase>
+    <testcase classname="saveLog appends subsequent entries" name="saveLog appends subsequent entries" time="0.135">
+    </testcase>
+    <testcase classname="saveLog recovers from malformed JSON by resetting the file" name="saveLog recovers from malformed JSON by resetting the file" time="0.144">
+    </testcase>
+    <testcase classname="saveLog resets to array when file content is a non-array JSON" name="saveLog resets to array when file content is a non-array JSON" time="0.116">
+    </testcase>
+  </testsuite>
+</testsuites>
