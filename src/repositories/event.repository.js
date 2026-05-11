@@ -294,7 +294,7 @@ class EventRepo {
                     eventData.max_regestrations,
                 ]
             );
-            return result.insertId;
+            return Number(result.insertId);
         } catch (err) {
             throw err;
         } finally {
