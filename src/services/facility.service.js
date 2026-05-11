@@ -47,6 +47,29 @@ class FacilityService {
 
     async reserveFacility({ facilityId, startTime, endTime, teamIds, currentUserId }) {
         try {
+            const parseDateTime = (value) => {
+                const date = value instanceof Date ? value : new Date(value);
+                if (Number.isNaN(date.getTime())) {
+                    throw new Error('Invalid datetime values for facility reservation');
+                }
+                return date;
+            };
+
+            const formatDateTime = (date) => {
+                const pad = (value) => String(value).padStart(2, '0');
+                return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+            };
+
+            const startDate = parseDateTime(startTime);
+            const endDate = parseDateTime(endTime);
+
+            if (endDate <= startDate) {
+                throw new Error('end_time must be after start_time');
+            }
+
+            const normalizedStartTime = formatDateTime(startDate);
+            const normalizedEndTime = formatDateTime(endDate);
+
             const uniqueTeamIds = [...new Set(teamIds.map((id) => Number(id)))];
 
             if (uniqueTeamIds.length !== teamIds.length) {
@@ -85,8 +108,8 @@ class FacilityService {
 
             const hasConflict = await FacilityRepo.hasOverlappingReservation(
                 facilityId,
-                startTime,
-                endTime
+                normalizedStartTime,
+                normalizedEndTime
             );
 
             if (hasConflict) {
@@ -96,8 +119,8 @@ class FacilityService {
             return await FacilityRepo.reserveFacility(
                 uniqueTeamIds,
                 facilityId,
-                startTime,
-                endTime
+                normalizedStartTime,
+                normalizedEndTime
             );
         } catch (error) {
             throw new Error('Error in FacilityService: ' + error.message);
