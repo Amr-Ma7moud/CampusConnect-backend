@@ -63,7 +63,8 @@ export const reserveRoom = async (req, res) => {
         }
 
     } catch (err) {
-        return res.status(500).json({ message: 'Server error' });
+        console.error('Error in reserveRoom:', err);
+        return res.status(500).json({ message: 'Server error', error: err.message }); 
     }
 };
 
