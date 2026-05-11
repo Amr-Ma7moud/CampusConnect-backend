@@ -30,6 +30,18 @@ class RoomService {
         return result;
     }
 
+    // Helper function to convert ISO 8601 datetime to MySQL DATETIME format
+    convertToMySQLDateTime(isoDateTime) {
+        const date = new Date(isoDateTime);
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     async resreveRoom(start_time, end_time, purpose, std_ids) {
 
         /*
@@ -41,6 +53,10 @@ class RoomService {
              or the room reservation time does not overlap with the requested time
              or the resrevation status is cancelled or completed (means that the student left the room)
         */
+
+        // Convert ISO 8601 datetime to MySQL format
+        const mysqlStartTime = this.convertToMySQLDateTime(start_time);
+        const mysqlEndTime = this.convertToMySQLDateTime(end_time);
 
         const allRooms = await RoomRepo.getAllRooms();
         const allReservations = await RoomRepo.getAllRoomsReservations();
@@ -57,7 +73,7 @@ class RoomService {
                     if (reservation.room_id === room.room_id) {
                         // Check for time overlap
                         // now the start_time and end_time are date-time strings so edit the comparison
-                        if (!(new Date(end_time) <= new Date(reservation.start_time) || new Date(start_time) >= new Date(reservation.end_time)) &&
+                        if (!(new Date(mysqlEndTime) <= new Date(reservation.start_time) || new Date(mysqlStartTime) >= new Date(reservation.end_time)) &&
                             reservation.status !== 'cancelled' && reservation.status !== 'completed') {
                             isReserved = true;
                             break;
@@ -68,7 +84,7 @@ class RoomService {
                 if (!isReserved) {
                     // reserve this room for all students
                     for (let studentId of std_ids) {
-                        await RoomRepo.reserveRoom(studentId, room.room_id, start_time, end_time, purpose);
+                        await RoomRepo.reserveRoom(studentId, room.room_id, mysqlStartTime, mysqlEndTime, purpose);
                     }
                     return {
                         room_id: room.room_id,
