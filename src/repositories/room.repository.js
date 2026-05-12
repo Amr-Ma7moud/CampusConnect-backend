@@ -316,7 +316,7 @@ class RoomRepo {
             }
             
             values.push(roomId); 
-            const sql = `UPDATE rooms SET ${fields.join(', ')} WHERE id = ?`;
+            const sql = `UPDATE rooms SET ${fields.join(', ')} WHERE room_id = ?`;
             await conn.query(sql, values);
 
     }catch (error) {
