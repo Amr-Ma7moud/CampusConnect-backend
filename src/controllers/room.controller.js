@@ -178,6 +178,7 @@ export const updateRoom = async (req,res)=>{
 const roomId = req.params.id;
 const { room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids } = req.body;
 
+console.log('Room id: ', roomId);
 const room = await RoomService.findRoomById(roomId);
 console.log('Room is ', room);
 
