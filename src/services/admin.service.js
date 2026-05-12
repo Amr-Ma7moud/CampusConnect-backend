@@ -6,11 +6,13 @@ import userRepository from "../repositories/user.repository.js";
 
 class AdminService {
     async getAllReports() {
-        const clubReports = await clubRepository.getAllReports();
-        const eventReports = await eventRepository.getAllReports();
-        const roomReports = await roomRepository.getAllReports();
-        const facilityReports = await facilityRepository.getAllReports();
-
+        const [clubReports, eventReports, roomReports, facilityReports] = await Promise.all([
+            clubRepository.getAllReports(),
+            eventRepository.getAllReports(),
+            roomRepository.getAllReports(),
+            facilityRepository.getAllReports()
+        ]);
+        
         let reports = [];
 
         for(let report of clubReports) {
