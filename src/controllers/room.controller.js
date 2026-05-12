@@ -177,7 +177,11 @@ export const getAllResources = async (req, res) => {
 export const updateRoom = async (req,res)=>{
 const roomId = req.params.id;
 const { room_number, building_name, start_time, end_time, capacity, type, is_available, resources_ids } = req.body;
-if(! await RoomService.findRoomById(roomId)){
+
+const room = await RoomService.findRoomById(roomId);
+console.log('Room is ', room);
+
+if(!room){
     return res.status(404).json({ message: 'Room not found' });
 }
 try{
