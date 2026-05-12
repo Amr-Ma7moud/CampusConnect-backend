@@ -180,7 +180,7 @@ class RoomRepo {
         let conn;
         try {
             conn = await getConnection();
-            const [rows] = await conn.query(`
+            const rows = await conn.query(`
                 SELECT * FROM std_reserve_room
                 WHERE student_id = ? AND room_id = ? AND start_time = ?
             `, [
