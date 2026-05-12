@@ -201,7 +201,7 @@ export const unlikePost = async (req, res) => {
 
 export const getNewsFeed = async (req, res) => {
     const userId = req.user.id;
-    const clubId = req.body.club_id;
+    const clubId = req.body?.club_id;
 
     try {
         const newsFeed = (!clubId)
