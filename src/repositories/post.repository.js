@@ -193,6 +193,37 @@ class PostRepo {
         }
     }
 
+    async getPostsByClubId(clubId, userId, limit) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const result = await conn.query(`
+                SELECT 
+                    CAST(p.post_id AS UNSIGNED) as post_id,
+                    CAST(p.club_id AS UNSIGNED) as club_id,
+                    p.content,
+                    p.image_url,
+                    p.created_at,
+                    CAST(COALESCE(pfe.event_id, 0) AS UNSIGNED) as event_id,
+                    (SELECT COUNT(*) FROM std_like_post WHERE post_id = p.post_id) as like_count,
+                    (SELECT COUNT(*) FROM std_comment_post WHERE post_id = p.post_id) as comment_count,
+                    EXISTS(SELECT 1 FROM std_like_post WHERE post_id = p.post_id AND student_id = ?) as is_liked
+                FROM posts p
+                LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
+                WHERE p.club_id = ?
+                ORDER BY p.created_at DESC 
+                LIMIT ?
+            `, [userId, clubId, limit]
+            );
+
+            return result;
+        } catch (error) {
+            throw new Error('Error fetching posts by club: ' + error.message);
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
     async getPostWithAggregates(postId, userId) {
         let conn;
         try {

@@ -201,8 +201,13 @@ export const unlikePost = async (req, res) => {
 
 export const getNewsFeed = async (req, res) => {
     const userId = req.user.id;
+    const clubId = req.body.club_id;
+
     try {
-        const newsFeed = await postService.getNewsFeed(userId);
+        const newsFeed = (!clubId)
+            ? await postService.getNewsFeed(userId)
+            : await postService.getPostsByClubId(clubId, userId);
+        
         return res.status(200).json({ newsFeed });
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', details: error.message });

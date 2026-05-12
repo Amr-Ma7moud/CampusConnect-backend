@@ -63,6 +63,21 @@ class PostService {
         return newsFeed;
     }
 
+    async getPostsByClubId(clubId, userId) {
+        const posts = await postRepo.getPostsByClubId(clubId, userId, 15);
+        const clubPosts = posts.map(post => ({
+            post_id: Number(post.post_id),
+            club_id: Number(post.club_id),
+            event_id: post.event_id ? Number(post.event_id) : null,
+            content: post.content,
+            image_url: post.image_url,
+            created_at: post.created_at,
+            like_count: Number(post.like_count),
+            comment_count: Number(post.comment_count),
+            is_liked: post.is_liked === 1
+        }));
+    }
+
     async getPostDetails(postId, userId) {
         const [postData, comments] = await Promise.all([
             postRepo.getPostWithAggregates(postId, userId),
