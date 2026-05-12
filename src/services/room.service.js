@@ -167,8 +167,9 @@ async editRoom(roomId,{room_number, building_name, start_time, end_time, capacit
     }
 async findRoomById(roomId){
     try{
-    
-        return await RoomRepo.findRoomById(roomId);}
+        const room = await RoomRepo.findRoomById(roomId);
+        return room;
+    }
     
     catch (error) {    throw new Error('Error in RoomService: ' + error.message);
 

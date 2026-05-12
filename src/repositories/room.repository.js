@@ -61,8 +61,9 @@ class RoomRepo {
         let conn;
         try{
             conn = await getConnection();
-            const [rows] = await conn.query( `
-                SELECT * FROM rooms WHERE room_id = ?
+            const rows = await conn.query( `
+                SELECT * FROM rooms 
+                WHERE room_id = ?
             `, [roomId]);
             return (rows && rows.length > 0) ? rows[0] : null;
         }catch(error ){
