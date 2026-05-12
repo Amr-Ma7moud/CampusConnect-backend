@@ -65,7 +65,7 @@ class RoomRepo {
                 SELECT * FROM rooms 
                 WHERE room_id = ?
             `, [roomId]);
-            return (rows && rows.length > 0) ? rows[0] : null;
+            return rows!=null; 
         }catch(error ){
             return null;
         }finally{
