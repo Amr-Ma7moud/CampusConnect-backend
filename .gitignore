@@ -32,5 +32,6 @@ coverage/
 .temp
 .tmplogs.*
 log.*
+logs.*
 *.log
 *.logs
