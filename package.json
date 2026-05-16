@@ -11,7 +11,8 @@
     "test:api": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest tests/api",
     "start": "bun src/server.js",
     "dev": "bun --watch --env-file=.env src/server.js",
-    "seed": "node src/scripts/seedData.js"
+    "seed": "node src/scripts/seedData.js",
+    "schema:generate": "node src/scripts/createTables.js"
   },
   "repository": {
     "type": "git",

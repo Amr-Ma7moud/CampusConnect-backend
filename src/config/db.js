@@ -19,6 +19,9 @@ const pool = mariaDB.createPool({
   connectTimeout: 10000,
   acquireTimeout: 10000,
   idleTimeout: 5,
+    ssl: {
+    rejectUnauthorized: false 
+  }
 });
 
 export const getConnection = async () => {
