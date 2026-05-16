@@ -122,6 +122,57 @@ export const cancelEventRegistration = async (req, res) => {
     }
 };
 
+export const checkInStudents = async (req,res) => {
+    const eventId = req.params.id;
+    const studentIds = req.body.studentIds;
+
+    try {
+        checkId(eventId);
+        const checkedInStudents = await EventService.checkInStudents(eventId, studentIds);
+        await saveLog({
+            ip_address: req.ip,
+            user_type: req.user.role, // or admin/scanner? The code uses `req.user.id` as `studentId`. So it seems student checks themselves in?
+            record_id: eventId,
+            edited_table: 'std_attend_event',
+            action: 'check_in',
+            changed_by: (req.user.id).toString()
+        });
+        return res.status(200).json( {
+            success : true,
+            checkedInStudents 
+        });
+    } catch (err) {
+        console.log(err);
+        if (err.message === "Event not found") {
+            return res.status(404).json({
+                code: 404,
+                message: "Not Found",
+                details: `Event with ID ${eventId} does not exist`,
+            });
+        }
+        if (err.message === "Student not registered") {
+            return res.status(404).json({
+                code: 404,
+                message: "Not Found",
+                details: "Student is not registered for this event",
+            });
+        }
+        if (err.message === "Already checked in") {
+            return res.status(400).json({
+                code: 400,
+                message: "Bad Request",
+                details: "Student is already checked in for this event",
+            });
+        }
+        if (err.message === "Invalid ID") {
+            return res.status(400).json({ message: "Invalid event ID" });
+        }
+        return res
+            .status(500)
+            .json({ message: "Internal server error", error: err.message });
+    }
+}
+
 export const checkInStudent = async (req, res) => {
     const eventId = req.params.id;
     const studentId = req.body.student_id;

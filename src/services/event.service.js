@@ -170,6 +170,26 @@ class EventService {
         return cancelled;
     }
 
+    async checkInStudents(eventId, studentIds) {
+        if (!(await EventRepo.isEventExists(eventId))) {
+            throw new Error("Event not found");
+        }
+
+        const registeredStudents = await EventRepo.isStudentsRegisteredForEvent(eventId, studentIds);
+        if ( !(registeredStudents) || registeredStudents.length === 0 ) {
+            throw new Error("Student not registered");
+        }
+        
+        console.log(registeredStudents);
+        const notCheckedInStudents = await EventRepo.isStudentsCheckedIn(eventId, studentIds);
+        if ( !notCheckedInStudents || notCheckedInStudents.length === 0) {
+            throw new Error("all students are already checked in");
+        }
+
+        const checkInId = await EventRepo.checkInStudents(eventId, registeredStudents);
+        return checkInId;
+    }
+
     async checkInStudent(eventId, studentId) {
         if (!(await EventRepo.isEventExists(eventId))) {
             throw new Error("Event not found");

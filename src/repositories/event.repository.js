@@ -324,6 +324,32 @@ class EventRepo {
         }
     }
 
+/**
+ * 
+ * @param {number} eventId 
+ * @param {Array[number]} studentIds 
+ * @returns the IDs of students that has registered to that event
+ */
+    async isStudentsRegisteredForEvent(eventId, studentIds) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const resultIds = [];
+            for( const studentId of studentIds){
+                const rows = await conn.query(
+                    `SELECT * FROM std_register_event WHERE event_id = ? AND student_id = ?`,
+                    [eventId, studentId]
+                );
+                rows[0] ? resultIds.push(studentId) : null;
+            }
+            return resultIds;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
     /**
      * Get current registration count for an event
      * @param {number} eventId - The event ID to check
@@ -456,16 +482,57 @@ class EventRepo {
         }
     }
 
+    async isStudentsCheckedIn(eventId, studentIds) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const notCheckedInStudents = [];
+            for( const studentId of studentIds){
+                const rows = await conn.query(
+                    `SELECT 1 FROM std_attend_event WHERE event_id = ? AND student_id = ?`,
+                    [eventId, studentId]
+                );
+                rows.length === 0 ? notCheckedInStudents.push(studentId) : null ;
+            }
+            return notCheckedInStudents;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
     async checkInStudent(eventId, studentId) {
         let conn;
         try {
             conn = await getConnection();
             const result = await conn.query(
-                `INSERT INTO std_attend_event (event_id, student_id, attend_date) 
+                `INSERT INTO std_attend_event (event_id, student_id, check_in) 
                 VALUES (?, ?, NOW())`,
                 [eventId, studentId]
             );
             return result.insertId;
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
+        }
+    }
+
+        async checkInStudents(eventId, studentIds) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const resultIds = [];
+            for (const studentId of studentIds){
+                const result = await conn.query(
+                    `INSERT INTO std_attend_event (event_id, student_id, check_in) 
+                    VALUES (?, ?, NOW())`,
+                    [eventId, studentId]
+                );
+                resultIds.push(studentId);
+            }
+            return resultIds;
         } catch (err) {
             throw err;
         } finally {
