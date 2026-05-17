@@ -25,6 +25,6 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage: storage , fileFilter: imageFilter ,limits: {
+export const upload = multer({ storage: storage , fileFilter: imageFilter ,limits: {
   fileSize: 5 * 1024 * 1024 // 5MB
 }});
