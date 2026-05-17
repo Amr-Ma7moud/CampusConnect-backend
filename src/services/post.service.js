@@ -97,7 +97,7 @@ class PostService {
             created_at: postData.created_at,
             like_count: Number(postData.like_count),
             comment_count: Number(postData.comment_count),
-            is_liked: postData.is_liked === 1,
+            is_liked: postData.is_liked >= 1,
             comments
         };
     }

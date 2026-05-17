@@ -238,12 +238,12 @@ class PostRepo {
                     CAST(COALESCE(pfe.event_id, 0) AS UNSIGNED) as event_id,
                     CAST(COALESCE(lc.like_count, 0) AS UNSIGNED) as like_count,
                     CAST(COALESCE(cc.comment_count, 0) AS UNSIGNED) as comment_count,
-                    COALESCE(ui.is_liked, 0) as is_liked
+                    CAST(COALESCE(ui.is_liked, 0) AS UNSIGNED) as is_liked
                 FROM posts p
                 LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
                 LEFT JOIN (SELECT post_id, COUNT(*) as like_count FROM std_like_post GROUP BY post_id) lc ON p.post_id = lc.post_id
                 LEFT JOIN (SELECT post_id, COUNT(*) as comment_count FROM std_comment_post GROUP BY post_id) cc ON p.post_id = cc.post_id
-                LEFT JOIN (SELECT post_id, 1 as is_liked FROM std_like_post WHERE student_id = ?) ui ON p.post_id = ui.post_id
+                LEFT JOIN (SELECT post_id, COUNT(*) as is_liked FROM std_like_post WHERE student_id = ?) ui ON p.post_id = ui.post_id
                 WHERE p.post_id = ?
             `, [userId, postId]);
 
