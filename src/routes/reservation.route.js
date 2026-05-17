@@ -4,6 +4,6 @@ import { verifyRole } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-router.get('/', verifyRole(['student']), getMyActiveReservations);
+router.get('/', verifyRole(['student', 'club_manager']), getMyActiveReservations);
 
 export default router;
