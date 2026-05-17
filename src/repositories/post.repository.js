@@ -177,7 +177,7 @@ class PostRepo {
                     CAST(COALESCE(pfe.event_id, 0) AS UNSIGNED) as event_id,
                     (SELECT COUNT(*) FROM std_like_post WHERE post_id = p.post_id) as like_count,
                     (SELECT COUNT(*) FROM std_comment_post WHERE post_id = p.post_id) as comment_count,
-                    EXISTS(SELECT 1 FROM std_like_post WHERE post_id = p.post_id AND student_id = ?) as is_liked
+                    (SELECT COUNT(*) FROM std_like_post WHERE post_id = p.post_id AND student_id = ?) as is_liked
                 FROM posts p
                 LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
                 ORDER BY p.created_at DESC 
@@ -207,7 +207,7 @@ class PostRepo {
                     CAST(COALESCE(pfe.event_id, 0) AS UNSIGNED) as event_id,
                     (SELECT COUNT(*) FROM std_like_post WHERE post_id = p.post_id) as like_count,
                     (SELECT COUNT(*) FROM std_comment_post WHERE post_id = p.post_id) as comment_count,
-                    EXISTS(SELECT 1 FROM std_like_post WHERE post_id = p.post_id AND student_id = ?) as is_liked
+                    (SELECT COUNT(*) FROM std_like_post WHERE post_id = p.post_id AND student_id = ?) as is_liked
                 FROM posts p
                 LEFT JOIN posts_for_event pfe ON p.post_id = pfe.post_id
                 WHERE p.club_id = ?
