@@ -1,6 +1,9 @@
 import cloudinary from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
+
+// Import CloudinaryStorage using CommonJS compatibility
+import CloudinaryStorageModule from 'multer-storage-cloudinary';
+const CloudinaryStorage = CloudinaryStorageModule.default || CloudinaryStorageModule;
 
 // Configure Cloudinary with your credentials
 cloudinary.v2.config({
