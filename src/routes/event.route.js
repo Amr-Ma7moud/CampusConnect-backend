@@ -10,6 +10,7 @@ import {
     registerStudentAtEvent,
     cancelEventRegistration,
     checkInStudent,
+    checkInStudents,
     getEventPosts,
     reportEventIssue,
 } from "../controllers/event.controller.js";
@@ -26,6 +27,11 @@ router.delete(
     "/:event_id/register",
     verifyRole(["student", "club_manager"]),
     cancelEventRegistration
+);
+router.post(
+    "/:id/attendees",
+    verifyRole(["club_manager", "admin"]),
+    checkInStudents
 );
 router.post(
     "/:id/attendance",

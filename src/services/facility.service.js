@@ -93,13 +93,13 @@ class FacilityService {
                 throw new Error('Facility is not available for reservation');
             }
 
-            if (uniqueTeamIds.length < facility.min_capacity) {
-                throw new Error('Team size is below facility minimum capacity');
-            }
+            // if (uniqueTeamIds.length < facility.min_capacity) {
+            //     throw new Error('Team size is below facility minimum capacity');
+            // }
 
-            if (uniqueTeamIds.length > facility.max_capacity) {
-                throw new Error('Team size exceeds facility maximum capacity');
-            }
+            // if (uniqueTeamIds.length > facility.max_capacity) {
+            //     throw new Error('Team size exceeds facility maximum capacity');
+            // }
 
             const validStudents = await userRepository.getActiveStudentsByIds(uniqueTeamIds);
             if (validStudents.length !== uniqueTeamIds.length) {
