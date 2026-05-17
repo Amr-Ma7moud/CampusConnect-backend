@@ -18,7 +18,7 @@ const imageFilter = (req, file, cb) => {
 };
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary.v2,
+  cloudinary: cloudinary,
   params: {
     folder: 'CampusConnect',
     allowed_formats: ['jpg', 'png', 'jpeg'],
