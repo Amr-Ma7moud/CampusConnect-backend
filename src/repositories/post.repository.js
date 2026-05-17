@@ -7,11 +7,10 @@ class PostRepo {
         try {
             conn = await getConnection();
             const result = await conn.query(`
-                INSERT INTO posts (content, image_url, club_id)
-                VALUES (?, ?, ?)
+                INSERT INTO posts (content, club_id)
+                VALUES (?, ?)
             `, [
                 postData.content,
-                postData.image_url,
                 postData.club_id
             ]);
 

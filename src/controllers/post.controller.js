@@ -23,7 +23,6 @@ export const createPost = async (req, res) => {
 
         const postData = {
             content,
-            image_url: req.file ? req.file.path : null,
             club_id: clubId,
             event_id
         };
