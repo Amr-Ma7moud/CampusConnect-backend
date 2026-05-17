@@ -11,7 +11,6 @@ import {
      deletePost,
      getPostById
      } from '../controllers/post.controller.js';
-import {upload} from "../config/cloudPhotoUpload.js";
 
 const router = express.Router();
 
