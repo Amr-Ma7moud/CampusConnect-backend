@@ -16,7 +16,7 @@ import {upload} from "../config/cloudPhotoUpload.js";
 const router = express.Router();
 
 
-router.post('/', verifyRole(['club_manager', 'admin']),upload.single('image'), createPost);
+router.post('/', verifyRole(['club_manager', 'admin']), createPost);
 router.delete('/:post_id', verifyRole(['club_manager', 'admin']), deletePost);
 router.put('/:post_id', verifyRole(['club_manager', 'admin']), editPost);
 router.get('/', getNewsFeed);
