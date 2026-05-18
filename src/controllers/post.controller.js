@@ -1,10 +1,9 @@
 import clubService from "../services/club.service.js";
 import postService from "../services/post.service.js";
 import { saveLog } from "../utils/logs.js";
-
 export const createPost = async (req, res) => {
     const userId = req.user.id;
-    const { event_id, content, image_url } = req.body;
+    const { event_id, content } = req.body;
 
     try {
         if (!content) {
@@ -24,7 +23,6 @@ export const createPost = async (req, res) => {
 
         const postData = {
             content,
-            image_url,
             club_id: clubId,
             event_id
         };

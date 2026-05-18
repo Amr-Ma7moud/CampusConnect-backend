@@ -28,6 +28,7 @@
   "homepage": "https://github.com/Amr-Ma7moud/CampusConnect-backend#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -37,7 +38,8 @@
     "mariadb": "^3.4.5",
     "mongoose": "^9.0.1",
     "morgan": "^1.10.1",
-    "multer": "^2.0.2",
+    "multer": "^2.1.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.22.3",
     "node-cron": "^4.2.1"
   },

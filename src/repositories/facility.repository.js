@@ -39,6 +39,7 @@ export class FacilityRepo{
                     max_capacity,
                     status
                 FROM facilities
+                WHERE status = 'available'
             `);
             
             return rows;

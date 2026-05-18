@@ -183,6 +183,7 @@ class EventRepo {
             let filters = `
                     e.status = 'scheduled'
                     AND c.status = 'active'
+                    AND e.event_end_date >= NOW()
             `;
             let registrationJoin = "";
             let registrationSelect = "0 AS is_registered";
