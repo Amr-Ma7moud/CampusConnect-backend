@@ -1,3 +1,4 @@
+import { Error } from "mongoose";
 import { getConnection } from "../config/db.js";
 
 class ReservationRepo {
@@ -105,6 +106,24 @@ class ReservationRepo {
             throw new Error('Error fetching event registrations: ' + error.message);
         } finally {
             if (conn) conn.release();
+        }
+    }
+
+    async deleteActiveReservationByUserId(user_id, facility_id, reservation_start_date) {
+        let conn;
+        try {
+            conn = await getConnection();
+            const res = await conn.query(`
+                delete from std_reserve_facility 
+                where user_id = ? AND 
+                    facility_id = ? AND 
+                    reservation_start_date = ? 
+                    AND status IN ('pending', 'confirmed');
+                LIMIT 1;    
+            `, [user_id, facility_id, reservation_start_date]);
+            if (res) return true;
+        } catch (error) {
+            new Error("an error occured while deleting the reservation, please try again later.");
         }
     }
 }

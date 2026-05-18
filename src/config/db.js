@@ -1,33 +1,33 @@
-import mariaDB from 'mariadb';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+  import mariaDB from 'mariadb';
+  import dotenv from 'dotenv';
+  import { fileURLToPath } from 'url';
+  import { dirname, join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
 
-const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
-dotenv.config({ path: join(__dirname, '../../', envFile) });
+  const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+  dotenv.config({ path: join(__dirname, '../../', envFile) });
 
-const pool = mariaDB.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  connectionLimit: 5,
-  connectTimeout: 10000,
-  acquireTimeout: 10000,
-  idleTimeout: 5,
-    ssl: {
-    rejectUnauthorized: false 
-  }
-});
+  const pool = mariaDB.createPool({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    connectionLimit: 50,
+    connectTimeout: 10000,
+    acquireTimeout: 10000,
+    idleTimeout: 5,
+      ssl: {
+      rejectUnauthorized: false 
+    }
+  });
 
-export const getConnection = async () => {
-  return await pool.getConnection();
-};
+  export const getConnection = async () => {
+    return await pool.getConnection();
+  };
 
-export const closePool = async () => {
-  await pool.end();
-};
+  export const closePool = async () => {
+    await pool.end();
+  };

@@ -1,3 +1,4 @@
+import reservationRepository from "../repositories/reservation.repository.js";
 import reservationRepo from "../repositories/reservation.repository.js";
 
 class ReservationService {
@@ -46,6 +47,11 @@ class ReservationService {
 
         return allReservations;
     }
+
+    async deleteActiveReservationByUserId(userId, facilityId, reservationStartDate) {
+        await reservationRepository.deleteActiveReservationByUserId(userId, facilityId, reservation_start_date);
+    }
+
 }
 
 export default new ReservationService();
