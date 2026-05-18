@@ -49,7 +49,7 @@ class ReservationService {
     }
 
     async deleteActiveReservationByUserId(userId, facilityId, reservationStartDate) {
-        await reservationRepository.deleteActiveReservationByUserId(userId, facilityId, reservation_start_date);
+        await reservationRepository.deleteActiveReservationByUserId(userId, facilityId, reservationStartDate);
     }
 
 }
